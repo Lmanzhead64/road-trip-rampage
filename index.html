@@ -110,15 +110,16 @@ function canvasPoint(clientX,clientY){var r=c.getBoundingClientRect();
   mouse.x=(clientX-r.left)*(W/r.width);mouse.y=(clientY-r.top)*(H/r.height);
   return{x:mouse.x,y:mouse.y};}
 function uiScale(){var r=c.getBoundingClientRect();return Math.min(2.6,Math.max(1,W/Math.max(1,r.width)));}
-function touchLayout(){var s=uiScale(),pad=24*s,joyR=46*s,btnR=42*s;
-  return{s:s,pad:pad,joyR:joyR,knobR:20*s,joyX:pad+joyR,joyY:H-pad-joyR,
+function touchLayout(){var s=uiScale(),pad=24*s,joyR=62*s,btnR=42*s;
+  return{s:s,pad:pad,joyR:joyR,knobR:22*s,joyX:pad+joyR,joyY:H-pad-joyR,
     bombX:W-pad-btnR,bombY:H-pad-btnR,bombR:btnR,
     missileX:W-pad-btnR,missileY:H-pad-btnR*3-18*s,missileR:btnR*.84};}
 function isTouchDevice(){return touchCtl.seen||navigator.maxTouchPoints>0||("ontouchstart"in window)||location.search.indexOf("touch=1")!==-1;}
 function clearTouchMove(){touchCtl.moveId=null;touchCtl.mx=0;touchCtl.my=0;}
-function setTouchMove(p){var l=touchLayout(),dx=p.x-touchCtl.sx,dy=p.y-touchCtl.sy,d=Math.sqrt(dx*dx+dy*dy),dead=8*l.s;
+function setTouchMove(p){var l=touchLayout(),dx=p.x-touchCtl.sx,dy=p.y-touchCtl.sy,d=Math.sqrt(dx*dx+dy*dy),dead=6*l.s;
   if(d<dead){touchCtl.mx=0;touchCtl.my=0;touchCtl.cx=touchCtl.sx;touchCtl.cy=touchCtl.sy;return;}
-  var m=Math.min(d,l.joyR),nx=dx/d,ny=dy/d;touchCtl.mx=nx*(m/l.joyR);touchCtl.my=ny*(m/l.joyR);
+  var m=Math.min(d,l.joyR),nx=dx/d,ny=dy/d,str=Math.pow(m/l.joyR,0.72);
+  touchCtl.mx=nx*str;touchCtl.my=ny*str;
   touchCtl.cx=touchCtl.sx+nx*m;touchCtl.cy=touchCtl.sy+ny*m;}
 function beginInput(id,p,kind){initAudio();touchCtl.seen=touchCtl.seen||kind==="touch";
   if(state!==S.PLAY){handleClick();return;}
@@ -126,7 +127,7 @@ function beginInput(id,p,kind){initAudio();touchCtl.seen=touchCtl.seen||kind==="
   var md=Math.sqrt((p.x-l.missileX)*(p.x-l.missileX)+(p.y-l.missileY)*(p.y-l.missileY));
   if(md<l.missileR+18*l.s){touchCtl.missileId=id;fireMissile();return;}
   if(bd<l.bombR+18*l.s){touchCtl.bombId=id;useBomb();return;}
-  if(kind==="touch"&&touchCtl.moveId===null&&p.x<W*0.55){
+  if(kind!=="mouse"&&touchCtl.moveId===null){
     touchCtl.moveId=id;touchCtl.sx=p.x;touchCtl.sy=p.y;touchCtl.cx=p.x;touchCtl.cy=p.y;setTouchMove(p);}}
 function moveInput(id,p){if(id===touchCtl.moveId)setTouchMove(p);}
 function endInput(id){if(id===touchCtl.moveId)clearTouchMove();if(id===touchCtl.bombId)touchCtl.bombId=null;if(id===touchCtl.missileId)touchCtl.missileId=null;}
@@ -1017,12 +1018,14 @@ function render(){
 
 function rTouchControls(){
   if(!isTouchDevice())return;
-  var l=touchLayout(),jx=touchCtl.moveId===null?l.joyX:touchCtl.sx,jy=touchCtl.moveId===null?l.joyY:touchCtl.sy;
-  var kx=touchCtl.moveId===null?jx:touchCtl.cx,ky=touchCtl.moveId===null?jy:touchCtl.cy;
+  var l=touchLayout();
   ctx.save();ctx.globalAlpha=0.78;
-  ctx.fillStyle="rgba(116,185,255,0.08)";ctx.strokeStyle="rgba(116,185,255,0.35)";ctx.lineWidth=2*l.s;
-  ctx.beginPath();ctx.arc(jx,jy,l.joyR,0,6.28);ctx.fill();ctx.stroke();
-  ctx.fillStyle="rgba(116,185,255,0.45)";ctx.beginPath();ctx.arc(kx,ky,l.knobR,0,6.28);ctx.fill();
+  if(touchCtl.moveId!==null){
+    ctx.fillStyle="rgba(116,185,255,0.08)";ctx.strokeStyle="rgba(116,185,255,0.35)";ctx.lineWidth=2*l.s;
+    ctx.beginPath();ctx.arc(touchCtl.sx,touchCtl.sy,l.joyR,0,6.28);ctx.fill();ctx.stroke();
+    ctx.strokeStyle="rgba(116,185,255,0.2)";ctx.beginPath();ctx.moveTo(touchCtl.sx,touchCtl.sy);ctx.lineTo(touchCtl.cx,touchCtl.cy);ctx.stroke();
+    ctx.fillStyle="rgba(116,185,255,0.45)";ctx.beginPath();ctx.arc(touchCtl.cx,touchCtl.cy,l.knobR,0,6.28);ctx.fill();
+  }
   ctx.fillStyle=P.bombs>0?"rgba(255,165,2,0.18)":"rgba(255,255,255,0.06)";
   ctx.strokeStyle=P.bombs>0?"rgba(255,165,2,0.65)":"rgba(255,255,255,0.25)";
   ctx.beginPath();ctx.arc(l.bombX,l.bombY,l.bombR,0,6.28);ctx.fill();ctx.stroke();
@@ -1109,7 +1112,7 @@ function rTitle(){
   ctx.fillStyle="rgba(255,255,255,0.55)";ctx.font="15px monospace";ctx.fillText("Fictional armored dozer defense RPG",W/2,268);
   ctx.fillStyle="rgba(255,255,255,0.52)";ctx.font="12px monospace";
   ctx.fillText("100 levels, phase zones, chassis ranks, village defense, saved progress.",W/2,326);
-  ctx.fillText("WASD to move. Q launches demo charges. SPACE missile after unlock. Touch: drag left, tap fire buttons.",W/2,347);
+  ctx.fillText("WASD to move. Q launches demo charges. SPACE missile after unlock. Touch: drag anywhere, tap fire buttons.",W/2,347);
   var save=getSaveInfo(),hasSave=!!save;
   ctx.fillStyle=hasSave?"#5eead4":"#74b9ff";ctx.fillRect(W/2-105,410,210,38);ctx.fillStyle="#061016";ctx.font="bold 13px sans-serif";
   ctx.fillText(hasSave?"CONTINUE LEVEL "+save.level:"NEW GAME",W/2,434);
