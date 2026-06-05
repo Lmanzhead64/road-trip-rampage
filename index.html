@@ -74,12 +74,17 @@ function noise(dur,gain,cut){
 }
 function sfx(id){
   if(!audioOn)return;
-  if(id==="fire"){tone(92,.045,"square",.025,1.8);noise(.035,.018,1800);}
+  if(id==="fire"){tone(86+Math.random()*22,.045,"square",.026,1.9);noise(.04,.02,1900);}
   else if(id==="hit"){tone(150,.06,"sawtooth",.04,.72);}
-  else if(id==="bombLaunch"){tone(68,.22,"sawtooth",.08,1.6);noise(.16,.08,700);}
-  else if(id==="missile"){tone(220,.18,"sawtooth",.06,1.9);noise(.22,.07,1400);}
-  else if(id==="boom"){tone(54,.42,"sine",.14,.42);noise(.38,.16,520);}
-  else if(id==="kill"){tone(330,.08,"triangle",.04,1.45);tone(520,.1,"triangle",.035,1.25);}
+  else if(id==="bombLaunch"){tone(68,.22,"sawtooth",.08,1.6);tone(116,.16,"square",.035,1.35);noise(.18,.09,720);}
+  else if(id==="missile"){tone(180,.2,"sawtooth",.06,2.2);tone(92,.24,"square",.045,1.65);noise(.25,.075,1500);}
+  else if(id==="boom"){tone(48,.48,"sine",.16,.38);tone(78,.24,"sawtooth",.08,.62);noise(.46,.18,480);}
+  else if(id==="kill"){tone(300,.07,"triangle",.045,1.45);setTimeout(function(){tone(480,.08,"triangle",.035,1.25);},38);}
+  else if(id==="combo"){tone(420,.08,"triangle",.05,1.32);setTimeout(function(){tone(640,.09,"triangle",.045,1.18);},65);setTimeout(function(){tone(860,.08,"triangle",.035,1.08);},126);}
+  else if(id==="pickup"){tone(520,.06,"sine",.035,1.55);setTimeout(function(){tone(780,.08,"sine",.03,1.22);},55);}
+  else if(id==="level"){tone(330,.12,"triangle",.06,1.22);setTimeout(function(){tone(495,.12,"triangle",.05,1.18);},95);setTimeout(function(){tone(660,.16,"triangle",.045,1.14);},190);}
+  else if(id==="save"){tone(260,.09,"sine",.05,1.15);setTimeout(function(){tone(390,.11,"sine",.045,1.12);},90);}
+  else if(id==="start"){tone(120,.16,"sawtooth",.05,1.55);setTimeout(function(){tone(240,.12,"triangle",.035,1.3);},110);}
   else if(id==="upgrade"){tone(440,.09,"sine",.04,1.25);setTimeout(function(){tone(660,.09,"sine",.035,1.2);},70);}
   else if(id==="hurt"){tone(74,.14,"sawtooth",.08,.55);}
 }
@@ -123,6 +128,7 @@ function setTouchMove(p){var l=touchLayout(),dx=p.x-touchCtl.sx,dy=p.y-touchCtl.
   touchCtl.cx=touchCtl.sx+nx*m;touchCtl.cy=touchCtl.sy+ny*m;}
 function beginInput(id,p,kind){initAudio();touchCtl.seen=touchCtl.seen||kind==="touch";
   if(state!==S.PLAY){handleClick();return;}
+  if(inRect(saveExitRect())){saveForLater();return;}
   var l=touchLayout(),bd=Math.sqrt((p.x-l.bombX)*(p.x-l.bombX)+(p.y-l.bombY)*(p.y-l.bombY));
   var md=Math.sqrt((p.x-l.missileX)*(p.x-l.missileX)+(p.y-l.missileY)*(p.y-l.missileY));
   if(md<l.missileR+18*l.s){touchCtl.missileId=id;fireMissile();return;}
@@ -155,6 +161,8 @@ function saveGame(){try{localStorage.setItem("rtr5",JSON.stringify({level:level,
 function loadGame(){try{var d=JSON.parse(localStorage.getItem("rtr5"));if(d){level=d.level||1;credits=d.credits||0;totalScore=d.totalScore||0;Object.assign(P,d.p||{});ownedWeapons=Object.assign({pistol:true},ownedWeapons,d.ownedWeapons||{});weaponLevels=Object.assign({pistol:1,shotgun:1,smg:1,rifle:1,launcher:1},weaponLevels,d.weaponLevels||{});ownedVehicles=Object.assign(vehicleOwnedDefaults(),ownedVehicles,d.ownedVehicles||{});vehicleRanks=Object.assign(vehicleRankDefaults(),vehicleRanks,d.vehicleRanks||{});village=Object.assign(villageDefaults(),village,d.village||{});currentVehicle=d.currentVehicle||currentVehicle;if(!ownedWeapons[P.weapon])P.weapon="pistol";if(!ownedVehicles[currentVehicle])currentVehicle="dozer1";return true;}}catch(e){}return false;}
 function clearSavedGame(){try{localStorage.removeItem("rtr5");}catch(e){}}
 function getSaveInfo(){try{var d=JSON.parse(localStorage.getItem("rtr5"));return d&&d.level?d:null;}catch(e){}return null;}
+function fmt(n){return (n||0).toLocaleString();}
+function savedAgo(ts){if(!ts)return "saved run ready";var mins=Math.max(0,Math.floor((Date.now()-ts)/60000));if(mins<1)return "saved just now";if(mins<60)return "saved "+mins+"m ago";var hrs=Math.floor(mins/60);if(hrs<24)return "saved "+hrs+"h ago";return "saved "+Math.floor(hrs/24)+"d ago";}
 
 // ====== HIGH SCORES ======
 var hs=[];try{hs=JSON.parse(localStorage.getItem("rtr5_hs"))||[];}catch(e){}
@@ -291,6 +299,9 @@ function explode(px,py,power,col){
 function floatT(px,py,text,col,big){dmgNums.push({x:px+rand(-8,8),y:py,text:text,vy:-2,life:50,color:col,size:big?20:13});}
 function notify(text,color){noticeMsg={text:text,time:105,color:color||"#fff"};}
 function shopNotice(text,color){shopMsg={text:text,time:140,color:color||"#fff"};}
+function inRect(r){return mouse.x>r.x&&mouse.x<r.x+r.w&&mouse.y>r.y&&mouse.y<r.y+r.h;}
+function saveExitRect(){return{x:W-160,y:78,w:145,h:30};}
+function titleBtnRect(i){return{x:W/2-132,y:360+i*48,w:264,h:38};}
 function shopCard(i){var col=i%4,row=Math.floor(i/4);return{x:32+col*230,y:202+row*70,w:210,h:58};}
 function weaponLevel(id){return weaponLevels[id]||1;}
 function weaponPower(id){return 1+(weaponLevel(id)-1)*0.24;}
@@ -488,7 +499,7 @@ function killEnemy(idx){
   var mult=1+Math.min(2,Math.floor(combo/5)*0.25);
   var scoreGain=Math.round(e.score*mult);credits+=e.boss?3:1;totalScore+=scoreGain;
   if(combo>1)floatT(e.x,e.y-e.size-18,"x"+combo+"  +"+scoreGain,"#facc15",combo>4);
-  if(combo>1&&combo%5===0){credits++;notify(combo+" KILL STREAK  +1 CREDIT","#facc15");}
+  if(combo>1&&combo%5===0){credits++;notify(combo+" KILL STREAK  +1 CREDIT","#facc15");sfx("combo");}
   P.hp=Math.min(effectiveMaxHp(),P.hp+P.regen+(village.medic||0)*2);
   explode(e.x,e.y,e.boss?2.4:1.05,e.color);
   burst(e.x,e.y,18,e.color,5,28);burst(e.x,e.y,8,"#fff",3,15);
@@ -513,14 +524,14 @@ function collectDrop(d){
     case"dmg":P.dmg+=2;floatT(d.x,d.y,"+2DMG","#ff4757",true);notify("DAMAGE +2","#ff7675");break;
     case"spd":P.speed=Math.min(7.5,P.speed+0.2);floatT(d.x,d.y,"+SPD","#7bed9f",true);notify("TRACK SPEED UP","#7bed9f");break;
     case"reg":P.regen+=1;floatT(d.x,d.y,"+1REG","#ff6b81",true);notify("REPAIR RATE UP","#ff6b81");break;}
-  burst(d.x,d.y,8,d.color,3,12);totalScore+=20;saveGame();}
+  burst(d.x,d.y,8,d.color,3,12);sfx("pickup");totalScore+=20;saveGame();}
 
 function levelComplete(){combo=0;comboT=0;
   if(level>=MAX_LEVEL){totalScore+=25000;gameOver(true);return;}
   var oldPhase=phaseIndex(),contract=awardContracts(),supplyBonus=1+Math.floor((village.depot||0)*0.85);
   var cacheBonus=level%5===0?5+phaseIndex()*3:0;
   credits+=supplyBonus+cacheBonus;if(cacheBonus>0){totalScore+=cacheBonus*150;lastOpReport+="  MILESTONE CACHE +"+cacheBonus;}
-  level++;saveGame();state=S.SHOP;
+  level++;saveGame();state=S.SHOP;sfx("level");
   shopNotice((phaseIndex()>oldPhase?"New phase reached: "+phase().name+". ":"Level cleared. ")+"Supply +"+supplyBonus+" credits. "+lastOpReport,"#cbd5e1");}
 
 // ====== START ======
@@ -532,7 +543,11 @@ function startGame(fresh){
     ownedWeapons={pistol:true,shotgun:false,smg:false,rifle:false,launcher:false};
     weaponLevels={pistol:1,shotgun:1,smg:1,rifle:1,launcher:1};
     ownedVehicles=vehicleOwnedDefaults();vehicleRanks=vehicleRankDefaults();currentVehicle="dozer1";village=villageDefaults();shopTab=0;}
-  runWon=false;clearTouchMove();P.hp=effectiveMaxHp();state=S.PLAY;startLevel();saveGame();}
+  runWon=false;clearTouchMove();P.hp=effectiveMaxHp();state=S.PLAY;startLevel();saveGame();sfx("start");}
+
+function saveForLater(){
+  saveGame();clearTouchMove();state=S.TITLE;notify("RUN SAVED - COME BACK ANYTIME","#5eead4");sfx("save");
+}
 
 function syncNameInput(show){
   if(!nameInput)return;
@@ -547,9 +562,11 @@ function saveNewHighScore(){if(ne.saved)return;var nm=nameInput?(nameInput.value
 
 function handleClick(){
   if(state===S.TITLE){
-    if(mouse.y>410&&mouse.y<450){if(loadGame())startGame(false);else startGame(true);}
-    else if(mouse.y>460&&mouse.y<500)startGame(true);
-    else if(mouse.y>510)state=S.SCORES;}
+    var save=getSaveInfo();
+    if(inRect(titleBtnRect(0))){if(save&&loadGame())startGame(false);else{sfx("hurt");notify("NO SAVED RUN YET","#ff7675");}}
+    else if(inRect(titleBtnRect(1)))startGame(true);
+    else if(inRect(titleBtnRect(2))||mouse.y>570)state=S.SCORES;}
+  else if(state===S.PLAY){if(inRect(saveExitRect()))saveForLater();}
   else if(state===S.SHOP){
     for(var t=0;t<shopTabs.length;t++){
       var tx=W/2-198+t*132;
@@ -1004,6 +1021,9 @@ function render(){
   ctx.fillText("LEVEL "+level+"/"+MAX_LEVEL,W-15,25);ctx.font="11px monospace";ctx.fillStyle="rgba(255,255,255,0.5)";
   ctx.fillText(phase().name+"  |  Kills: "+levelKills+"/"+enemiesThisLevel+(bossSpawned?" +BOSS":""),W-15,42);
   ctx.fillText(WEAPONS[P.weapon].name+" Lv."+weaponLevel(P.weapon)+"  |  Score: "+totalScore.toLocaleString(),W-15,57);ctx.textAlign="left";
+  var sr=saveExitRect();ctx.fillStyle="rgba(94,234,212,0.16)";ctx.strokeStyle="rgba(94,234,212,0.55)";ctx.lineWidth=1;
+  ctx.fillRect(sr.x,sr.y,sr.w,sr.h);ctx.strokeRect(sr.x,sr.y,sr.w,sr.h);
+  ctx.textAlign="center";ctx.fillStyle="#5eead4";ctx.font="bold 11px monospace";ctx.fillText("SAVE & EXIT",sr.x+sr.w/2,sr.y+20);ctx.textAlign="left";
   if(combo>1){ctx.textAlign="center";ctx.fillStyle="#c7b98a";ctx.font="bold 18px monospace";ctx.fillText("STREAK x"+combo,W/2,30);ctx.textAlign="left";}
   var prog=Math.min(1,(levelKills+(bossSpawned?enemiesThisLevel*0.25:enemiesSpawned*0.25))/(enemiesThisLevel+1));
   ctx.fillStyle="rgba(255,255,255,0.08)";ctx.fillRect(W/2-160,H-16,320,5);ctx.fillStyle=bossSpawned?"#7f1d1d":"#9ca3af";ctx.fillRect(W/2-160,H-16,320*prog,5);
@@ -1098,29 +1118,50 @@ function rShop(){
 
 // ====== TITLE ======
 var tt=0;
+function drawTitleButton(i,label,sub,enabled,accent){
+  var r=titleBtnRect(i),on=enabled!==false;
+  ctx.fillStyle=on?"rgba(7,20,22,0.86)":"rgba(255,255,255,0.08)";
+  ctx.strokeStyle=on?accent:"rgba(255,255,255,0.16)";
+  ctx.lineWidth=1.5;ctx.fillRect(r.x,r.y,r.w,r.h);ctx.strokeRect(r.x,r.y,r.w,r.h);
+  ctx.textAlign="center";ctx.fillStyle=on?accent:"rgba(255,255,255,0.42)";ctx.font="bold 13px monospace";ctx.fillText(label,r.x+r.w/2,r.y+16);
+  ctx.fillStyle="rgba(255,255,255,0.48)";ctx.font="10px monospace";ctx.fillText(sub,r.x+r.w/2,r.y+30);
+}
 function rTitle(){
+  if(noticeMsg.time>0)noticeMsg.time--;
   tt++;ctx.fillStyle="#0d0f18";ctx.fillRect(0,0,W,H);drawRoadBg();
   drawRealismOverlay();
-  ctx.fillStyle="rgba(0,0,0,0.44)";ctx.fillRect(0,0,W,H);
-  for(var i=0;i<15;i++){var px=(tt*0.25+i*79)%W,py=(H/2+Math.sin(tt*0.004+i)*220)%H;
-    ctx.fillStyle="rgba(203,213,203,0.045)";ctx.beginPath();ctx.arc(px,py,1.5,0,6.28);ctx.fill();}
+  ctx.fillStyle="rgba(0,0,0,0.48)";ctx.fillRect(0,0,W,H);
+  for(var i=0;i<18;i++){var px=(tt*0.28+i*73)%W,py=(H/2+Math.sin(tt*0.004+i)*220)%H;
+    ctx.fillStyle="rgba(203,213,203,0.05)";ctx.beginPath();ctx.arc(px,py,1.5,0,6.28);ctx.fill();}
+  var sweep=(tt*2)%W;ctx.fillStyle="rgba(94,234,212,0.035)";ctx.beginPath();ctx.moveTo(sweep-120,0);ctx.lineTo(sweep-20,0);ctx.lineTo(sweep+70,H);ctx.lineTo(sweep-30,H);ctx.closePath();ctx.fill();
   ctx.textAlign="center";
-  drawKilldozer(W/2-180,256,0,"#9ca3af");drawKilldozer(W/2+180,256,3.14,"#737b73");
-  ctx.fillStyle="rgba(7,10,11,0.56)";ctx.fillRect(W/2-260,92,520,238);ctx.strokeStyle="rgba(203,213,203,0.22)";ctx.strokeRect(W/2-260,92,520,238);
-  ctx.fillStyle="#cbd5cf";ctx.font="bold 48px monospace";ctx.fillText("ROAD TRIP",W/2,165);
-  ctx.fillStyle="#e5e7df";ctx.font="bold 58px monospace";ctx.fillText("RAMPAGE",W/2,230);
-  ctx.fillStyle="rgba(255,255,255,0.55)";ctx.font="15px monospace";ctx.fillText("Fictional armored dozer defense RPG",W/2,268);
-  ctx.fillStyle="rgba(255,255,255,0.52)";ctx.font="12px monospace";
-  ctx.fillText("100 levels, phase zones, chassis ranks, village defense, saved progress.",W/2,326);
-  ctx.fillText("WASD to move. Q launches demo charges. SPACE missile after unlock. Touch: drag anywhere, tap fire buttons.",W/2,347);
+  ctx.fillStyle="rgba(203,213,203,0.5)";ctx.font="bold 11px monospace";ctx.fillText("CREATED BY LEVI RAY GAMES",W/2,34);
+  drawKilldozer(W/2-204,224,0,"#9ca3af");drawKilldozer(W/2+204,224,3.14,"#737b73");
+  ctx.fillStyle="rgba(7,10,11,0.62)";ctx.fillRect(W/2-318,58,636,258);ctx.strokeStyle="rgba(203,213,203,0.24)";ctx.strokeRect(W/2-318,58,636,258);
+  ctx.fillStyle="#cbd5cf";ctx.font="bold 46px monospace";ctx.fillText("ROAD TRIP",W/2,126);
+  ctx.fillStyle="#e5e7df";ctx.font="bold 56px monospace";ctx.fillText("RAMPAGE",W/2,188);
+  ctx.fillStyle="rgba(255,255,255,0.62)";ctx.font="15px monospace";ctx.fillText("Armored dozer RPG survival campaign",W/2,222);
+  ctx.fillStyle="rgba(255,255,255,0.54)";ctx.font="12px monospace";
+  ctx.fillText("Defend the village, clear 100 levels, earn credits, unlock weapons and chassis.",W/2,266);
+  ctx.fillText("Touch: drag anywhere to drive. Tap fire buttons. Desktop: WASD, Q demo charge, SPACE missile.",W/2,288);
   var save=getSaveInfo(),hasSave=!!save;
-  ctx.fillStyle=hasSave?"#5eead4":"#74b9ff";ctx.fillRect(W/2-105,410,210,38);ctx.fillStyle="#061016";ctx.font="bold 13px sans-serif";
-  ctx.fillText(hasSave?"CONTINUE LEVEL "+save.level:"NEW GAME",W/2,434);
-  ctx.fillStyle="rgba(255,255,255,0.12)";ctx.fillRect(W/2-90,465,180,32);ctx.fillStyle="#aaa";ctx.font="12px sans-serif";
-  ctx.fillText("NEW GAME",W/2,485);
-  if(hasSave){ctx.fillStyle="rgba(255,255,255,0.35)";ctx.font="11px sans-serif";ctx.fillText("Saved score: "+(save.totalScore||0).toLocaleString()+"  |  Credits: "+(save.credits||0),W/2,388);}
-  ctx.fillStyle="rgba(255,255,255,0.35)";ctx.font="11px sans-serif";ctx.fillText("H / Tap: High Scores",W/2,535);
-  ctx.textAlign="left";if(keys.KeyH){state=S.SCORES;keys.KeyH=false;}}
+  if(hasSave){ctx.fillStyle="rgba(94,234,212,0.72)";ctx.font="bold 11px monospace";ctx.fillText("LAST SAVE: LEVEL "+save.level+"  SCORE "+fmt(save.totalScore)+"  CREDITS "+fmt(save.credits)+"  "+savedAgo(save.savedAt),W/2,338);}
+  else{ctx.fillStyle="rgba(255,255,255,0.38)";ctx.font="bold 11px monospace";ctx.fillText("NO SAVED RUN YET - START A NEW CAMPAIGN",W/2,338);}
+  drawTitleButton(0,hasSave?"LOAD OLD GAME - LEVEL "+save.level:"LOAD OLD GAME",hasSave?"continue saved run":"no saved run yet",hasSave,hasSave?"#5eead4":"#64748b");
+  drawTitleButton(1,"NEW GAME","fresh campaign from level 1",true,"#cbd5e1");
+  drawTitleButton(2,"LOCAL LEADERBOARD","tap to view saved scores",true,"#facc15");
+
+  ctx.fillStyle="rgba(7,10,11,0.68)";ctx.fillRect(28,516,404,92);ctx.strokeStyle="rgba(203,213,203,0.18)";ctx.strokeRect(28,516,404,92);
+  ctx.textAlign="left";ctx.fillStyle="#cbd5cf";ctx.font="bold 12px monospace";ctx.fillText("FIELD BRIEFING",44,536);
+  ctx.fillStyle="rgba(255,255,255,0.52)";ctx.font="11px monospace";
+  ctx.fillText("1. Survive waves and protect the village base.",44,558);
+  ctx.fillText("2. Spend kill credits in the garage after each level.",44,578);
+  ctx.fillText("3. Use SAVE & EXIT any time to play later.",44,598);
+  ctx.fillStyle="rgba(7,10,11,0.68)";ctx.fillRect(528,516,404,92);ctx.strokeStyle="rgba(250,204,21,0.22)";ctx.strokeRect(528,516,404,92);
+  ctx.fillStyle="#facc15";ctx.font="bold 12px monospace";ctx.fillText("TOP LOCAL RUNS",544,536);
+  for(var h=0;h<3;h++){var row=hs[h]||{n:"---",s:0,l:"-"};ctx.fillStyle=h===0?"#fffa00":h===1?"#d1d5db":"#b45309";ctx.font="bold 12px monospace";
+    ctx.fillText((h+1)+". "+row.n+"  "+fmt(row.s)+"  L"+(row.l||"-"),544,558+h*20);}
+  drawNotice();ctx.textAlign="left";if(keys.KeyH){state=S.SCORES;keys.KeyH=false;}}
 
 // ====== GAME OVER / SCORES ======
 function rOver(){
