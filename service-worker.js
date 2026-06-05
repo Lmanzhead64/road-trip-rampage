@@ -1,4 +1,4 @@
-const CACHE_NAME = "road-trip-rampage-v1";
+const CACHE_NAME = "road-trip-rampage-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -23,5 +23,9 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
+  if (event.request.mode === "navigate" || event.request.destination === "document") {
+    event.respondWith(fetch(event.request).catch(() => caches.match("./index.html")));
+    return;
+  }
   event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request)));
 });
