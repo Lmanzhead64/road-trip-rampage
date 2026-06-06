@@ -17,8 +17,8 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none}
 body{background:#080810;display:flex;justify-content:center;align-items:center;height:100vh;height:100dvh}
-canvas{display:block;width:min(100vw,150vh);width:min(100vw,150dvh);height:min(100vh,66.6667vw);height:min(100dvh,66.6667vw);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;filter:saturate(.82) contrast(1.18) brightness(.92)}
-body.landscape-fullscreen{justify-content:stretch;align-items:stretch;background:#000}
+canvas{display:block;width:min(100vw,150vh);width:min(100vw,150dvh);height:min(100vh,66.6667vw);height:min(100dvh,66.6667vw);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;filter:saturate(.98) contrast(1.12) brightness(1.08)}
+body.landscape-fullscreen{justify-content:stretch;align-items:stretch;background:#101319}
 body.landscape-fullscreen canvas{width:var(--app-w,100vw)!important;height:var(--app-h,100dvh)!important;max-width:none;max-height:none}
 #nameEntry{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;display:none;width:min(380px,78vw);height:46px;border:2px solid #facc15;border-radius:7px;background:rgba(4,9,14,.96);color:#fff;box-shadow:0 0 28px rgba(250,204,21,.34);font:bold 20px Arial,sans-serif;text-align:center;outline:none}
 #nameEntry::placeholder{color:rgba(255,255,255,.38)}
@@ -95,7 +95,7 @@ function initAudio(){
   try{
     var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
     audioCtx=new AC();audioMaster=audioCtx.createGain();audioComp=audioCtx.createDynamicsCompressor();
-    audioMaster.gain.value=0.36;audioMaster.connect(audioComp);audioComp.connect(audioCtx.destination);
+    audioMaster.gain.value=0.58;audioMaster.connect(audioComp);audioComp.connect(audioCtx.destination);
   }catch(e){audioCtx=null;}
   return audioCtx;
 }
@@ -218,8 +218,9 @@ function saveGame(){try{localStorage.setItem("rtr5",JSON.stringify({level:level,
   currentVehicle:currentVehicle,ownedVehicles:ownedVehicles,vehicleRanks:vehicleRanks,
   currentSkin:currentSkin,ownedSkins:ownedSkins,village:village,specialMode:specialMode,savedAt:Date.now(),
   p:{maxHp:P.maxHp,speed:P.speed,fireRate:P.fireRate,dmg:P.dmg,armor:P.armor,bombs:P.bombs,weapon:P.weapon,regen:P.regen,bulletRange:P.bulletRange,bombPower:P.bombPower,
-    missiles:P.missiles,missileCap:P.missileCap,missilePower:P.missilePower,missileCD:P.missileCD}}));saveNote=120;}catch(e){}}
-function loadGame(){try{var d=JSON.parse(localStorage.getItem("rtr5"));if(d){level=d.level||1;credits=d.credits||0;totalScore=d.totalScore||0;Object.assign(P,d.p||{});ownedWeapons=Object.assign({pistol:true},ownedWeapons,d.ownedWeapons||{});weaponLevels=Object.assign({pistol:1,shotgun:1,smg:1,rifle:1,launcher:1},weaponLevels,d.weaponLevels||{});upgradeLevels=Object.assign(upgradeLevelDefaults(),upgradeLevels,d.upgradeLevels||{});ownedVehicles=Object.assign(vehicleOwnedDefaults(),ownedVehicles,d.ownedVehicles||{});vehicleRanks=Object.assign(vehicleRankDefaults(),vehicleRanks,d.vehicleRanks||{});ownedSkins=Object.assign(skinOwnedDefaults(),ownedSkins,d.ownedSkins||{});currentSkin=d.currentSkin||currentSkin;village=Object.assign(villageDefaults(),village,d.village||{});currentVehicle=d.currentVehicle||currentVehicle;specialMode=d.specialMode||specialMode;if(!ownedWeapons[P.weapon])P.weapon="pistol";if(!ownedVehicles[currentVehicle])currentVehicle="dozer1";if(!ownedSkins[currentSkin])currentSkin="factory";if(effectiveMissileCap()<=0&&specialMode==="missile")specialMode="demo";return true;}}catch(e){}return false;}
+    missiles:P.missiles,missileCap:P.missileCap,missilePower:P.missilePower,missileCD:P.missileCD,
+    boostDmg:P.boostDmg,boostArmor:P.boostArmor,boostRepair:P.boostRepair,boostLevels:P.boostLevels}}));saveNote=120;}catch(e){}}
+function loadGame(){try{var d=JSON.parse(localStorage.getItem("rtr5"));if(d){level=d.level||1;credits=d.credits||0;totalScore=d.totalScore||0;Object.assign(P,d.p||{});P.boostDmg=P.boostDmg||0;P.boostArmor=P.boostArmor||0;P.boostRepair=P.boostRepair||0;P.boostLevels=P.boostLevels||0;ownedWeapons=Object.assign({pistol:true},ownedWeapons,d.ownedWeapons||{});weaponLevels=Object.assign({pistol:1,shotgun:1,smg:1,rifle:1,launcher:1},weaponLevels,d.weaponLevels||{});upgradeLevels=Object.assign(upgradeLevelDefaults(),upgradeLevels,d.upgradeLevels||{});ownedVehicles=Object.assign(vehicleOwnedDefaults(),ownedVehicles,d.ownedVehicles||{});vehicleRanks=Object.assign(vehicleRankDefaults(),vehicleRanks,d.vehicleRanks||{});ownedSkins=Object.assign(skinOwnedDefaults(),ownedSkins,d.ownedSkins||{});currentSkin=d.currentSkin||currentSkin;village=Object.assign(villageDefaults(),village,d.village||{});currentVehicle=d.currentVehicle||currentVehicle;specialMode=d.specialMode||specialMode;if(!ownedWeapons[P.weapon])P.weapon="pistol";if(!ownedVehicles[currentVehicle])currentVehicle="dozer1";if(!ownedSkins[currentSkin])currentSkin="factory";if(effectiveMissileCap()<=0&&specialMode==="missile")specialMode="demo";return true;}}catch(e){}return false;}
 function clearSavedGame(){try{localStorage.removeItem("rtr5");}catch(e){}}
 function getSaveInfo(){try{var d=JSON.parse(localStorage.getItem("rtr5"));return d&&d.level?d:null;}catch(e){}return null;}
 function fmt(n){return (n||0).toLocaleString();}
@@ -234,21 +235,26 @@ function saveHS(){try{localStorage.setItem("rtr5_hs",JSON.stringify(hs));}catch(
 // ====== PLAYER ======
 var P={x:120,y:H/2,hp:100,maxHp:100,speed:4,fireRate:10,fireCD:0,dmg:10,
   armor:0,bombs:2,weapon:"pistol",regen:4,invT:0,angle:0,bulletRange:28,bombPower:1,
-  missiles:0,missileCap:0,missilePower:1,missileCD:0};
+  missiles:0,missileCap:0,missilePower:1,missileCD:0,boostDmg:0,boostArmor:0,boostRepair:0,boostLevels:0};
 var level=1,credits=0,levelKills=0,totalScore=0;
 var bullets=[],baseBullets=[],missiles=[],charges=[],enemies=[],particles=[],drops=[],dmgNums=[],shockwaves=[],explosions=[],decals=[];
 var cam={shake:0},flash=0,gt=0,bossSpawned=false,bossKilled=false,bossIntroT=0,edgeWarnT=0;
-var enemiesThisLevel=0,enemiesSpawned=0,spawnTimer=0;
+var enemiesThisLevel=0,enemiesSpawned=0,spawnTimer=0,levelTimer=0,mapIntroT=0;
 var combo=0,comboT=0,saveNote=0,shopMsg={text:"",time:0,color:"#fff"},noticeMsg={text:"",time:0,color:"#fff"};
 var runStats={maxCombo:0,missilesFired:0,missileKills:0,baseDamage:0,tankKills:0,bossKills:0},killSource="",lastOpReport="",specialMode="demo",inventoryOpen=false;
 
 // ====== RPG CAMPAIGN LAYERS ======
 var PHASES=[
-  {name:"Homestead Perimeter",range:"1-20",sky:"#26313a",earth:"#5b5344",road:"#171b1f",sign:"HOMESTEAD PERIMETER"},
-  {name:"Quarry Pass",range:"21-40",sky:"#2f3436",earth:"#655c4d",road:"#15191d",sign:"QUARRY PASS"},
-  {name:"Industrial Yard",range:"41-60",sky:"#2b3034",earth:"#514f45",road:"#12171b",sign:"INDUSTRIAL YARD"},
-  {name:"County Line Siege",range:"61-80",sky:"#242a32",earth:"#4f4638",road:"#101418",sign:"COUNTY LINE"},
-  {name:"Mountain Redoubt",range:"81-100",sky:"#1f2832",earth:"#3f463c",road:"#0d1115",sign:"MOUNTAIN REDOUBT"}
+  {name:"Homestead Perimeter",range:"1-10",sky:"#30404a",earth:"#625b48",road:"#1b2023",sign:"HOMESTEAD",tint:"#9ca3af",boss:"County Crusher",power:"ram shockwave"},
+  {name:"Quarry Pass",range:"11-20",sky:"#3a3f3f",earth:"#72634f",road:"#181d20",sign:"QUARRY PASS",tint:"#c2a66a",boss:"Granite Hauler",power:"rockfall barrage"},
+  {name:"Industrial Yard",range:"21-30",sky:"#34383c",earth:"#5f5747",road:"#151a1e",sign:"INDUSTRIAL",tint:"#fb923c",boss:"Smelter Chief",power:"flame mortar"},
+  {name:"County Line Siege",range:"31-40",sky:"#2e3742",earth:"#5b4d3d",road:"#13181d",sign:"COUNTY LINE",tint:"#60a5fa",boss:"Roadblock Captain",power:"sniper volley"},
+  {name:"Desert Convoy",range:"41-50",sky:"#463d32",earth:"#7a6142",road:"#171616",sign:"DESERT CONVOY",tint:"#facc15",boss:"Sandstorm Rig",power:"dust blinders"},
+  {name:"Harbor Terminal",range:"51-60",sky:"#283b45",earth:"#465a58",road:"#10171b",sign:"HARBOR",tint:"#38bdf8",boss:"Dockyard Titan",power:"mine spread"},
+  {name:"Snowline Outpost",range:"61-70",sky:"#364957",earth:"#64748b",road:"#17202a",sign:"SNOWLINE",tint:"#bfdbfe",boss:"Frost Crawler",power:"ice armor"},
+  {name:"Red Canyon",range:"71-80",sky:"#3f332c",earth:"#704638",road:"#171312",sign:"RED CANYON",tint:"#ef4444",boss:"Canyon Warlord",power:"rocket spiral"},
+  {name:"Night Ops District",range:"81-90",sky:"#202938",earth:"#333b42",road:"#0d1117",sign:"NIGHT OPS",tint:"#5eead4",boss:"Blackout Commander",power:"stealth volley"},
+  {name:"Mountain Redoubt",range:"91-100",sky:"#253241",earth:"#3f4d42",road:"#0d1115",sign:"REDOUBT",tint:"#f43f5e",boss:"Fortress Prime",power:"siege cannon"}
 ];
 var VEHICLES={
   dozer1:{name:"Armored Dozer I",desc:"starter armored bulldozer",unlockLevel:1,cost:0,upgradeBase:18,maxRank:5,hp:0,armor:0,dmg:0,speed:0,missile:0,scale:1},
@@ -264,12 +270,14 @@ var TANK_SKINS={
   hazard:{name:"Hazard Plow",desc:"industrial warning stripes",unlockLevel:14,cost:72,body:"#252525",cab:"#525252",blade:"#d97706",stripe:"#facc15",accent:"#fb923c",glow:"rgba(251,146,60,0.24)",pattern:"hazard"},
   night:{name:"Night Ops",desc:"matte black covert plating",unlockLevel:22,cost:120,body:"#111827",cab:"#374151",blade:"#27272a",stripe:"#5eead4",accent:"#5eead4",glow:"rgba(94,234,212,0.25)",pattern:"line"},
   arctic:{name:"Arctic Siege",desc:"winter armor wash",unlockLevel:36,cost:190,body:"#cbd5e1",cab:"#94a3b8",blade:"#64748b",stripe:"#eff6ff",accent:"#38bdf8",glow:"rgba(56,189,248,0.24)",pattern:"camo"},
+  urban:{name:"Urban Blockade",desc:"city armor and roadblock markings",unlockLevel:46,cost:260,body:"#2f3437",cab:"#666d70",blade:"#4b5563",stripe:"#e5e7eb",accent:"#22c55e",glow:"rgba(34,197,94,0.24)",pattern:"sheriff"},
   obsidian:{name:"Obsidian Commander",desc:"elite black command rig",unlockLevel:55,cost:330,body:"#080808",cab:"#27272a",blade:"#3f3f46",stripe:"#ef4444",accent:"#f43f5e",glow:"rgba(244,63,94,0.28)",pattern:"line"},
+  volt:{name:"Volt Prototype",desc:"late-game neon test armor",unlockLevel:65,cost:440,body:"#16202a",cab:"#263241",blade:"#111827",stripe:"#a3e635",accent:"#a3e635",glow:"rgba(163,230,53,0.32)",pattern:"line"},
   champion:{name:"Champion Brass",desc:"late campaign prestige armor",unlockLevel:75,cost:520,body:"#6f4e23",cab:"#b08d57",blade:"#d4af37",stripe:"#fff7ad",accent:"#facc15",glow:"rgba(250,204,21,0.32)",pattern:"bolts"}
 };
 function vehicleOwnedDefaults(){return{dozer1:true,dozer2:false,tank3:false,crawler4:false,fortress5:false};}
 function vehicleRankDefaults(){return{dozer1:1,dozer2:1,tank3:1,crawler4:1,fortress5:1};}
-function skinOwnedDefaults(){return{factory:true,desert:false,county:false,hazard:false,night:false,arctic:false,obsidian:false,champion:false};}
+function skinOwnedDefaults(){return{factory:true,desert:false,county:false,hazard:false,night:false,arctic:false,urban:false,obsidian:false,volt:false,champion:false};}
 function upgradeLevelDefaults(){return{};}
 function villageDefaults(){return{wall:1,turret:0,depot:0,workshop:0,medic:0};}
 var ownedVehicles=vehicleOwnedDefaults(),vehicleRanks=vehicleRankDefaults(),currentVehicle="dozer1";
@@ -286,16 +294,22 @@ var WEAPONS={
 };
 var ownedWeapons={pistol:true,shotgun:false,smg:false,rifle:false,launcher:false};
 var weaponLevels={pistol:1,shotgun:1,smg:1,rifle:1,launcher:1};
-function phaseIndex(){return Math.min(PHASES.length-1,Math.floor((Math.max(1,level)-1)/20));}
+function phaseIndex(){return Math.min(PHASES.length-1,Math.floor((Math.max(1,level)-1)/10));}
 function phase(){return PHASES[phaseIndex()];}
+function mapTier(){return phaseIndex()+1;}
+function levelInMap(){return ((Math.max(1,level)-1)%10)+1;}
+function isMajorBossLevel(){return level%10===0;}
+function bossNameForLevel(){return isMajorBossLevel()?phase().boss:"Field Commander";}
+function bossFeatureText(){return isMajorBossLevel()?phase().power:"mobile cannon pressure";}
+function fmtClock(frames){var s=Math.floor(frames/60),m=Math.floor(s/60);s%=60;return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;}
 function vehicleRank(id){return vehicleRanks[id]||1;}
 function vehicleDef(){return VEHICLES[currentVehicle]||VEHICLES.dozer1;}
 function skinDef(id){return TANK_SKINS[id||currentSkin]||TANK_SKINS.factory;}
 function upgradeLevel(id){return upgradeLevels[id]||0;}
 function vehicleRankBonus(mult){return Math.max(0,vehicleRank(currentVehicle)-1)*mult;}
 function effectiveMaxHp(){var v=vehicleDef();return Math.round(P.maxHp+v.hp+vehicleRankBonus(22));}
-function effectiveArmor(){var v=vehicleDef();return Math.round(P.armor+v.armor+vehicleRankBonus(4));}
-function effectiveDmg(){var v=vehicleDef();return Math.round(P.dmg+v.dmg+vehicleRankBonus(3));}
+function effectiveArmor(){var v=vehicleDef();return Math.round(P.armor+(P.boostArmor||0)+v.armor+vehicleRankBonus(4));}
+function effectiveDmg(){var v=vehicleDef();return Math.round(P.dmg+(P.boostDmg||0)+v.dmg+vehicleRankBonus(3));}
 function effectiveSpeed(){var v=vehicleDef();return Math.max(2.8,Math.min(8.6,P.speed+v.speed+vehicleRankBonus(0.04)));}
 function effectiveMissileCap(){var v=vehicleDef();return Math.max(0,P.missileCap+v.missile);}
 function villageMaxHp(){return 130+(village.wall||0)*42+(village.workshop||0)*12;}
@@ -342,6 +356,12 @@ var SHOP=[
   {id:"rifle",name:"Rail Rifle",desc:"high damage precision",cost:42,weapon:"rifle"},
   {id:"launcher",name:"Mortar Pod",desc:"explosive shells",cost:60,weapon:"launcher"}
 ];
+var BOOST_SHOP=[
+  {id:"boost_repair",boost:true,name:"Repair Contract",desc:"+8 field repair per kill for 3 levels",cost:6,unlockLevel:2,effect:"+8 REPAIR/KILL - 3 LEVELS",active:function(){return (P.boostRepair||0)>0;},apply:function(){P.boostRepair=8;P.boostLevels=Math.max(P.boostLevels||0,3);return "REPAIR CONTRACT ACTIVE";}},
+  {id:"boost_armor",boost:true,name:"Armor Lease",desc:"+12 temporary armor for 3 levels",cost:7,unlockLevel:3,effect:"+12 ARMOR - 3 LEVELS",active:function(){return (P.boostArmor||0)>0;},apply:function(){P.boostArmor=12;P.boostLevels=Math.max(P.boostLevels||0,3);return "ARMOR LEASE ACTIVE";}},
+  {id:"boost_damage",boost:true,name:"Ammo Sponsorship",desc:"+8 cannon damage for 3 levels",cost:8,unlockLevel:4,effect:"+8 DAMAGE - 3 LEVELS",active:function(){return (P.boostDmg||0)>0;},apply:function(){P.boostDmg=8;P.boostLevels=Math.max(P.boostLevels||0,3);return "AMMO SPONSORSHIP ACTIVE";}},
+  {id:"boost_supply",boost:true,name:"Supply Crate",desc:"extra demo and missile ammo now",cost:4,unlockLevel:1,effect:"+3 DEMO / +1 MISSILE",active:function(){return false;},apply:function(){P.bombs+=3;if(effectiveMissileCap()>0)P.missiles=Math.min(effectiveMissileCap(),P.missiles+1);return "SUPPLY CRATE CLAIMED";}}
+];
 var VEHICLE_SHOP=[
   {id:"veh_dozer1",vehicle:"dozer1"},
   {id:"veh_dozer2",vehicle:"dozer2"},
@@ -356,7 +376,9 @@ var SKIN_SHOP=[
   {id:"skin_hazard",skin:"hazard"},
   {id:"skin_night",skin:"night"},
   {id:"skin_arctic",skin:"arctic"},
+  {id:"skin_urban",skin:"urban"},
   {id:"skin_obsidian",skin:"obsidian"},
+  {id:"skin_volt",skin:"volt"},
   {id:"skin_champion",skin:"champion"}
 ];
 var VILLAGE_SHOP=[
@@ -366,9 +388,9 @@ var VILLAGE_SHOP=[
   {id:"workshop",name:"Machine Shop",desc:"stronger repairs/turrets",villageKey:"workshop",cost:22,unlockLevel:12,maxLv:8,costFunc:function(){return 22+(village.workshop||0)*14;},apply:function(){village.workshop++;base.max=villageMaxHp();base.hp=base.max;return "MACHINE SHOP LV."+village.workshop;}},
   {id:"medic",name:"Aid Station",desc:"extra repair on kills",villageKey:"medic",cost:16,unlockLevel:15,maxLv:8,costFunc:function(){return 16+(village.medic||0)*10;},apply:function(){village.medic++;return "AID STATION LV."+village.medic;}}
 ];
-var shopScroll=0,shopTab=0,shopTabs=["COMBAT","CHASSIS","STYLE","VILLAGE"];
-function getShopItems(){return shopTab===1?VEHICLE_SHOP:shopTab===2?SKIN_SHOP:shopTab===3?VILLAGE_SHOP:SHOP;}
-function allShopItems(){return SHOP.concat(VEHICLE_SHOP,SKIN_SHOP,VILLAGE_SHOP);}
+var shopScroll=0,shopTab=0,shopTabs=["COMBAT","BOOST","CHASSIS","STYLE","VILLAGE"];
+function getShopItems(){return shopTab===1?BOOST_SHOP:shopTab===2?VEHICLE_SHOP:shopTab===3?SKIN_SHOP:shopTab===4?VILLAGE_SHOP:SHOP;}
+function allShopItems(){return SHOP.concat(BOOST_SHOP,VEHICLE_SHOP,SKIN_SHOP,VILLAGE_SHOP);}
 
 // ====== HELPERS ======
 function dist(a,b){return Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));}
@@ -406,7 +428,7 @@ function itemUnlockLevel(it){return it.weapon?(WEAPONS[it.weapon].unlockLevel||1
 function itemLocked(it){return level<itemUnlockLevel(it);}
 function itemBlocked(it){return !!(it.requires&&!it.requires());}
 function itemOwned(it){return !!(it.once&&it.owned&&it.owned());}
-function itemMaxed(it){if(it.skin)return false;if(it.vehicle)return ownedVehicles[it.vehicle]&&vehicleRank(it.vehicle)>=(VEHICLES[it.vehicle].maxRank||5);if(it.villageKey)return (village[it.villageKey]||0)>=(it.maxLv||10);if(it.maxLv)return upgradeLevel(it.id)>=(it.maxLv||99);return !!(it.maxed&&it.maxed());}
+function itemMaxed(it){if(it.boost)return false;if(it.skin)return false;if(it.vehicle)return ownedVehicles[it.vehicle]&&vehicleRank(it.vehicle)>=(VEHICLES[it.vehicle].maxRank||5);if(it.villageKey)return (village[it.villageKey]||0)>=(it.maxLv||10);if(it.maxLv)return upgradeLevel(it.id)>=(it.maxLv||99);return !!(it.maxed&&it.maxed());}
 function itemName(it){return it.vehicle?VEHICLES[it.vehicle].name:it.skin?TANK_SKINS[it.skin].name:it.name;}
 function coreUpgradeCost(it){var lv=upgradeLevel(it.id),phaseTax=1+phaseIndex()*0.12;return Math.round((it.cost||1)*(1+lv*0.58)*phaseTax);}
 function nextUnlockText(){
@@ -417,6 +439,7 @@ function nextUnlockText(){
   return next.length?"NEXT UNLOCK L"+next[0].l+": "+next[0].n:"ALL CORE SYSTEMS UNLOCKED";
 }
 function itemCost(it){
+  if(it.boost)return it.costFunc?it.costFunc():it.cost;
   if(it.skin){var sk=TANK_SKINS[it.skin];return ownedSkins[it.skin]?0:sk.cost;}
   if(it.vehicle){var v=VEHICLES[it.vehicle];if(!ownedVehicles[it.vehicle])return v.cost;if(currentVehicle===it.vehicle&&!itemMaxed(it))return Math.round(v.upgradeBase*(vehicleRank(it.vehicle)+0.85));return 0;}
   if(!it.weapon){if(itemOwned(it)||itemMaxed(it))return 0;return it.costFunc?it.costFunc():it.maxLv?coreUpgradeCost(it):it.cost;}
@@ -430,6 +453,7 @@ function itemAction(it){
   if(itemBlocked(it))return "REQUIRES";
   if(itemOwned(it))return "OWNED";
   if(itemMaxed(it))return "MAXED";
+  if(it.boost)return it.active&&it.active()?"RENEW":"ACTIVATE";
   if(it.skin){if(!ownedSkins[it.skin])return "UNLOCK";return currentSkin===it.skin?"ACTIVE":"EQUIP";}
   if(it.vehicle){if(!ownedVehicles[it.vehicle])return "BUY";return currentVehicle===it.vehicle?"RANK UP":"EQUIP";}
   if(it.villageKey)return "UPGRADE";
@@ -440,6 +464,7 @@ function itemAction(it){
   return it.maxLv?"STACK":"UPGRADE";
 }
 function itemEffectText(it){
+  if(it.boost)return it.effect||it.desc.toUpperCase();
   if(it.skin)return "VISUAL STYLE - STATS STAY STACKED";
   if(it.vehicle){var v=VEHICLES[it.vehicle];return "+HULL "+v.hp+"  +ARM "+v.armor+"  +DMG "+v.dmg;}
   if(it.weapon){var w=WEAPONS[it.weapon];return "WEAPON LV "+weaponLevel(it.weapon)+"/"+(w.maxLv||5)+" - LEVELS STAY";}
@@ -449,6 +474,7 @@ function itemEffectText(it){
 function itemProgressText(it){
   if(itemLocked(it))return "Unlocks at level "+itemUnlockLevel(it);
   if(itemBlocked(it))return "Requires Missile Pod";
+  if(it.boost)return it.active&&it.active()?"ACTIVE "+(P.boostLevels||0)+" LEVELS":"TEMP BOOST - BOUGHT WITH CREDITS";
   if(it.skin)return ownedSkins[it.skin]?(currentSkin===it.skin?"ACTIVE PAINT":"OWNED PAINT"):"COSMETIC UNLOCK";
   if(it.vehicle)return (ownedVehicles[it.vehicle]?(currentVehicle===it.vehicle?"DEPLOYED":"OWNED"):"NEW CHASSIS")+" R"+vehicleRank(it.vehicle)+"/"+(VEHICLES[it.vehicle].maxRank||5);
   if(it.villageKey)return "Village Lv."+((village[it.villageKey]||0))+"/"+(it.maxLv||10);
@@ -471,6 +497,12 @@ function buyShopItem(i){
   var it=getShopItems()[i],cost=itemCost(it);
   if(itemLocked(it)){shopNotice(itemName(it)+" unlocks at level "+itemUnlockLevel(it),"#ff7675");return;}
   if(itemBlocked(it)){shopNotice(itemName(it)+" needs an earlier system first","#ff7675");return;}
+  if(it.boost){
+    if(credits<cost){shopNotice("Need "+(cost-credits)+" more credits for "+it.name,"#ff7675");return;}
+    credits-=cost;
+    var bmsg=it.apply();
+    shopNotice(bmsg,"#facc15");notify(bmsg,"#facc15");saveGame();return;
+  }
   if(it.skin){
     var sid=it.skin,sk=TANK_SKINS[sid];
     if(!ownedSkins[sid]){
@@ -520,7 +552,8 @@ function gameOver(won){
 
 // ====== SPAWNING - enemies enter from RIGHT EDGE, visible on screen ======
 function spawnEnemy(type){
-  var wave=Math.min(level,MAX_LEVEL),elite=1+Math.floor(wave/12)*0.08;
+  var wave=Math.min(level,MAX_LEVEL),tier=phaseIndex(),step=levelInMap()-1;
+  var elite=1+tier*0.11+step*0.022+Math.floor(wave/20)*0.035;
   var configs={
     grunt:{hp:(50+wave*13)*elite,speed:1.0+wave*0.018,size:28,color:"#7d8461",dmg:8+wave*0.95,score:60},
     fast:{hp:(34+wave*9)*elite,speed:2.0+wave*0.022,size:24,color:"#84623f",dmg:10+wave*1.05,score:75},
@@ -534,18 +567,31 @@ function spawnEnemy(type){
     type:type,hitF:0,baseHit:0,angle:0,fireCD:80+Math.floor(rand(0,50)),boss:false});}
 
 function spawnBoss(){
-  bossSpawned=true;bossIntroT=170;flash=Math.max(flash,8);cam.shake=Math.max(cam.shake,14);sfx("boss");notify("BOSS TIME - ENEMY COMMANDER ENTERING","#ff4757");
-  var wave=Math.min(level,MAX_LEVEL),hp=520+wave*240+Math.pow(wave,1.18)*42;
-  enemies.push({x:W-60,y:H/2,hp:hp,maxHp:hp,speed:0.35+level*0.015,size:Math.min(118,55+level*1.15),
-    color:"#6f2722",dmg:22+level*3,score:500+level*100,
-    type:"boss",hitF:0,baseHit:0,angle:0,fireCD:35,boss:true});}
+  var major=isMajorBossLevel(),ph=phase(),name=bossNameForLevel(),feature=bossFeatureText();
+  bossSpawned=true;bossIntroT=major?230:170;flash=Math.max(flash,major?12:8);cam.shake=Math.max(cam.shake,major?20:14);sfx("boss");
+  notify((major?"TIER BOSS: ":"BOSS TIME: ")+name+" - "+feature.toUpperCase(),major?"#facc15":"#ff4757");
+  var wave=Math.min(level,MAX_LEVEL),hp=(520+wave*240+Math.pow(wave,1.18)*42)*(major?1.85:1);
+  enemies.push({x:W-60,y:H/2,hp:hp,maxHp:hp,speed:0.35+level*0.015,size:Math.min(132,55+level*1.15+(major?14:0)),
+    color:major?ph.tint:"#6f2722",dmg:(22+level*3)*(major?1.28:1),score:500+level*100+(major?1200:0),
+    type:"boss",hitF:0,baseHit:0,angle:0,fireCD:35,boss:true,major:major,bossName:name,feature:feature,powerCD:major?150:0});}
+
+function triggerBossPower(e){
+  if(!e||!e.major)return;
+  notify("BOSS POWER: "+e.feature.toUpperCase(),"#facc15");sfx("line");
+  cam.shake=Math.max(cam.shake,12);flash=Math.max(flash,2);
+  shockwaves.push({x:e.x,y:e.y,r:12,max:160,life:24,ml:24,color:phase().tint});
+  for(var k=0;k<8;k++){
+    var a=k*Math.PI/4+gt*0.035,sp=4.4+phaseIndex()*0.18;
+    particles.push({x:e.x,y:e.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:76,ml:76,color:phase().tint,size:6,eb:true,dmg:e.dmg*.72});
+  }
+}
 
 function startLevel(){
   bullets=[];baseBullets=[];missiles=[];charges=[];drops=[];particles=[];dmgNums=[];shockwaves=[];explosions=[];decals=[];
   bossSpawned=false;bossKilled=false;bossIntroT=0;edgeWarnT=0;inventoryOpen=false;levelKills=0;resetRunStats();
-  enemiesThisLevel=Math.min(72,7+Math.floor(level*2.15));enemiesSpawned=0;spawnTimer=0;
-  base.max=villageMaxHp();base.hp=base.max;base.hitF=0;
-  P.x=120;P.y=H/2;P.hp=effectiveMaxHp();P.fireCD=0;P.invT=0;P.missileCD=0;
+  enemiesThisLevel=Math.min(86,7+Math.floor(level*1.95)+phaseIndex()*2);enemiesSpawned=0;spawnTimer=0;levelTimer=0;mapIntroT=levelInMap()===1?180:0;
+  base.x=Math.max(88,Math.min(126,W*.085));base.y=H/2;base.max=villageMaxHp();base.hp=base.max;base.hitF=0;
+  P.x=Math.max(165,Math.min(enemyLineX()-60,W*.14));P.y=H/2;P.hp=effectiveMaxHp();P.fireCD=0;P.invT=0;P.missileCD=0;
   if(effectiveMissileCap()>0)P.missiles=effectiveMissileCap();}
 
 // ====== AUTO-AIM (limited range!) ======
@@ -635,7 +681,7 @@ function killEnemy(idx){
   var scoreGain=Math.round(e.score*mult);credits+=e.boss?3:1;totalScore+=scoreGain;
   if(combo>1)floatT(e.x,e.y-e.size-18,"x"+combo+"  +"+scoreGain,"#facc15",combo>4);
   if(combo>1&&combo%5===0){credits++;notify(combo+" KILL STREAK  +1 CREDIT","#facc15");sfx("combo");}
-  P.hp=Math.min(effectiveMaxHp(),P.hp+P.regen+(village.medic||0)*2);
+  P.hp=Math.min(effectiveMaxHp(),P.hp+P.regen+(P.boostRepair||0)+(village.medic||0)*2);
   explode(e.x,e.y,e.boss?2.4:1.05,e.color);
   burst(e.x,e.y,18,e.color,5,28);burst(e.x,e.y,8,"#fff",3,15);
   cam.shake=Math.max(cam.shake,e.boss?16:4);
@@ -664,8 +710,10 @@ function collectDrop(d){
 function levelComplete(){combo=0;comboT=0;
   if(level>=MAX_LEVEL){totalScore+=25000;gameOver(true);return;}
   var oldPhase=phaseIndex(),contract=awardContracts(),supplyBonus=1+Math.floor((village.depot||0)*0.85);
-  var cacheBonus=level%5===0?5+phaseIndex()*3:0;
+  var cacheBonus=level%5===0?5+phaseIndex()*3:0,tierBonus=level%10===0?12+phaseIndex()*4:0;
+  if(P.boostLevels>0){P.boostLevels--;if(P.boostLevels<=0){P.boostDmg=0;P.boostArmor=0;P.boostRepair=0;}}
   credits+=supplyBonus+cacheBonus;if(cacheBonus>0){totalScore+=cacheBonus*150;lastOpReport+="  MILESTONE CACHE +"+cacheBonus;}
+  if(tierBonus>0){credits+=tierBonus;totalScore+=tierBonus*220;lastOpReport+="  TIER BOSS CACHE +"+tierBonus;}
   level++;saveGame();state=S.SHOP;sfx("level");
   shopNotice((phaseIndex()>oldPhase?"New phase reached: "+phase().name+". ":"Level cleared. ")+"Supply +"+supplyBonus+" credits. "+lastOpReport,"#cbd5e1");}
 
@@ -675,6 +723,7 @@ function startGame(fresh){
 	    level=1;credits=0;totalScore=0;
 	    P.maxHp=100;P.speed=4;P.fireRate=10;P.dmg=10;P.armor=0;
 	    P.bombs=2;P.weapon="pistol";P.regen=4;P.bulletRange=28;P.bombPower=1;P.missiles=0;P.missileCap=0;P.missilePower=1;P.missileCD=0;
+	    P.boostDmg=0;P.boostArmor=0;P.boostRepair=0;P.boostLevels=0;
 	    specialMode="demo";inventoryOpen=false;ownedWeapons={pistol:true,shotgun:false,smg:false,rifle:false,launcher:false};
     weaponLevels={pistol:1,shotgun:1,smg:1,rifle:1,launcher:1};
     upgradeLevels=upgradeLevelDefaults();
@@ -727,9 +776,11 @@ function handleClick(){
 function update(){
   if(state!==S.PLAY)return;
   gt++;
+  levelTimer++;
 	  if(comboT>0)comboT--;else combo=0;
 	  if(noticeMsg.time>0)noticeMsg.time--;
 	  if(saveNote>0)saveNote--;
+	  if(mapIntroT>0)mapIntroT--;
 	  if(bossIntroT>0){bossIntroT--;if(bossIntroT%52===0)sfx("line");}
 	  if(edgeWarnT>0)edgeWarnT--;
 	  if(keys.KeyN){audioOn=!audioOn;if(audioOn){initAudio();sfx("upgrade");}notify(audioOn?"AUDIO ON":"AUDIO OFF","#cbd5e1");keys.KeyN=false;}
@@ -755,7 +806,7 @@ function update(){
   // Spawn enemies over time (not all at once)
   if(enemiesSpawned<enemiesThisLevel){
     spawnTimer++;
-    if(spawnTimer>45){spawnTimer=0;enemiesSpawned++;
+    if(spawnTimer>Math.max(28,45-phaseIndex()*2-Math.floor(level/18))){spawnTimer=0;enemiesSpawned++;
       var r=Math.random();
       if(r<0.35)spawnEnemy("grunt");else if(r<0.55)spawnEnemy("fast");
       else if(r<0.75)spawnEnemy("tank");else spawnEnemy("sniper");}}
@@ -845,6 +896,7 @@ function update(){
       if(e.fireCD<=0){e.fireCD=e.boss?45:110;
         particles.push({x:e.x,y:e.y,vx:Math.cos(e.angle)*4,vy:Math.sin(e.angle)*4,
           life:65,ml:65,color:e.boss?"#ff4757":"#55efc4",size:6,eb:true,dmg:e.dmg});}}
+    if(e.boss&&e.major){e.powerCD--;if(e.powerCD<=0){triggerBossPower(e);e.powerCD=Math.max(105,190-phaseIndex()*8);}}
     if(P.invT<=0&&pd<(18+e.size)*0.7){
       var raw=Math.max(1,e.dmg-effectiveArmor());P.hp-=raw;P.invT=40;cam.shake=7;flash=4;
       sfx("hurt");burst(P.x,P.y,6,"#ff4757",3.5,12);P.x-=15;
@@ -880,10 +932,11 @@ function drawRoadBg(){
   var bg=SPRITES.bg;
   if(bg&&bg.complete&&bg.naturalWidth){
     ctx.drawImage(bg,0,0,W,H);
-    ctx.fillStyle="rgba(5,8,10,0.18)";ctx.fillRect(0,0,W,H);
+    ctx.fillStyle="rgba(5,8,10,0.04)";ctx.fillRect(0,0,W,H);
+    ctx.save();ctx.globalCompositeOperation="screen";ctx.fillStyle=ph.tint;ctx.globalAlpha=0.08;ctx.fillRect(0,0,W,H);ctx.restore();
     ctx.fillStyle="rgba(255,255,255,0.018)";
     for(var dust=-80+(gt*.42%120);dust<W+140;dust+=120){ctx.beginPath();ctx.ellipse(dust,350+hRand(dust)*145,58+hRand(dust+3)*42,7+hRand(dust+9)*8,hRand(dust+21)*0.4,0,6.28);ctx.fill();}
-    ctx.fillStyle="rgba(0,0,0,0.2)";ctx.fillRect(0,H-34,W,34);
+    ctx.fillStyle="rgba(0,0,0,0.08)";ctx.fillRect(0,H-34,W,34);
     return;
   }
   var grd=ctx.createLinearGradient(0,0,0,H);grd.addColorStop(0,ph.sky);grd.addColorStop(0.42,"#78674f");grd.addColorStop(0.7,ph.earth);grd.addColorStop(1,"#090b0e");
@@ -921,7 +974,7 @@ function drawRoadBg(){
   ctx.fillStyle="rgba(245,158,11,0.36)";ctx.font="bold 11px sans-serif";ctx.fillText(ph.sign,28,224);
   ctx.fillStyle="rgba(0,0,0,0.18)";
   for(var oil=0;oil<8;oil++){ctx.beginPath();ctx.ellipse(170+oil*97+(gt*.45%80),360+hRand(oil)*130,22+hRand(oil+4)*36,5+hRand(oil+8)*9,hRand(oil+2)*.5,0,6.28);ctx.fill();}
-	  ctx.fillStyle="rgba(0,0,0,0.22)";ctx.fillRect(0,H-34,W,34);
+	  ctx.fillStyle="rgba(0,0,0,0.1)";ctx.fillRect(0,H-34,W,34);
 	}
 function drawEnemyLine(){
   var x=enemyLineX(),pulse=0.45+Math.sin(gt*0.09)*0.25;
@@ -941,6 +994,22 @@ function drawEnemyLine(){
   ctx.fillText("NO ENTRY",x+72,244);
   ctx.strokeStyle="rgba(255,118,117,0.26)";ctx.lineWidth=2;
   for(var y=-40+(gt*1.8%54);y<H+60;y+=54){ctx.beginPath();ctx.moveTo(x+14,y);ctx.lineTo(x+72,y+24);ctx.lineTo(x+14,y+48);ctx.stroke();}
+  ctx.restore();ctx.textAlign="left";
+}
+function drawHomeZone(){
+  var zone=Math.min(270,Math.max(205,W*.18));
+  ctx.save();
+  var grd=ctx.createLinearGradient(0,0,zone,0);
+  grd.addColorStop(0,"rgba(94,234,212,0.24)");
+  grd.addColorStop(.56,"rgba(94,234,212,0.12)");
+  grd.addColorStop(1,"rgba(94,234,212,0)");
+  ctx.fillStyle=grd;ctx.fillRect(0,0,zone,H);
+  ctx.strokeStyle="rgba(94,234,212,0.68)";ctx.lineWidth=3;ctx.setLineDash([12,8]);
+  ctx.beginPath();ctx.moveTo(zone,0);ctx.lineTo(zone,H);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle="rgba(7,10,11,0.74)";ctx.fillRect(18,176,158,62);
+  ctx.strokeStyle="rgba(94,234,212,0.74)";ctx.strokeRect(18,176,158,62);
+  ctx.textAlign="center";ctx.fillStyle="#5eead4";ctx.font="bold 14px monospace";ctx.fillText("HOME BASE",97,200);
+  ctx.fillStyle="rgba(255,255,255,0.68)";ctx.font="10px monospace";ctx.fillText("VILLAGE SAFE SIDE",97,220);
   ctx.restore();ctx.textAlign="left";
 }
 function drawSkinMarks(sc,rank,skin){
@@ -1018,7 +1087,7 @@ function drawEnemy(e){
     ctx.globalAlpha=e.hitF>0?.72:1;ctx.drawImage(img,-w/2,-h/2,w,h);ctx.globalAlpha=1;
     if(e.type==="fast"){ctx.fillStyle="rgba(90,68,40,0.28)";ctx.fillRect(-w*.37,-h*.22,w*.66,h*.44);}
     if(e.type==="sniper"){ctx.strokeStyle="rgba(200,206,197,0.7)";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*.08,0);ctx.lineTo(w*.55,0);ctx.stroke();}
-    if(e.boss){ctx.strokeStyle="rgba(115,40,34,0.78)";ctx.lineWidth=4;ctx.strokeRect(-w*.36,-h*.3,w*.68,h*.6);}
+    if(e.boss){ctx.strokeStyle=e.major?e.color:"rgba(115,40,34,0.78)";ctx.lineWidth=e.major?6:4;ctx.strokeRect(-w*.36,-h*.3,w*.68,h*.6);}
     if(e.hitF>0){ctx.globalCompositeOperation="screen";ctx.globalAlpha=.28;ctx.fillStyle="#f8fafc";ctx.fillRect(-w/2,-h/2,w,h);ctx.globalCompositeOperation="source-over";ctx.globalAlpha=1;}
     ctx.restore();return;
   }
@@ -1026,9 +1095,9 @@ function drawEnemy(e){
   ctx.fillStyle=e.hitF>0?"#d7d2c5":e.color;ctx.shadowColor="rgba(0,0,0,0.7)";ctx.shadowBlur=e.hitF>0?18:7;
   if(e.boss){
     ctx.fillStyle="#111827";ctx.fillRect(-e.size*.9,-e.size*.58,e.size*1.72,e.size*.22);ctx.fillRect(-e.size*.9,e.size*.36,e.size*1.72,e.size*.22);
-    ctx.fillStyle=e.hitF>0?"#d7d2c5":"#4b5563";ctx.fillRect(-e.size*.75,-e.size*.44,e.size*1.5,e.size*.88);fillTex("steel",-e.size*.75,-e.size*.44,e.size*1.5,e.size*.88,0.24);
+    ctx.fillStyle=e.hitF>0?"#d7d2c5":(e.major?e.color:"#4b5563");ctx.fillRect(-e.size*.75,-e.size*.44,e.size*1.5,e.size*.88);fillTex("steel",-e.size*.75,-e.size*.44,e.size*1.5,e.size*.88,0.24);
     ctx.fillStyle="#1f2937";ctx.fillRect(-e.size*.25,-e.size*.34,e.size*.86,e.size*.68);
-    ctx.strokeStyle="#6f2722";ctx.lineWidth=7;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(e.size*.18,0);ctx.lineTo(e.size*.9,0);ctx.stroke();ctx.lineCap="butt";
+    ctx.strokeStyle=e.major?"#facc15":"#6f2722";ctx.lineWidth=e.major?9:7;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(e.size*.18,0);ctx.lineTo(e.size*.9,0);ctx.stroke();ctx.lineCap="butt";
     ctx.fillStyle="#4b1d1a";ctx.beginPath();ctx.arc(-e.size*.34,-e.size*.12,4,0,6.28);ctx.arc(-e.size*.34,e.size*.12,4,0,6.28);ctx.fill();
   }
   else if(e.type==="fast"){
@@ -1060,6 +1129,8 @@ function drawEnemy(e){
 function drawVillageBase(){
   ctx.save();ctx.translate(base.x,base.y);
   ctx.globalAlpha=0.96;
+  ctx.fillStyle="rgba(94,234,212,0.1)";ctx.beginPath();ctx.ellipse(0,0,122,210,0,0,6.28);ctx.fill();
+  ctx.strokeStyle="rgba(94,234,212,0.26)";ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,0,132,218,0,0,6.28);ctx.stroke();
   ctx.fillStyle=base.hitF>0?"#fef3c7":"#2f332a";ctx.fillRect(-54,-92,54,184);
   ctx.fillStyle="#151915";ctx.fillRect(-61,-82,12,164);
   ctx.fillStyle="#4b5144";
@@ -1071,7 +1142,8 @@ function drawVillageBase(){
     ctx.strokeStyle="#cbd5e1";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(20,-102);ctx.lineTo(58,-106);ctx.stroke();}
   ctx.fillStyle="rgba(0,0,0,0.55)";ctx.fillRect(-58,100,108,8);
   ctx.fillStyle=base.hp>base.max*.45?"#64748b":"#b45309";ctx.fillRect(-56,102,104*Math.max(0,base.hp/base.max),4);
-  ctx.fillStyle="rgba(255,255,255,0.45)";ctx.font="bold 9px sans-serif";ctx.textAlign="center";ctx.fillText("VILLAGE",0,118);
+  ctx.fillStyle="#5eead4";ctx.font="bold 10px sans-serif";ctx.textAlign="center";ctx.fillText("HOME",0,-104);
+  ctx.fillStyle="rgba(255,255,255,0.55)";ctx.font="bold 9px sans-serif";ctx.fillText("VILLAGE",0,118);
   ctx.restore();ctx.textAlign="left";
 }
 function drawContractPanel(){
@@ -1088,11 +1160,11 @@ function drawContractPanel(){
 function drawRealismOverlay(){
   ctx.save();
   var vg=ctx.createRadialGradient(W/2,H/2,130,W/2,H/2,600);
-  vg.addColorStop(0,"rgba(0,0,0,0.02)");vg.addColorStop(0.68,"rgba(0,0,0,0.18)");vg.addColorStop(1,"rgba(0,0,0,0.72)");
+  vg.addColorStop(0,"rgba(0,0,0,0.01)");vg.addColorStop(0.68,"rgba(0,0,0,0.1)");vg.addColorStop(1,"rgba(0,0,0,0.38)");
   ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
-  ctx.globalAlpha=0.075;ctx.fillStyle="#cbd5e1";
+  ctx.globalAlpha=0.05;ctx.fillStyle="#cbd5e1";
   for(var i=0;i<36;i++){var x=(i*137+gt*3)%W,y=(i*83+gt*1.7)%H;ctx.fillRect(x,y,1+(i%3),1);}
-  ctx.globalAlpha=0.095;ctx.strokeStyle="#000";ctx.lineWidth=1;
+  ctx.globalAlpha=0.05;ctx.strokeStyle="#000";ctx.lineWidth=1;
   for(var yy=0;yy<H;yy+=4){ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke();}
   ctx.globalAlpha=0.18;ctx.strokeStyle="rgba(203,213,203,0.26)";ctx.lineWidth=1;ctx.strokeRect(10,8,W-20,H-18);
   ctx.restore();ctx.globalAlpha=1;
@@ -1106,21 +1178,24 @@ function bossEntity(){for(var i=0;i<enemies.length;i++){if(enemies[i].boss)retur
 function drawBossHud(){
   var b=bossEntity();if(!b)return;
   ctx.save();ctx.textAlign="center";
-  ctx.fillStyle="rgba(7,10,11,0.78)";ctx.fillRect(W/2-210,82,420,42);
-  ctx.strokeStyle="rgba(255,118,117,0.75)";ctx.strokeRect(W/2-210,82,420,42);
-  ctx.fillStyle="rgba(255,255,255,0.1)";ctx.fillRect(W/2-192,105,384,8);
-  ctx.fillStyle="#b91c1c";ctx.fillRect(W/2-192,105,384*Math.max(0,b.hp/b.maxHp),8);
-  ctx.fillStyle="#ff7675";ctx.font="bold 13px monospace";ctx.fillText("BOSS COMMANDER  LEVEL "+level,W/2,98);
+  ctx.fillStyle="rgba(7,10,11,0.8)";ctx.fillRect(W/2-238,82,476,48);
+  ctx.strokeStyle=b.major?"rgba(250,204,21,0.86)":"rgba(255,118,117,0.75)";ctx.strokeRect(W/2-238,82,476,48);
+  ctx.fillStyle="rgba(255,255,255,0.1)";ctx.fillRect(W/2-218,110,436,8);
+  ctx.fillStyle=b.major?"#facc15":"#b91c1c";ctx.fillRect(W/2-218,110,436*Math.max(0,b.hp/b.maxHp),8);
+  ctx.fillStyle=b.major?"#facc15":"#ff7675";ctx.font="bold 13px monospace";ctx.fillText((b.major?"TIER BOSS: ":"BOSS: ")+(b.bossName||"Commander")+"  L"+level,W/2,98);
+  ctx.fillStyle="rgba(255,255,255,0.62)";ctx.font="10px monospace";ctx.fillText("POWER: "+(b.feature||"cannon pressure").toUpperCase(),W/2,126);
   ctx.restore();
 }
 function drawBossIntro(){
   if(bossIntroT<=0)return;
-  var a=Math.min(1,bossIntroT/28),blink=Math.floor(bossIntroT/8)%2===0;
+  var b=bossEntity(),major=b&&b.major,a=Math.min(1,bossIntroT/28),blink=Math.floor(bossIntroT/8)%2===0;
   ctx.save();ctx.globalAlpha=a;
-  ctx.fillStyle="rgba(127,29,29,0.22)";ctx.fillRect(0,0,W,H);
-  ctx.textAlign="center";ctx.shadowColor="#ff4757";ctx.shadowBlur=24;
-  ctx.fillStyle=blink?"#fff7ad":"#ff4757";ctx.font="bold 54px monospace";ctx.fillText("BOSS TIME",W/2,H/2-28);
-  ctx.shadowBlur=0;ctx.fillStyle="rgba(255,255,255,0.72)";ctx.font="bold 15px monospace";ctx.fillText("REGULAR WAVE CLEARED - COMMANDER CROSSING THE ENEMY LINE",W/2,H/2+10);
+  ctx.fillStyle=major?"rgba(120,53,15,0.26)":"rgba(127,29,29,0.22)";ctx.fillRect(0,0,W,H);
+  ctx.textAlign="center";ctx.shadowColor=major?"#facc15":"#ff4757";ctx.shadowBlur=24;
+  ctx.fillStyle=blink?"#fff7ad":major?"#facc15":"#ff4757";ctx.font="bold 54px monospace";ctx.fillText(major?"TIER BOSS":"BOSS TIME",W/2,H/2-48);
+  ctx.shadowBlur=0;ctx.fillStyle="#f8fafc";ctx.font="bold 22px monospace";ctx.fillText((b&&b.bossName?b.bossName:"Field Commander").toUpperCase(),W/2,H/2-8);
+  ctx.fillStyle="rgba(255,255,255,0.78)";ctx.font="bold 14px monospace";ctx.fillText("POWER: "+(b&&b.feature?b.feature:"cannon pressure").toUpperCase(),W/2,H/2+24);
+  ctx.fillStyle="rgba(255,255,255,0.6)";ctx.font="bold 12px monospace";ctx.fillText("REGULAR WAVE CLEARED - COMMANDER CROSSING THE ENEMY LINE",W/2,H/2+48);
   ctx.restore();
 }
 function drawInventoryOverlay(){
@@ -1150,6 +1225,25 @@ function drawInventoryOverlay(){
   ctx.fillStyle="#5eead4";ctx.font="bold "+small+"px monospace";ctx.fillText("SPACE FIRES: "+specialLabel(),x+12,y+h-14);
   ctx.restore();
 }
+function drawMissionTimer(){
+  var boxW=190,x=W/2-boxW/2,y=8;
+  ctx.save();ctx.fillStyle="rgba(7,10,11,0.78)";ctx.fillRect(x,y,boxW,38);
+  ctx.strokeStyle="rgba(250,204,21,0.76)";ctx.strokeRect(x,y,boxW,38);
+  ctx.textAlign="center";ctx.fillStyle="rgba(255,255,255,0.6)";ctx.font="bold 9px monospace";ctx.fillText("MISSION TIME",W/2,y+12);
+  ctx.fillStyle="#facc15";ctx.shadowColor="#facc15";ctx.shadowBlur=10;ctx.font="bold 19px monospace";ctx.fillText(fmtClock(levelTimer),W/2,y+31);
+  ctx.restore();ctx.textAlign="left";
+}
+function drawMapIntro(){
+  if(mapIntroT<=0)return;
+  var a=Math.min(1,mapIntroT/40),ph=phase();
+  ctx.save();ctx.globalAlpha=a;ctx.textAlign="center";
+  ctx.fillStyle="rgba(7,10,11,0.82)";ctx.fillRect(W/2-285,H/2-86,570,146);
+  ctx.strokeStyle=ph.tint;ctx.lineWidth=2;ctx.strokeRect(W/2-285,H/2-86,570,146);
+  ctx.fillStyle=ph.tint;ctx.font="bold 18px monospace";ctx.fillText("MAP "+mapTier()+" / LEVELS "+ph.range,W/2,H/2-48);
+  ctx.fillStyle="#f8fafc";ctx.font="bold 34px monospace";ctx.fillText(ph.name.toUpperCase(),W/2,H/2-8);
+  ctx.fillStyle="rgba(255,255,255,0.68)";ctx.font="bold 13px monospace";ctx.fillText("TIER BOSS L"+(mapTier()*10)+": "+ph.boss+" - "+ph.power.toUpperCase(),W/2,H/2+28);
+  ctx.restore();ctx.textAlign="left";
+}
 // ====== RENDER ======
 function render(){
   if(!(state===S.OVER&&ne.active))syncNameInput(false);
@@ -1165,6 +1259,7 @@ function render(){
   ctx.strokeStyle="rgba(255,255,255,0.02)";ctx.lineWidth=1;
 	  for(var gx=0;gx<W;gx+=60){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}
 	  for(var gy=0;gy<H;gy+=60){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+	  drawHomeZone();
 	  drawEnemyLine();
 
   // Scorch marks
@@ -1259,16 +1354,17 @@ function render(){
   ctx.fillStyle="rgba(255,255,255,0.5)";ctx.font="9px monospace";
 	  var mis=maxMissiles>0?(" MSL:"+P.missiles+"/"+maxMissiles+(P.missileCD>0?" CD":" READY")):" MSL:LOCKED";
 	  ctx.fillText("ARM:"+effectiveArmor()+" DEMO:"+P.bombs+"[Q]"+mis+"  SPACE:"+specialLabel()+"  I:KIT",16,52);
-	  ctx.fillText("Credits: "+credits+"  "+vehicleDef().name+" R"+vehicleRank(currentVehicle)+"  "+skinDef().name+"  Village:"+Math.round(base.hp)+"/"+base.max,16,68);
+	  ctx.fillText("Credits: "+credits+"  "+vehicleDef().name+" R"+vehicleRank(currentVehicle)+"  "+skinDef().name+"  Boost:"+(P.boostLevels||0)+"  Village:"+Math.round(base.hp)+"/"+base.max,16,68);
 
   ctx.textAlign="right";ctx.fillStyle="#d1d5cf";ctx.font="bold 14px monospace";
   ctx.fillText("LEVEL "+level+"/"+MAX_LEVEL,W-15,25);ctx.font="11px monospace";ctx.fillStyle="rgba(255,255,255,0.5)";
-	  ctx.fillText(phase().name+"  |  "+(bossSpawned?"BOSS ENGAGED":"Wave: "+Math.min(levelKills,enemiesThisLevel)+"/"+enemiesThisLevel+" then boss"),W-15,42);
+	  ctx.fillText("MAP "+mapTier()+" "+phase().name+"  |  "+(bossSpawned?"BOSS ENGAGED":"Wave: "+Math.min(levelKills,enemiesThisLevel)+"/"+enemiesThisLevel+" then boss"),W-15,42);
   ctx.fillText(WEAPONS[P.weapon].name+" Lv."+weaponLevel(P.weapon)+"  |  Score: "+totalScore.toLocaleString(),W-15,57);ctx.textAlign="left";
   var sr=saveExitRect();ctx.fillStyle="rgba(94,234,212,0.16)";ctx.strokeStyle="rgba(94,234,212,0.55)";ctx.lineWidth=1;
   ctx.fillRect(sr.x,sr.y,sr.w,sr.h);ctx.strokeRect(sr.x,sr.y,sr.w,sr.h);
   ctx.textAlign="center";ctx.fillStyle="#5eead4";ctx.font="bold "+Math.round(11*(isTouchDevice()?uiScale():1))+"px monospace";ctx.fillText("SAVE & EXIT",sr.x+sr.w/2,sr.y+sr.h/2+4);ctx.textAlign="left";
-  if(combo>1){ctx.textAlign="center";ctx.fillStyle="#c7b98a";ctx.font="bold 18px monospace";ctx.fillText("STREAK x"+combo,W/2,30);ctx.textAlign="left";}
+  drawMissionTimer();
+  if(combo>1){ctx.textAlign="center";ctx.fillStyle="#c7b98a";ctx.font="bold 18px monospace";ctx.fillText("STREAK x"+combo,W/2,70);ctx.textAlign="left";}
 	  var bossNow=bossEntity(),prog=bossNow?Math.max(0,1-bossNow.hp/bossNow.maxHp):Math.min(1,levelKills/enemiesThisLevel);
 	  ctx.fillStyle="rgba(255,255,255,0.08)";ctx.fillRect(W/2-160,H-16,320,5);ctx.fillStyle=bossNow?"#b91c1c":"#9ca3af";ctx.fillRect(W/2-160,H-16,320*prog,5);
 
@@ -1279,6 +1375,7 @@ function render(){
 	  drawBossHud();
 	  drawInventoryOverlay();
 	  drawNotice();
+	  drawMapIntro();
 	  rTouchControls();
 	  drawBossIntro();
 	}
@@ -1333,7 +1430,7 @@ function rShop(){
   ctx.fillStyle="rgba(255,255,255,0.75)";ctx.font="14px sans-serif";
   ctx.fillText(phase().name+"  |  Kills: "+levelKills+"  |  Credits: "+credits+"  |  Score: "+totalScore.toLocaleString(),W/2,66);
   ctx.fillStyle="rgba(255,255,255,0.52)";ctx.font="12px sans-serif";
-  ctx.fillText(vehicleDef().name+" R"+vehicleRank(currentVehicle)+"  HULL "+effectiveMaxHp()+"  REPAIR/KILL "+P.regen+"  DMG "+effectiveDmg()+"  ARM "+effectiveArmor()+"  MISSILES "+P.missiles+"/"+effectiveMissileCap(),W/2,92);
+  ctx.fillText(vehicleDef().name+" R"+vehicleRank(currentVehicle)+"  HULL "+effectiveMaxHp()+"  REPAIR/KILL "+(P.regen+(P.boostRepair||0))+"  DMG "+effectiveDmg()+"  ARM "+effectiveArmor()+"  BOOST "+(P.boostLevels||0)+" LVLS",W/2,92);
   ctx.fillStyle="rgba(250,204,21,0.82)";ctx.font="bold 12px sans-serif";ctx.fillText(nextUnlockText(),W/2,114);
   ctx.fillStyle="#d1d5db";ctx.font="bold 18px sans-serif";ctx.fillText("UPGRADE GARAGE",W/2,136);
   ctx.fillStyle=shopMsg.color;ctx.font="bold 13px sans-serif";ctx.globalAlpha=shopMsg.time>0?Math.min(1,shopMsg.time/18):0.38;
@@ -1348,21 +1445,21 @@ function rShop(){
   var items=getShopItems();
   for(var i=0;i<items.length;i++){
     var it=items[i],card=shopCard(i),cost=itemCost(it),owned=it.weapon&&ownedWeapons[it.weapon],active=it.weapon&&P.weapon===it.weapon;
-    var vowned=it.vehicle&&ownedVehicles[it.vehicle],vactive=it.vehicle&&currentVehicle===it.vehicle,skOwned=it.skin&&ownedSkins[it.skin],skActive=it.skin&&currentSkin===it.skin,villageLv=it.villageKey?(village[it.villageKey]||0):0;
+    var vowned=it.vehicle&&ownedVehicles[it.vehicle],vactive=it.vehicle&&currentVehicle===it.vehicle,skOwned=it.skin&&ownedSkins[it.skin],skActive=it.skin&&currentSkin===it.skin,boostActive=it.boost&&it.active&&it.active(),villageLv=it.villageKey?(village[it.villageKey]||0):0;
     var locked=itemLocked(it),blocked=itemBlocked(it),installed=itemOwned(it),maxed=itemMaxed(it);
     var canBuy=!locked&&!blocked&&!installed&&!maxed&&(owned||vowned||skOwned||credits>=cost||cost===0);
-    ctx.fillStyle=(active||vactive||skActive)?"rgba(203,213,225,0.18)":installed?"rgba(116,185,255,0.12)":canBuy?"rgba(148,163,184,0.13)":"rgba(255,255,255,0.045)";
+    ctx.fillStyle=(active||vactive||skActive||boostActive)?"rgba(203,213,225,0.18)":installed?"rgba(116,185,255,0.12)":canBuy?"rgba(148,163,184,0.13)":"rgba(255,255,255,0.045)";
     ctx.fillRect(card.x,card.y,card.w,card.h);
-    ctx.strokeStyle=(active||vactive||skActive)?"rgba(203,213,225,0.9)":installed?"rgba(116,185,255,0.5)":canBuy?"rgba(148,163,184,0.55)":locked?"rgba(127,29,29,0.42)":"rgba(255,255,255,0.12)";
+    ctx.strokeStyle=(active||vactive||skActive||boostActive)?"rgba(203,213,225,0.9)":installed?"rgba(116,185,255,0.5)":canBuy?"rgba(148,163,184,0.55)":locked?"rgba(127,29,29,0.42)":"rgba(255,255,255,0.12)";
     ctx.lineWidth=2;ctx.strokeRect(card.x,card.y,card.w,card.h);
     if(it.skin){var sk=skinDef(it.skin);ctx.fillStyle=sk.body;ctx.fillRect(card.x+8,card.y+8,20,16);ctx.fillStyle=sk.stripe;ctx.fillRect(card.x+11,card.y+13,14,4);}
     var textX=it.skin?card.x+35:card.x+10;
-    ctx.fillStyle=(canBuy||active||vactive||skActive||installed)?"#fff":"rgba(255,255,255,0.42)";ctx.font="bold 12px sans-serif";ctx.fillText(itemName(it),textX,card.y+16);
+    ctx.fillStyle=(canBuy||active||vactive||skActive||boostActive||installed)?"#fff":"rgba(255,255,255,0.42)";ctx.font="bold 12px sans-serif";ctx.fillText(itemName(it),textX,card.y+16);
     ctx.fillStyle="rgba(255,255,255,0.5)";ctx.font="10px sans-serif";
     ctx.fillText(itemEffectText(it),card.x+10,card.y+33);
-    ctx.fillStyle=locked?"rgba(248,113,113,0.85)":blocked?"rgba(255,165,2,0.86)":(active||vactive||skActive||installed)?"#d1d5db":"rgba(203,213,225,0.72)";
+    ctx.fillStyle=locked?"rgba(248,113,113,0.85)":blocked?"rgba(255,165,2,0.86)":(active||vactive||skActive||boostActive||installed)?"#d1d5db":"rgba(203,213,225,0.72)";
     ctx.fillText(itemProgressText(it),card.x+10,card.y+49);
-    ctx.textAlign="right";ctx.fillStyle=(active||vactive||skActive)?"#d1d5db":canBuy?"#cbd5e1":"rgba(248,113,113,0.75)";
+    ctx.textAlign="right";ctx.fillStyle=(active||vactive||skActive||boostActive)?"#d1d5db":canBuy?"#cbd5e1":"rgba(248,113,113,0.75)";
     ctx.font="bold 10px sans-serif";ctx.fillText(itemAction(it),card.x+card.w-10,card.y+17);
     ctx.fillStyle=cost===0?"rgba(255,255,255,0.55)":"#facc15";
     var costLabel=cost===0?((active||vactive||skActive)?"READY":installed||maxed?"DONE":"FREE"):((it.weapon&&!owned||it.skin&&!skOwned)?"UNLOCK ":"COST ")+cost;
@@ -1400,7 +1497,7 @@ function rTitle(){
   ctx.fillStyle="#e5e7df";ctx.font="bold 56px monospace";ctx.fillText("RAMPAGE",W/2,188);
   ctx.fillStyle="rgba(255,255,255,0.62)";ctx.font="15px monospace";ctx.fillText("Armored dozer RPG survival campaign",W/2,222);
   ctx.fillStyle="rgba(255,255,255,0.54)";ctx.font="12px monospace";
-  ctx.fillText("Defend the village, clear 100 levels, earn credits, unlock weapons, chassis, and skins.",W/2,266);
+  ctx.fillText("Defend the village across 10 map chapters, earn credits, unlock chassis, boosts, and skins.",W/2,266);
 	  ctx.fillText("Touch: tap to drive. Desktop: WASD, Q demo, SPACE selected special, I kit.",W/2,288);
   var save=getSaveInfo(),hasSave=!!save;
   if(hasSave){ctx.fillStyle="rgba(94,234,212,0.72)";ctx.font="bold 11px monospace";ctx.fillText("LAST SAVE: LEVEL "+save.level+"  SCORE "+fmt(save.totalScore)+"  CREDITS "+fmt(save.credits)+"  "+savedAgo(save.savedAt),W/2,338);}
@@ -1414,7 +1511,7 @@ function rTitle(){
   ctx.fillStyle="rgba(255,255,255,0.52)";ctx.font="11px monospace";
 	  ctx.fillText("1. Clear the wave, then fight the level boss.",44,558);
 	  ctx.fillText("2. Hold your side of the ENEMY LINE.",44,578);
-	  ctx.fillText("3. Stack upgrades and customize your rig in the garage.",44,598);
+	  ctx.fillText("3. Every 10th boss has a special power and bigger cache.",44,598);
   ctx.fillStyle="rgba(7,10,11,0.68)";ctx.fillRect(528,516,404,92);ctx.strokeStyle="rgba(250,204,21,0.22)";ctx.strokeRect(528,516,404,92);
   ctx.fillStyle="#facc15";ctx.font="bold 12px monospace";ctx.fillText("TOP LOCAL RUNS",544,536);
   for(var h=0;h<3;h++){var row=hs[h]||{n:"---",s:0,l:"-"};ctx.fillStyle=h===0?"#fffa00":h===1?"#d1d5db":"#b45309";ctx.font="bold 12px monospace";
