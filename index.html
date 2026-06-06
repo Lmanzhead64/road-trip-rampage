@@ -906,9 +906,10 @@ function update(){
   if(touchCtl.target){updateTouchDriveVector();mx+=touchCtl.mx;my+=touchCtl.my;}
   var ml=Math.sqrt(mx*mx+my*my);if(ml>1){mx/=ml;my/=ml;}
 	  var nextX=P.x+mx*effectiveSpeed(),nextY=P.y+my*effectiveSpeed();
-	  if(nextX>enemyLineX()&&mx>0.05&&edgeWarnT<=0){edgeWarnT=70;sfx("line");notify("ENEMY LINE - HOLD THIS SIDE","#ff7675");}
+	  var lineStop=enemyLineX()-58;
+	  if(nextX>lineStop&&mx>0.05&&edgeWarnT<=0){edgeWarnT=70;sfx("line");notify("ENEMY LINE - HOLD THIS SIDE","#ff7675");}
 	  P.x=nextX;P.y=nextY;
-	  P.y=clamp(P.y,45,worldH()-45);P.x=clamp(P.x,45,enemyLineX());
+	  P.y=clamp(P.y,45,worldH()-45);P.x=clamp(P.x,45,lineStop);
 	  updateCamera();
   if((Math.abs(mx)+Math.abs(my)>0.08)&&gt%3===0){
     particles.push({x:P.x-Math.cos(P.angle)*32+rand(-8,8),y:P.y-Math.sin(P.angle)*24+rand(-16,16),vx:rand(-0.45,0.25),vy:rand(-0.35,0.35),life:38,ml:38,color:"rgba(101,91,70,0.42)",size:rand(8,18)});}
