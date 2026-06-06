@@ -724,6 +724,18 @@
       text-transform: uppercase;
     }
 
+    .garage-swatch {
+      width: 100%;
+      height: 18px;
+      border: 1px solid rgba(255,255,255,0.20);
+      border-radius: 4px;
+      background:
+        linear-gradient(135deg, var(--swatch-main), var(--swatch-accent) 58%, var(--swatch-glow)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.16) 0 6px, rgba(0,0,0,0.18) 6px 12px);
+      box-shadow: inset 0 0 18px rgba(0,0,0,0.44), 0 0 14px rgba(247,200,75,0.10);
+      margin: 6px 0 7px;
+    }
+
     .garage-level {
       height: 6px;
       overflow: hidden;
@@ -1653,7 +1665,7 @@
       { id: "tier9", category: "tier", name: "Tier IX Grid Hunter", max: 1, baseCost: 13200, reqLevel: 80, stat: "Tank Tier", desc: "Level 80 platform. Endgame sensor and weapons backbone." },
       { id: "tier10", category: "tier", name: "Tier X Final War Rig", max: 1, baseCost: 16800, reqLevel: 90, stat: "Tank Tier", desc: "Level 90 platform. Built for Levels 91-100 and the final superboss." },
       { id: "armor", category: "armor", name: "Reactive Plating", max: 9, baseCost: 220, stat: "Hull", desc: "Raises hull integrity so the tank survives longer." },
-      { id: "spall", category: "armor", name: "Spall Liner", max: 7, baseCost: 260, stat: "Damage Control", desc: "Reduces collision and enemy-contact damage." },
+      { id: "spall", category: "armor", name: "Spall Liner", max: 7, baseCost: 260, stat: "Damage Control", desc: "Reduces enemy impact and shell shock damage." },
       { id: "regen", category: "armor", name: "Field Repair System", max: 6, baseCost: 280, stat: "Repair", desc: "Slow hull recovery after you stop taking damage." },
       { id: "engine", category: "armor", name: "Turbine Drive Train", max: 7, baseCost: 210, stat: "Mobility", desc: "Better speed, turning, and heavy-map handling." },
       { id: "tracks", category: "armor", name: "Track Grip Kit", max: 6, baseCost: 230, stat: "Mobility", desc: "More stable turning and less speed loss after impacts." },
@@ -1674,7 +1686,13 @@
       { id: "skin-black", category: "cosmetic", name: "Blackout Armor", max: 1, baseCost: 620, stat: "Cosmetic", desc: "Matte black tactical armor plates. Cosmetic only." },
       { id: "skin-crimson", category: "cosmetic", name: "Crimson Command", max: 1, baseCost: 700, stat: "Cosmetic", desc: "Deep command red armor accents. Cosmetic only." },
       { id: "skin-navy", category: "cosmetic", name: "Navy Graphite", max: 1, baseCost: 760, stat: "Cosmetic", desc: "Blue-gray graphite finish. Cosmetic only." },
-      { id: "skin-diamond", category: "cosmetic", name: "Pink Diamond", max: 1, baseCost: 950, stat: "Cosmetic", desc: "Showpiece bright armor with polished trim. Cosmetic only." }
+      { id: "skin-diamond", category: "cosmetic", name: "Pink Diamond", max: 1, baseCost: 950, stat: "Cosmetic", desc: "Showpiece bright armor with polished trim. Cosmetic only." },
+      { id: "skin-carbon", category: "cosmetic", name: "Carbon Fiber", max: 1, baseCost: 1180, reqLevel: 10, stat: "Cosmetic", desc: "Dark woven armor finish with graphite trim. Cosmetic only." },
+      { id: "skin-digital", category: "cosmetic", name: "Digital Urban", max: 1, baseCost: 1360, reqLevel: 20, stat: "Cosmetic", desc: "Blocky city camouflage for late-night streets. Cosmetic only." },
+      { id: "skin-emerald", category: "cosmetic", name: "Emerald Ops", max: 1, baseCost: 1540, reqLevel: 30, stat: "Cosmetic", desc: "Deep green elite armor with bright optics. Cosmetic only." },
+      { id: "skin-gold", category: "cosmetic", name: "Gold Command", max: 1, baseCost: 1880, reqLevel: 40, stat: "Cosmetic", desc: "Prestige command plating with warm metallic accents. Cosmetic only." },
+      { id: "skin-redline", category: "cosmetic", name: "Redline Carbon", max: 1, baseCost: 2240, reqLevel: 50, stat: "Cosmetic", desc: "Black carbon panels with red combat striping. Cosmetic only." },
+      { id: "skin-iceblue", category: "cosmetic", name: "Glacier Blue", max: 1, baseCost: 2600, reqLevel: 60, stat: "Cosmetic", desc: "Cold-weather blue armor with white hard edges. Cosmetic only." }
     ];
 
     const skinPalettes = {
@@ -1687,7 +1705,13 @@
       "skin-black": { main: 0x24292a, accent: 0x3c4244, glow: 0xb8d5d2 },
       "skin-crimson": { main: 0x5f2b2b, accent: 0x1e1717, glow: 0xff826e },
       "skin-navy": { main: 0x314452, accent: 0x161f25, glow: 0x9dcaff },
-      "skin-diamond": { main: 0xe680bd, accent: 0x6b5670, glow: 0xffd5f1 }
+      "skin-diamond": { main: 0xe680bd, accent: 0x6b5670, glow: 0xffd5f1 },
+      "skin-carbon": { main: 0x1e2322, accent: 0x5d6863, glow: 0xcad7cc, camo: "carbon" },
+      "skin-digital": { main: 0x4f575b, accent: 0x1e262b, glow: 0x86f7ff, camo: "block" },
+      "skin-emerald": { main: 0x1f4d3c, accent: 0x0f1f1a, glow: 0x58ff9c, camo: "camo" },
+      "skin-gold": { main: 0x8a7545, accent: 0x2d2617, glow: 0xffdd7c, camo: "linear" },
+      "skin-redline": { main: 0x202224, accent: 0x8b1d24, glow: 0xff5252, camo: "carbon" },
+      "skin-iceblue": { main: 0x7d9aae, accent: 0x243240, glow: 0xd7f8ff, camo: "frost" }
     };
 
     const themes = [
@@ -1858,7 +1882,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.18;
+      renderer.toneMappingExposure = 1.34;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -1871,10 +1895,10 @@
 
       clock = new THREE.Clock();
 
-      const hemi = new THREE.HemisphereLight(0xf0f6ff, 0x4a432e, 1.86);
+      const hemi = new THREE.HemisphereLight(0xf6fbff, 0x5a523c, 2.08);
       scene.add(hemi);
 
-      const sun = new THREE.DirectionalLight(0xfff0d0, 3.55);
+      const sun = new THREE.DirectionalLight(0xfff4d8, 3.9);
       sun.position.set(-115, 178, 72);
       sun.castShadow = true;
       sun.shadow.mapSize.set(2048, 2048);
@@ -1884,7 +1908,7 @@
       sun.shadow.camera.bottom = -520;
       scene.add(sun);
 
-      const urbanFill = new THREE.DirectionalLight(0xc8dfff, 1.18);
+      const urbanFill = new THREE.DirectionalLight(0xd8e8ff, 1.36);
       urbanFill.position.set(120, 85, -140);
       scene.add(urbanFill);
 
@@ -1962,7 +1986,7 @@
       currentTheme = themes[Math.min(themes.length - 1, progress.chapter)];
       scene.background = new THREE.Color(currentTheme.sky);
       scene.fog.color.setHex(currentTheme.fog);
-      scene.fog.density = currentTheme.name.includes("Night") ? 0.00095 : 0.00072;
+      scene.fog.density = currentTheme.name.includes("Night") ? 0.00082 : 0.00058;
       ui.district.textContent = `${currentTheme.name} - Chapter ${progress.tier}`;
       if (ground) {
         ground.material.color.setHex(currentTheme.ground);
@@ -1998,7 +2022,8 @@
       addRoad(520, -120, 30, WORLD_SIZE * 1.05, -Math.PI / 8);
 
       const rng = mulberry32(1337 + Math.floor((level - 1) / 10) * 91);
-      for (let i = 0; i < 128; i += 1) {
+      const chapterVisualBoost = Math.min(28, getCampaignProgress(level).chapter * 4);
+      for (let i = 0; i < 142 + chapterVisualBoost; i += 1) {
         const x = Math.round((rng() * 2 - 1) * (WORLD_SIZE * 0.76) / 32) * 32;
         const z = Math.round((rng() * 2 - 1) * (WORLD_SIZE * 0.76) / 32) * 32;
         if (Math.abs(x) < 120 && Math.abs(z + 44) < 132) continue;
@@ -2012,7 +2037,7 @@
       addResidentialBlocks(rng);
       addCityIdentity(rng);
 
-      for (let i = 0; i < 64; i += 1) {
+      for (let i = 0; i < 78; i += 1) {
         const x = (rng() * 2 - 1) * WORLD_SIZE * 0.78;
         const z = (rng() * 2 - 1) * WORLD_SIZE * 0.78;
         if (Math.abs(x) < 92 && Math.abs(z + 44) < 108) continue;
@@ -2825,8 +2850,16 @@
       mesh.receiveShadow = true;
       group.add(mesh);
 
-      const glassMat = new THREE.MeshBasicMaterial({ color: 0xc8edf4, transparent: true, opacity: 0.38 });
-      const darkGlassMat = new THREE.MeshBasicMaterial({ color: 0x1a2930, transparent: true, opacity: 0.58 });
+      const glassMat = new THREE.MeshStandardMaterial({
+        color: 0xc8edf4,
+        emissive: currentTheme.accent,
+        emissiveIntensity: currentTheme.name.includes("Neon") || currentTheme.name.includes("Vegas") ? 0.34 : 0.12,
+        roughness: 0.24,
+        metalness: 0.08,
+        transparent: true,
+        opacity: 0.44
+      });
+      const darkGlassMat = new THREE.MeshStandardMaterial({ color: 0x16242b, roughness: 0.36, metalness: 0.12, transparent: true, opacity: 0.64 });
       const rows = Math.max(2, Math.floor(h / 9));
       const colsFront = Math.max(2, Math.floor(w / 8));
       const colsSide = Math.max(2, Math.floor(d / 8));
@@ -2887,7 +2920,7 @@
       }
 
       if (rng() > 0.52) {
-        const sign = new THREE.Mesh(new THREE.BoxGeometry(Math.min(16, w * 0.55), 3.8, 0.36), new THREE.MeshStandardMaterial({ color: 0x202932, roughness: 0.48, metalness: 0.36, emissive: currentTheme.accent, emissiveIntensity: 0.05 }));
+        const sign = new THREE.Mesh(new THREE.BoxGeometry(Math.min(16, w * 0.55), 3.8, 0.36), new THREE.MeshStandardMaterial({ color: 0x202932, roughness: 0.48, metalness: 0.36, emissive: currentTheme.accent, emissiveIntensity: 0.18 }));
         sign.position.set((rng() - 0.5) * w * 0.22, 9, d / 2 + 0.38);
         sign.castShadow = true;
         group.add(sign);
@@ -3720,11 +3753,11 @@
         tankPos.set(nextX, 0, nextZ);
       } else if (ramStructure(collision, Math.abs(speed), nextX, nextZ)) {
         tankPos.set(nextX, 0, nextZ);
-        speed *= 0.42;
+        speed *= collision.destroyed ? 0.74 : 0.34;
       } else {
         speed *= -(0.18 - trackLevel * 0.018);
-        addExplosion(tankPos.x + forward.x * 8, 2, tankPos.z + forward.z * 8, 0x9a8b76, 0.55);
-        applyPlayerDamage(Math.max(3, Math.abs(speed) * 0.18), "collision", tmpVec.set(tankPos.x + forward.x * 8, 2, tankPos.z + forward.z * 8));
+        addExplosion(tankPos.x + forward.x * 8, 2, tankPos.z + forward.z * 8, 0x9a8b76, 0.38);
+        addDamageNumber(tankPos.x + forward.x * 10, 7, tankPos.z + forward.z * 10, "BLOCKED", 0xf7c84b);
         playClankSound();
       }
 
@@ -4678,17 +4711,21 @@
     }
 
     function ramStructure(entry, impactSpeed, x, z) {
-      if (!entry?.destructible || impactSpeed < 9) return false;
+      if (!entry?.destructible || entry.boundary) return false;
       const platformTier = getTankPlatformTier();
       const crushable = entry.crushable || entry.height <= 30 || entry.kind === "vehicle" || entry.kind === "house" || entry.kind === "container";
-      const ramPower = impactSpeed * (5.4 + platformTier * 0.72 + getUpgradeLevel("armor") * 0.28 + getUpgradeLevel("composite") * 0.45);
-      const damage = crushable ? ramPower * 2.15 + maxHull * 0.08 : ramPower * 0.58;
-      damageStructure(entry, damage, x, z, crushable);
+      const breacherBonus = 1 + getUpgradeLevel("tracks") * 0.08 + getUpgradeLevel("engine") * 0.055;
+      const ramPower = Math.max(10, impactSpeed) * (7.1 + platformTier * 0.98 + getUpgradeLevel("armor") * 0.34 + getUpgradeLevel("composite") * 0.58) * breacherBonus;
+      const damage = crushable ? ramPower * 3.25 + maxHull * 0.22 : ramPower * 1.18;
+      damageStructure(entry, damage, x, z, crushable || impactSpeed > 16);
+      if (impactSpeed > 8) {
+        addDamageNumber(x, Math.max(7, Math.min(22, (entry.height || 12) * 0.28)), z, crushable ? "CRUSH" : "BREACH", currentTheme.accent);
+      }
       if (entry.destroyed) {
-        if (crushable) showToast(`${entry.kind === "vehicle" ? "Vehicle" : "Structure"} crushed`);
+        if (crushable) showToast(`${entry.kind === "vehicle" ? "Vehicle" : "Structure"} crushed - hull safe`);
         return true;
       }
-      return crushable && impactSpeed > 34 && entry.hp < entry.maxHp * 0.28;
+      return impactSpeed > 6 && (crushable || entry.hp < entry.maxHp * 0.68);
     }
 
     function damageStructure(entry, damage, x, z, heavyHit = false) {
@@ -4710,7 +4747,7 @@
       else if (entry.mesh && entry.mesh.parent) entry.mesh.parent.remove(entry.mesh);
 
       const rubbleMat = new THREE.MeshStandardMaterial({ color: entry.kind === "vehicle" ? 0x242526 : 0x777067, roughness: 0.92, metalness: entry.kind === "vehicle" ? 0.32 : 0.08, map: entry.kind === "vehicle" ? null : makeConcreteTexture() });
-      const chunkCount = entry.kind === "vehicle" ? 5 : entry.kind === "house" ? 10 : 14;
+      const chunkCount = entry.kind === "vehicle" ? 8 : entry.kind === "house" ? 16 : entry.kind === "tower" ? 24 : 18;
       for (let i = 0; i < chunkCount; i += 1) {
         const chunk = new THREE.Mesh(
           new THREE.BoxGeometry(2 + Math.random() * 5.5, 0.8 + Math.random() * 3.2, 2 + Math.random() * 5.5),
@@ -4734,6 +4771,11 @@
       dust.position.set(entry.x || 0, 0.12, entry.z || 0);
       parent.add(dust);
       addExplosion(entry.x || 0, Math.max(3, Math.min(10, (entry.height || 10) * 0.32)), entry.z || 0, 0xc8b58f, entry.kind === "tower" ? 1.25 : 0.92);
+      if (started && !gameOver) {
+        const salvage = entry.kind === "vehicle" ? 8 : entry.kind === "house" ? 12 : entry.kind === "tower" ? 28 : 15;
+        score += salvage;
+        addDamageNumber(entry.x || 0, Math.max(6, Math.min(18, (entry.height || 10) * 0.26)), entry.z || 0, `SALVAGE +${salvage}`, 0xf7c84b);
+      }
     }
 
     function updateHud() {
@@ -4920,9 +4962,16 @@
         const cost = upgradeCost(item);
         const card = document.createElement("div");
         card.className = `garage-card ${isSkin ? "cosmetic" : ""} ${maxed ? "maxed" : ""} ${levelUnlocked ? "" : "locked"}`;
+        if (isSkin) {
+          const palette = skinPalettes[item.id] || skinPalettes["skin-steel"];
+          card.style.setProperty("--swatch-main", `#${new THREE.Color(palette.main).getHexString()}`);
+          card.style.setProperty("--swatch-accent", `#${new THREE.Color(palette.accent).getHexString()}`);
+          card.style.setProperty("--swatch-glow", `#${new THREE.Color(palette.glow).getHexString()}`);
+        }
         card.innerHTML = `
           <h3>${item.name}</h3>
           <p>${item.desc}</p>
+          ${isSkin ? '<div class="garage-swatch" aria-hidden="true"></div>' : ""}
           <div class="garage-meta">
             <span class="garage-pill">${isSkin ? "Look only" : item.stat}</span>
             <span class="garage-pill">${isSkin ? (unlocked ? "Unlocked" : "Locked") : `Level ${levelNow}/${item.max}`}</span>
@@ -5011,10 +5060,10 @@
         tier9: "+Tank platform tier, hull, mobility, firepower",
         tier10: "+Final tank platform for Levels 91-100",
         armor: "+25 max hull each level",
-        spall: "-Enemy contact damage",
+        spall: "-Enemy hit shock and module loss",
         regen: "+Passive field repair",
         engine: "+Speed and turning",
-        tracks: "+Grip and collision recovery",
+        tracks: "+Grip, faster turning, and stronger breaching",
         composite: "+Late-game hull and mitigation",
         support: "+Base repair radius",
         turrets: "+Base turret firepower",
@@ -5142,7 +5191,6 @@
     }
 
     function pickDamagedModule(source, point) {
-      if (source === "collision") return Math.random() > 0.35 ? "tracks" : "armor";
       if (source === "boss-strike") {
         const options = ["armor", "turret", "engine", "optics", "tracks"];
         return options[Math.floor(Math.random() * options.length)];
@@ -5158,13 +5206,14 @@
     }
 
     function applyPlayerDamage(amount, source = "impact", point = null) {
+      if (source === "collision") return;
       const armorMitigation = 1 - Math.min(0.18, (moduleHealth.armor || 100) / 100 * 0.08 + getUpgradeLevel("composite") * 0.012);
       const finalDamage = Math.max(1, amount * armorMitigation);
       hull -= finalDamage;
       damageCooldown = Math.max(damageCooldown, 0.68);
       const moduleId = pickDamagedModule(source, point);
       const module = moduleDefinitions.find(item => item.id === moduleId) || moduleDefinitions[0];
-      const moduleLoss = Math.max(4, finalDamage * (source === "boss-strike" ? 0.32 : source === "collision" ? 0.24 : 0.20) * (0.82 + Math.random() * 0.55));
+      const moduleLoss = Math.max(4, finalDamage * (source === "boss-strike" ? 0.32 : 0.20) * (0.82 + Math.random() * 0.55));
       moduleHealth[moduleId] = Math.max(0, (moduleHealth[moduleId] ?? 100) - moduleLoss);
       const hitX = point?.x ?? tankPos.x;
       const hitZ = point?.z ?? tankPos.z;
@@ -5218,7 +5267,7 @@
       if (tank?.userData?.materials) {
         const { hullMat, accentMat, glowMat } = tank.userData.materials;
         hullMat.color.setHex(palette.main);
-        hullMat.map = makeArmorTexture(palette.main);
+        hullMat.map = makeArmorTexture(palette.main, palette.camo || "linear");
         hullMat.needsUpdate = true;
         accentMat.color.setHex(palette.accent);
         accentMat.needsUpdate = true;
@@ -5276,6 +5325,7 @@
       if (configured) return String(configured).replace(/\/$/, "");
       const host = location.hostname;
       if (host.endsWith(".vercel.app") || host === "localhost" || host === "127.0.0.1") return "/api/leaderboard";
+      if (host === "lmanzhead64.github.io") return "https://road-trip-rampage.vercel.app/api/leaderboard";
       return "";
     }
 
@@ -5308,7 +5358,7 @@
         combatRating: tankStats.rating,
         skin: skinName(selectedSkin),
         savedAt: new Date().toISOString(),
-        gameVersion: "v29-leaderboard-market"
+        gameVersion: "v31-breacher-graphics"
       };
     }
 
@@ -5671,8 +5721,9 @@
       return concreteTexture;
     }
 
-    function makeArmorTexture(baseHex) {
-      if (armorTextureCache.has(baseHex)) return armorTextureCache.get(baseHex);
+    function makeArmorTexture(baseHex, style = "linear") {
+      const cacheKey = `${baseHex}:${style}`;
+      if (armorTextureCache.has(cacheKey)) return armorTextureCache.get(cacheKey);
       const c = document.createElement("canvas");
       c.width = 256;
       c.height = 256;
@@ -5680,13 +5731,31 @@
       const base = new THREE.Color(baseHex);
       ctx.fillStyle = `#${base.getHexString()}`;
       ctx.fillRect(0, 0, 256, 256);
-      ctx.strokeStyle = "rgba(10, 12, 10, 0.42)";
-      ctx.lineWidth = 2;
-      for (let x = 32; x < 256; x += 64) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x + 18, 256);
-        ctx.stroke();
+      if (style === "block" || style === "carbon") {
+        for (let y = 0; y < 256; y += 24) {
+          for (let x = 0; x < 256; x += 24) {
+            const shade = 18 + Math.random() * 55;
+            ctx.fillStyle = `rgba(${shade},${shade},${shade},${style === "carbon" ? 0.24 : 0.14})`;
+            ctx.fillRect(x + (Math.random() > 0.5 ? 0 : 12), y, 12 + Math.random() * 16, 12 + Math.random() * 20);
+          }
+        }
+      } else if (style === "camo" || style === "frost") {
+        for (let i = 0; i < 44; i += 1) {
+          const shade = style === "frost" ? 190 + Math.random() * 48 : 24 + Math.random() * 64;
+          ctx.fillStyle = `rgba(${shade},${shade},${shade},${0.08 + Math.random() * 0.18})`;
+          ctx.beginPath();
+          ctx.ellipse(Math.random() * 256, Math.random() * 256, 12 + Math.random() * 28, 5 + Math.random() * 16, Math.random() * Math.PI, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else {
+        ctx.strokeStyle = "rgba(10, 12, 10, 0.42)";
+        ctx.lineWidth = 2;
+        for (let x = 32; x < 256; x += 64) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x + 18, 256);
+          ctx.stroke();
+        }
       }
       for (let y = 36; y < 256; y += 54) {
         ctx.strokeStyle = "rgba(220, 230, 200, 0.08)";
@@ -5721,7 +5790,7 @@
       tex.wrapT = THREE.RepeatWrapping;
       tex.repeat.set(2.2, 2.2);
       tex.colorSpace = THREE.SRGBColorSpace;
-      armorTextureCache.set(baseHex, tex);
+      armorTextureCache.set(cacheKey, tex);
       return tex;
     }
 
@@ -5769,6 +5838,17 @@
       ctx.fillStyle = "rgba(238,230,202,0.12)";
       for (let i = 0; i < 34; i += 1) {
         ctx.fillRect(Math.random() * 256, Math.random() * 256, 8 + Math.random() * 20, 1 + Math.random() * 3);
+      }
+      ctx.fillStyle = "rgba(255,255,255,0.055)";
+      for (let i = 0; i < 20; i += 1) {
+        ctx.fillRect(Math.random() * 256, Math.random() * 256, 18 + Math.random() * 44, 0.8 + Math.random() * 1.8);
+      }
+      ctx.strokeStyle = "rgba(0,0,0,0.32)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 10; i += 1) {
+        ctx.beginPath();
+        ctx.arc(Math.random() * 256, Math.random() * 256, 5 + Math.random() * 14, 0, Math.PI * 2);
+        ctx.stroke();
       }
       ctx.strokeStyle = "rgba(215, 210, 188, 0.08)";
       ctx.lineWidth = 2;
