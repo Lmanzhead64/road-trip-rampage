@@ -1309,6 +1309,7 @@
     const SAVE_KEY = "roadTripRampage3DSaveV1";
     const PROFILE_KEY = "roadTripRampage3DProfileV1";
     const BEST_KEY = "roadTripRampage3DBestV1";
+    const STREAK_KEY = "roadTripRampage3DWinStreakV1";
     const MAX_LEVEL = 100;
     const WORLD_SIZE = 1800;
     const MAX_JOYSTICK = 78;
@@ -1408,16 +1409,17 @@
 
     function getDifficulty(nextLevel = level) {
       const progress = getCampaignProgress(nextLevel);
-      const chapterPressure = 1 + progress.chapter * 0.13;
-      const stepPressure = 1 + (progress.chapterLevel - 1) * 0.045;
-      const endgamePressure = 1 + Math.pow(progress.endgame, 1.55) * 0.75;
+      const chapterPressure = 1 + progress.chapter * 0.17;
+      const stepPressure = 1 + (progress.chapterLevel - 1) * 0.06;
+      const endgamePressure = 1 + Math.pow(progress.endgame, 1.55) * 1.05;
+      const streakPressure = 1 + Math.min(0.28, winStreak * 0.025);
       return {
         ...progress,
-        enemyHp: chapterPressure * stepPressure * endgamePressure,
-        enemyDamage: (1 + progress.chapter * 0.09 + (progress.chapterLevel - 1) * 0.03) * (1 + Math.pow(progress.endgame, 1.65) * 0.9),
-        enemySpeed: 1 + progress.chapter * 0.035 + Math.min(0.32, progress.endgame * 0.26),
-        patrolCount: Math.min(34, 4 + progress.chapterLevel + Math.floor(progress.level * 0.22) + progress.chapter),
-        missionTarget: Math.min(58, 6 + progress.chapterLevel * 2 + progress.chapter * 4 + Math.floor(progress.level * 0.08))
+        enemyHp: chapterPressure * stepPressure * endgamePressure * streakPressure,
+        enemyDamage: (1 + progress.chapter * 0.12 + (progress.chapterLevel - 1) * 0.04) * (1 + Math.pow(progress.endgame, 1.65) * 1.2) * (1 + Math.min(0.22, winStreak * 0.018)),
+        enemySpeed: 1 + progress.chapter * 0.045 + Math.min(0.38, progress.endgame * 0.32) + Math.min(0.16, winStreak * 0.008),
+        patrolCount: Math.min(42, 5 + progress.chapterLevel + Math.floor(progress.level * 0.28) + progress.chapter * 2),
+        missionTarget: Math.min(72, 7 + progress.chapterLevel * 2 + progress.chapter * 5 + Math.floor(progress.level * 0.13))
       };
     }
 
@@ -1450,6 +1452,7 @@
     let level = 1;
     let score = 0;
     let best = Number(localStorage.getItem(BEST_KEY) || 0);
+    let winStreak = Number(localStorage.getItem(STREAK_KEY) || 0);
     let hull = 100;
     let maxHull = 100;
     let hullRegenRate = 0;
@@ -1458,6 +1461,13 @@
     let missionTarget = 8;
     let activeWave = 0;
     let totalWaves = 1;
+    let bonusObjective = null;
+    let bonusObjectiveProgress = 0;
+    let bonusObjectiveMet = false;
+    let levelStartedAt = 0;
+    let killChain = 0;
+    let lastKillAt = 0;
+    let suppliesRecovered = 0;
     let bossSpawned = false;
     let bossDefeated = false;
     let activeBossProfile = null;
@@ -1900,6 +1910,25 @@
     function resetTankToHomeBase() {
       tankPos.set(0, 0, -38);
       heading = 0;
+      applyTankDeployment();
+    }
+
+    function deployTankToForwardRally() {
+      const progress = getCampaignProgress(level);
+      const lane = (progress.chapterLevel % 3) - 1;
+      const rallyZ = -240 - Math.min(220, progress.chapter * 18);
+      const rallyX = lane * 72;
+      tankPos.set(rallyX, 0, rallyZ);
+      heading = progress.chapterLevel % 2 ? 0.08 : -0.08;
+      if (collides(tankPos.x, tankPos.z, 8)) {
+        tankPos.set(0, 0, -220);
+        heading = 0;
+      }
+      applyTankDeployment();
+      showNotice(`Forward rally - ${currentTheme.name} Level ${level}`);
+    }
+
+    function applyTankDeployment() {
       speed = 0;
       throttleTouchId = null;
       turnTouchId = null;
@@ -2804,9 +2833,15 @@
       missionKills = 0;
       missionTarget = difficulty.missionTarget;
       activeWave = 0;
-      totalWaves = Math.min(6, Math.max(2, Math.ceil(missionTarget / Math.max(5, 7 + difficulty.chapter))));
-      resetTankToHomeBase();
-      hull = Math.min(maxHull, hull + 18 + getUpgradeLevel("support") * 4 + getTankPlatformTier() * 2);
+      totalWaves = Math.min(7, Math.max(2 + Math.floor(difficulty.chapter / 3), Math.ceil(missionTarget / Math.max(4, 6 + difficulty.chapter))));
+      bonusObjective = getBonusObjective(level);
+      bonusObjectiveProgress = 0;
+      bonusObjectiveMet = false;
+      levelStartedAt = performance.now();
+      killChain = 0;
+      lastKillAt = 0;
+      suppliesRecovered = 0;
+      hull = Math.min(maxHull, hull + 10 + getUpgradeLevel("support") * 3 + getTankPlatformTier() * 1.5);
 
       spawnNextEnemyWave(true);
       if (difficulty.superBoss) {
@@ -2815,9 +2850,67 @@
         showNotice(`LEVEL ${level} CHAPTER FINALE: SUPERBOSS INTEL READY`);
       } else {
         hideBossIntel();
-        showNotice(`${currentTheme.name} Level ${level} - clear ${missionTarget} patrols`);
+        showNotice(`${currentTheme.name} Level ${level} - ${bonusObjective.title}`);
       }
       updateHud();
+    }
+
+    function getBonusObjective(nextLevel) {
+      const progress = getCampaignProgress(nextLevel);
+      const reward = Math.round(180 + nextLevel * 28 + progress.chapter * 85);
+      const objectives = [
+        { type: "armor", title: "Armor Contract: finish above 55% hull", target: 55, reward },
+        { type: "chain", title: "Hunter Contract: earn a 3x takedown chain", target: 3, reward: Math.round(reward * 1.18) },
+        { type: "supply", title: "Recovery Contract: secure 2 supply crates", target: 2, reward: Math.round(reward * 1.1) },
+        { type: "speed", title: `Rapid Contract: clear patrols under ${getSpeedObjectiveSeconds(nextLevel)}s`, target: getSpeedObjectiveSeconds(nextLevel), reward: Math.round(reward * 1.24) }
+      ];
+      return objectives[(nextLevel + progress.chapter) % objectives.length];
+    }
+
+    function getSpeedObjectiveSeconds(nextLevel) {
+      const difficulty = getDifficulty(nextLevel);
+      return Math.round(46 + difficulty.missionTarget * 3.4 + difficulty.chapter * 6);
+    }
+
+    function updateBonusObjective(type, amount = 1) {
+      if (!bonusObjective || bonusObjectiveMet) return;
+      if (bonusObjective.type !== type) return;
+      if (type === "armor") {
+        bonusObjectiveProgress = Math.round(hull / Math.max(1, maxHull) * 100);
+        bonusObjectiveMet = bonusObjectiveProgress >= bonusObjective.target;
+      } else if (type === "speed") {
+        bonusObjectiveProgress = Math.round((performance.now() - levelStartedAt) / 1000);
+        bonusObjectiveMet = bonusObjectiveProgress <= bonusObjective.target;
+      } else {
+        bonusObjectiveProgress = Math.max(bonusObjectiveProgress, amount);
+        bonusObjectiveMet = bonusObjectiveProgress >= bonusObjective.target;
+      }
+      if (bonusObjectiveMet) showToast(`${bonusObjective.title} complete`);
+    }
+
+    function bonusObjectiveText() {
+      if (!bonusObjective) return "";
+      if (bonusObjectiveMet) return "Bonus complete";
+      if (bonusObjective.type === "armor") {
+        return `${bonusObjective.title}`;
+      }
+      if (bonusObjective.type === "speed") {
+        const elapsed = Math.round((performance.now() - levelStartedAt) / 1000);
+        return `${bonusObjective.title} (${elapsed}s)`;
+      }
+      return `${bonusObjective.title} (${bonusObjectiveProgress}/${bonusObjective.target})`;
+    }
+
+    function registerKillMomentum(enemy) {
+      const now = performance.now();
+      killChain = now - lastKillAt < 4300 ? killChain + 1 : 1;
+      lastKillAt = now;
+      if (!enemy.boss && killChain >= 2) {
+        const chainBonus = Math.round(20 + killChain * (12 + level * 1.6));
+        score += chainBonus;
+        addDamageNumber(enemy.group.position.x, enemy.boss ? 18 : 12, enemy.group.position.z, `${killChain}X +${chainBonus}`, 0x45fff4);
+        if (killChain >= 3) updateBonusObjective("chain", killChain);
+      }
     }
 
     function spawnNextEnemyWave(initial = false) {
@@ -2827,9 +2920,11 @@
       const wavesLeft = Math.max(1, totalWaves - activeWave);
       activeWave = Math.min(totalWaves, activeWave + 1);
       const baseCount = Math.ceil(remaining / wavesLeft);
-      const spawnCount = Math.min(remaining, Math.max(3, Math.min(12 + difficulty.chapter, baseCount + (initial ? 0 : 1))));
+      const surge = activeWave === totalWaves ? 2 : activeWave > 1 ? 1 : 0;
+      const spawnCount = Math.min(remaining, Math.max(3, Math.min(15 + difficulty.chapter, baseCount + (initial ? 0 : 1) + surge)));
       for (let i = 0; i < spawnCount; i += 1) spawnEnemy(false);
-      showNotice(`${currentTheme.name} - Wave ${activeWave}/${totalWaves}`);
+      const waveName = activeWave === totalWaves ? "Final Patrol Surge" : activeWave === 1 ? "Contact Wave" : activeWave % 2 ? "Flank Push" : "Armor Push";
+      showNotice(`${waveName} - Wave ${activeWave}/${totalWaves}`);
     }
 
     function spawnEnemy(isBoss, bossProfile = null) {
@@ -2907,21 +3002,32 @@
       const difficulty = getDifficulty(level);
       const patrolHp = Math.round((72 + level * 7 + difficulty.chapter * 28 + difficulty.chapterLevel * 4) * difficulty.enemyHp);
       const patrolDamage = (4.2 + level * 0.09 + difficulty.chapter * 0.35) * difficulty.enemyDamage;
-      enemies.push({
+      const eliteChance = !isBoss ? Math.min(0.24, 0.035 + difficulty.chapter * 0.018 + difficulty.chapterLevel * 0.006 + winStreak * 0.006) : 0;
+      const elite = !isBoss && Math.random() < eliteChance;
+      if (elite) {
+        const eliteLabel = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTexture("ELITE", 0xffd468), transparent: true, depthWrite: false }));
+        eliteLabel.position.set(0, 9.8, 0);
+        eliteLabel.scale.set(11, 3.6, 1);
+        group.add(eliteLabel);
+        addMesh(group, new THREE.BoxGeometry(5.5, 0.22, 0.18), marker, [0, 7.3, 4.1]);
+      }
+      const enemyRecord = {
         group,
         hpBar,
-        maxHp: isBoss ? bossProfile.hp : patrolHp,
-        hp: isBoss ? bossProfile.hp : patrolHp,
-        speed: isBoss ? bossProfile.speed : (14.5 + level * 0.18 + difficulty.chapterLevel * 0.12) * difficulty.enemySpeed,
-        damage: isBoss ? bossProfile.damage : patrolDamage,
+        maxHp: isBoss ? bossProfile.hp : Math.round(patrolHp * (elite ? 1.42 : 1)),
+        hp: isBoss ? bossProfile.hp : Math.round(patrolHp * (elite ? 1.42 : 1)),
+        speed: isBoss ? bossProfile.speed : (14.5 + level * 0.18 + difficulty.chapterLevel * 0.12) * difficulty.enemySpeed * (elite ? 1.08 : 1),
+        damage: isBoss ? bossProfile.damage : patrolDamage * (elite ? 1.18 : 1),
         radius: isBoss ? (bossProfile?.super ? 15 : 12) : 6,
         boss: isBoss,
-        name: bossProfile?.name || profile.name,
+        elite,
+        name: bossProfile?.name || `${elite ? "Elite " : ""}${profile.name}`,
         abilities: bossProfile?.abilities || [],
         specialCooldown: isBoss ? 2.4 : 0,
         super: !!bossProfile?.super,
         hpBarHalfWidth: 5 * bossScale
-      });
+      };
+      enemies.push(enemyRecord);
     }
 
     function randomSpawnPosition(minDist) {
@@ -2944,11 +3050,14 @@
         gameMode = saved.mode || gameMode;
         autoFireEnabled = !!saved.autoFireEnabled;
         hull = saved.hull || maxHull;
+        winStreak = Number(saved.winStreak || localStorage.getItem(STREAK_KEY) || 0);
       } else {
         level = 1;
         score = 0;
         autoFireEnabled = false;
         hull = maxHull;
+        winStreak = 0;
+        localStorage.setItem(STREAK_KEY, String(winStreak));
       }
       loadProfile();
       applyUpgradeEffects();
@@ -2962,7 +3071,8 @@
       document.body.classList.add("playing");
       applyTheme(level);
       buildDistrict();
-      resetTankToHomeBase();
+      if (load && level > 1) deployTankToForwardRally();
+      else resetTankToHomeBase();
       updateAutoFireUi();
       updateModeUi();
       applyTankSkin();
@@ -3056,7 +3166,7 @@
         document.body.classList.add("playing");
         applyTheme(level);
         if ((level - 1) % 10 === 0) buildDistrict();
-        resetTankToHomeBase();
+        deployTankToForwardRally();
         spawnWave();
       });
       saveExitBtn.addEventListener("click", () => {
@@ -3428,10 +3538,11 @@
       enemy.hpBar.position.x = -(1 - ratio) * (enemy.hpBarHalfWidth || (enemy.boss ? 9.25 : 5));
       addDamageNumber(enemy.group.position.x, enemy.boss ? 18 : 10, enemy.group.position.z, Math.round(damage), color);
       if (enemy.hp <= 0) {
+        registerKillMomentum(enemy);
         const difficulty = getDifficulty(level);
         const reward = enemy.boss
           ? Math.round(520 + level * 32 + difficulty.chapter * 260 + (enemy.super ? 1200 : 0))
-          : Math.round(70 + level * 8 + difficulty.chapter * 22 + difficulty.chapterLevel * 3);
+          : Math.round((70 + level * 8 + difficulty.chapter * 22 + difficulty.chapterLevel * 3) * (enemy.elite ? 1.65 : 1));
         score += reward;
         if (enemy.boss) bossDefeated = true;
         else if (missionKills < missionTarget) missionKills += 1;
@@ -3637,6 +3748,8 @@
         missileCooldown = Math.max(0, missileCooldown - 2.8);
         showToast(`Elite resupply +${credits} credits`);
       }
+      suppliesRecovered += 1;
+      updateBonusObjective("supply", suppliesRecovered);
       playResupplySound();
       updateHud();
       saveProfile();
@@ -3942,6 +4055,7 @@
     function maybeSpawnBoss() {
       if (bossSpawned) return;
       if (missionKills < missionTarget) return;
+      updateBonusObjective("speed");
       for (const patrol of enemies.filter(item => !item.boss)) {
         enemyRoot.remove(patrol.group);
       }
@@ -4029,7 +4143,13 @@
       paused = true;
       document.body.classList.remove("playing");
       const progress = getCampaignProgress(level);
-      score += Math.round(level * 145 + progress.chapter * 260 + (progress.superBoss ? 1400 : 0));
+      updateBonusObjective("armor");
+      winStreak += 1;
+      localStorage.setItem(STREAK_KEY, String(winStreak));
+      const baseReward = Math.round(level * 155 + progress.chapter * 310 + (progress.superBoss ? 1650 : 0));
+      const streakReward = Math.round(Math.min(10, winStreak) * (58 + level * 7.5 + progress.chapter * 38));
+      const contractReward = bonusObjectiveMet && bonusObjective ? bonusObjective.reward : 0;
+      score += baseReward + streakReward + contractReward;
       best = Math.max(best, score);
       localStorage.setItem(BEST_KEY, String(best));
       saveProfile();
@@ -4042,7 +4162,7 @@
         .slice(0, 3);
       ui.levelSummary.textContent = level >= MAX_LEVEL
         ? `You cleared Level ${MAX_LEVEL}. Final credits: ${score}.`
-        : `${progress.superBoss ? `Chapter ${progress.tier} superboss defeated. ` : ""}Level ${level} cleared. Credits: ${score}. ${nextUnlocks.length ? `New unlocks: ${nextUnlocks.join(", ")}. ` : ""}Next: Level ${level + 1} in ${themes[Math.min(themes.length - 1, nextProgress.chapter)].name}. Upgrade before moving on.`;
+        : `${progress.superBoss ? `Chapter ${progress.tier} superboss defeated. ` : ""}Level ${level} cleared. Base reward +${baseReward}, streak +${streakReward}${contractReward ? `, contract +${contractReward}` : ""}. Win streak: ${winStreak}. Credits: ${score}. ${nextUnlocks.length ? `New unlocks: ${nextUnlocks.join(", ")}. ` : ""}Next: Level ${level + 1} in ${themes[Math.min(themes.length - 1, nextProgress.chapter)].name}. Upgrade before moving on.`;
       nextLevelBtn.textContent = level >= MAX_LEVEL ? "Restart Campaign" : "Next Level";
       levelOverlay.dataset.action = level >= MAX_LEVEL ? "restart" : "next";
       levelOverlay.style.display = "grid";
@@ -4058,11 +4178,15 @@
       saveProfile();
       ui.levelTitle.textContent = "Tank Disabled";
       if (gameMode === "hardcore") {
+        winStreak = 0;
+        localStorage.setItem(STREAK_KEY, String(winStreak));
         localStorage.removeItem(SAVE_KEY);
         ui.levelSummary.textContent = `Hardcore run ended at Level ${level} with ${score} credits. Garage unlocks stay yours, but the run resets to Level 1.`;
         nextLevelBtn.textContent = "New Hardcore Run";
         levelOverlay.dataset.action = "restart";
       } else {
+        winStreak = 0;
+        localStorage.setItem(STREAK_KEY, String(winStreak));
         saveProgress();
         ui.levelSummary.textContent = `Regular mode: Level ${level} can be retried. Credits and garage progress stay available.`;
         nextLevelBtn.textContent = "Retry Level";
@@ -4081,7 +4205,7 @@
       document.body.classList.add("playing");
       applyTheme(level);
       if ((level - 1) % 10 === 0) buildDistrict();
-      resetTankToHomeBase();
+      deployTankToForwardRally();
       spawnWave();
     }
 
@@ -4212,15 +4336,15 @@
       if (bossEnemy) {
         ui.missionFill.style.width = `${Math.max(0, 100 - bossPct)}%`;
         ui.missionFill.style.background = "linear-gradient(90deg, #ff465b, #f7c84b)";
-        ui.missionText.textContent = `${bossEnemy.name} hull ${Math.round(bossPct)}%`;
+        ui.missionText.textContent = `${bossEnemy.name} hull ${Math.round(bossPct)}% - ${bonusObjectiveMet ? "Contract complete" : "Finish the boss"}`;
       } else {
         ui.missionFill.style.width = `${Math.min(100, cleared / Math.max(1, missionTarget) * 100)}%`;
         ui.missionFill.style.background = "linear-gradient(90deg, #45fff4, #4d9dff)";
-        ui.missionText.textContent = bossSpawned ? "Boss defeated" : `Wave ${Math.max(1, activeWave)}/${Math.max(1, totalWaves)} - ${cleared} cleared / ${missionTarget}`;
+        ui.missionText.textContent = bossSpawned ? "Boss defeated" : `Wave ${Math.max(1, activeWave)}/${Math.max(1, totalWaves)} - ${cleared}/${missionTarget} - ${bonusObjectiveText()}`;
       }
       const progress = getCampaignProgress(level);
       const chapterLabel = progress.superBoss ? `Chapter ${progress.tier} Superboss` : `Chapter ${progress.tier}`;
-      ui.district.textContent = `${currentTheme.name} - ${chapterLabel} - ${manualAimActive ? "Manual aim" : bossEnemy ? "Boss finale" : autoFireEnabled ? "Auto shoot support" : "Auto aim"}`;
+      ui.district.textContent = `${currentTheme.name} - ${chapterLabel} - Streak ${winStreak} - ${manualAimActive ? "Manual aim" : bossEnemy ? "Boss finale" : autoFireEnabled ? "Auto shoot support" : "Auto aim"}`;
       updateRadar();
     }
 
@@ -4619,6 +4743,7 @@
         hull: Math.max(1, hull),
         mode: gameMode,
         autoFireEnabled,
+        winStreak,
         savedAt: new Date().toISOString()
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(save));
