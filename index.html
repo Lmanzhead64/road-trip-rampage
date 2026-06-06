@@ -58,7 +58,7 @@
       inset: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) auto max(12px, env(safe-area-inset-left));
       z-index: 4;
       display: grid;
-      grid-template-columns: minmax(190px, auto) minmax(150px, 1fr) auto;
+      grid-template-columns: minmax(190px, auto) minmax(150px, 1fr) auto 112px;
       gap: 10px;
       align-items: start;
       pointer-events: none;
@@ -114,6 +114,14 @@
       background: linear-gradient(90deg, #45fff4, #4d9dff);
     }
 
+    #missionText {
+      margin-top: 5px;
+      color: rgba(244, 247, 251, 0.74);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
     #stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -137,6 +145,20 @@
       font-weight: 950;
       line-height: 1;
       white-space: nowrap;
+    }
+
+    #radarBox {
+      padding: 7px;
+      min-height: 96px;
+    }
+
+    #radar {
+      width: 96px;
+      height: 96px;
+      display: block;
+      border: 1px solid rgba(69, 255, 244, 0.34);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(69, 255, 244, 0.12), rgba(0, 0, 0, 0.38));
     }
 
     #notice {
@@ -245,6 +267,13 @@
       background: radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.22), rgba(69, 255, 244, 0.25) 35%, rgba(6, 18, 22, 0.82));
     }
 
+    .action-btn.tiny {
+      width: 60px;
+      height: 60px;
+      font-size: 9px;
+      border-color: rgba(247, 200, 75, 0.34);
+    }
+
     .action-btn.active {
       color: #031011;
       border-color: rgba(69, 255, 244, 0.86);
@@ -268,6 +297,17 @@
     #levelOverlay {
       display: none;
       background: rgba(0, 0, 0, 0.72);
+    }
+
+    #garageOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 11;
+      display: none;
+      place-items: center;
+      padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+      background: rgba(0, 0, 0, 0.76);
+      backdrop-filter: blur(4px);
     }
 
     .menu {
@@ -339,6 +379,53 @@
       margin-top: 18px;
     }
 
+    .garage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+      text-align: left;
+    }
+
+    .garage-card {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 11px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .garage-card h3 {
+      margin: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .garage-card p {
+      margin: 6px 0 10px;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .garage-card button {
+      width: 100%;
+      min-height: 36px;
+      font-size: 11px;
+    }
+
+    .mode-select {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .mode-select button.active {
+      color: #031011;
+      background: linear-gradient(180deg, #70fff8, #20d7ce);
+      border-color: rgba(69, 255, 244, 0.7);
+    }
+
     button {
       min-height: 46px;
       border: 1px solid rgba(255, 255, 255, 0.20);
@@ -394,13 +481,35 @@
 
     @media (max-width: 760px) {
       #hud {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) 88px;
         gap: 8px;
       }
 
       .hud-box {
         padding: 8px 10px;
         min-height: 0;
+      }
+
+      #hud > .hud-box:first-child {
+        grid-column: 1 / -1;
+      }
+
+      #hud > .hud-box:nth-child(2),
+      #hud > .hud-box:nth-child(3) {
+        grid-column: 1;
+      }
+
+      #radarBox {
+        grid-column: 2;
+        grid-row: 2 / span 2;
+        align-self: start;
+        padding: 5px;
+        min-height: 84px;
+      }
+
+      #radar {
+        width: 76px;
+        height: 76px;
       }
 
       #stats {
@@ -416,6 +525,10 @@
       }
 
       .mode-row {
+        grid-template-columns: 1fr;
+      }
+
+      .garage-grid {
         grid-template-columns: 1fr;
       }
 
@@ -436,7 +549,7 @@
 
     @media (orientation: landscape) and (max-height: 520px) {
       #hud {
-        grid-template-columns: 205px 1fr auto;
+        grid-template-columns: 205px 1fr auto 88px;
         gap: 8px;
       }
 
@@ -479,6 +592,22 @@
         font-size: 9px;
       }
 
+      .action-btn.tiny {
+        width: 54px;
+        height: 54px;
+        font-size: 8px;
+      }
+
+      #radarBox {
+        padding: 5px;
+        min-height: 78px;
+      }
+
+      #radar {
+        width: 76px;
+        height: 76px;
+      }
+
       .action-btn.primary {
         width: 78px;
         height: 78px;
@@ -517,12 +646,13 @@
       <div class="title">Road Trip Rampage 3D</div>
       <div id="district" class="subtitle">Industrial approach</div>
       <div id="missionBar"><div id="missionFill"></div></div>
+      <div id="missionText">0 cleared / 8 target</div>
     </div>
     <div class="hud-box">
       <div id="stats">
         <div class="stat"><div class="stat-label">Level</div><div id="levelStat" class="stat-value">1</div></div>
         <div class="stat"><div class="stat-label">Credits</div><div id="scoreStat" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Hostiles</div><div id="enemyStat" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Left</div><div id="enemyStat" class="stat-value">0</div></div>
         <div class="stat"><div class="stat-label">Best</div><div id="bestStat" class="stat-value">0</div></div>
       </div>
     </div>
@@ -531,13 +661,17 @@
       <div id="hullStat" class="stat-value">100%</div>
       <div id="hullBar"><div id="hullFill"></div></div>
     </div>
+    <div id="radarBox" class="hud-box">
+      <canvas id="radar" width="128" height="128" aria-label="Enemy radar"></canvas>
+    </div>
   </div>
 
   <div id="notice">Boss convoy incoming</div>
-  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. Auto Aim tracks enemies. Space/Shell fires. Q/Aim toggles Manual Aim so you can click buildings. M launches missile.</div>
+  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. F toggles Auto Fire. Space/Shell fires with aim assist. Q/Aim toggles Manual Aim for buildings. M launches missile.</div>
 
   <div id="joystick"><div id="stickKnob"></div></div>
   <div id="actionPad">
+    <button id="autoFireBtn" class="action-btn tiny" type="button">Auto Fire Off</button>
     <button id="aimBtn" class="action-btn small" type="button">Auto Aim</button>
     <button id="missileBtn" class="action-btn" type="button">Missile</button>
     <button id="fireBtn" class="action-btn primary" type="button">Shell</button>
@@ -561,9 +695,14 @@
           <span>District themes rotate every 10 levels, with stronger enemies and boss convoys.</span>
         </div>
       </div>
+      <div class="mode-select">
+        <button id="regularModeBtn" class="active" type="button">Regular Mode</button>
+        <button id="hardcoreModeBtn" type="button">Hardcore Mode</button>
+      </div>
       <div class="start-actions">
         <button id="startBtn" class="start-main" type="button">Start 3D Drive</button>
         <button id="continueBtn" class="start-secondary" type="button">Load Save</button>
+        <button id="garageBtn" class="start-secondary" type="button">Garage</button>
         <button id="resetSaveBtn" class="start-secondary" type="button">Reset Save</button>
       </div>
     </div>
@@ -575,7 +714,19 @@
       <p id="levelSummary">Your tank recovered at home base. Spend credits later in the full garage, then move to the next district.</p>
       <div class="start-actions">
         <button id="nextLevelBtn" class="start-main" type="button">Next Level</button>
+        <button id="garageLevelBtn" class="start-secondary" type="button">Garage / Upgrades</button>
         <button id="saveExitBtn" class="start-secondary" type="button">Save And Exit</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="garageOverlay">
+    <div class="menu">
+      <h1>Garage</h1>
+      <p id="garageSummary">Spend credits on stacked upgrades, base assistance, and tank skins.</p>
+      <div id="garageGrid" class="garage-grid"></div>
+      <div class="start-actions">
+        <button id="closeGarageBtn" class="start-main" type="button">Back</button>
       </div>
     </div>
   </section>
@@ -588,18 +739,29 @@
     const canvas = document.getElementById("game");
     const startOverlay = document.getElementById("startOverlay");
     const levelOverlay = document.getElementById("levelOverlay");
+    const garageOverlay = document.getElementById("garageOverlay");
     const startBtn = document.getElementById("startBtn");
     const continueBtn = document.getElementById("continueBtn");
     const resetSaveBtn = document.getElementById("resetSaveBtn");
     const nextLevelBtn = document.getElementById("nextLevelBtn");
+    const garageBtn = document.getElementById("garageBtn");
+    const garageLevelBtn = document.getElementById("garageLevelBtn");
+    const closeGarageBtn = document.getElementById("closeGarageBtn");
+    const regularModeBtn = document.getElementById("regularModeBtn");
+    const hardcoreModeBtn = document.getElementById("hardcoreModeBtn");
     const saveExitBtn = document.getElementById("saveExitBtn");
     const fireBtn = document.getElementById("fireBtn");
     const missileBtn = document.getElementById("missileBtn");
     const aimBtn = document.getElementById("aimBtn");
+    const autoFireBtn = document.getElementById("autoFireBtn");
     const joystick = document.getElementById("joystick");
     const stickKnob = document.getElementById("stickKnob");
     const notice = document.getElementById("notice");
     const toast = document.getElementById("toast");
+    const radar = document.getElementById("radar");
+    const radarCtx = radar.getContext("2d");
+    const garageGrid = document.getElementById("garageGrid");
+    const garageSummary = document.getElementById("garageSummary");
 
     const ui = {
       district: document.getElementById("district"),
@@ -610,15 +772,39 @@
       best: document.getElementById("bestStat"),
       hull: document.getElementById("hullStat"),
       hullFill: document.getElementById("hullFill"),
+      missionText: document.getElementById("missionText"),
       levelTitle: document.getElementById("levelTitle"),
       levelSummary: document.getElementById("levelSummary")
     };
 
     const SAVE_KEY = "roadTripRampage3DSaveV1";
+    const PROFILE_KEY = "roadTripRampage3DProfileV1";
     const BEST_KEY = "roadTripRampage3DBestV1";
     const MAX_LEVEL = 100;
     const WORLD_SIZE = 1800;
     const MAX_JOYSTICK = 78;
+
+    const upgradeCatalog = [
+      { id: "cannon", category: "Weapons", name: "Auto-Cannon Loader", max: 5, baseCost: 180, desc: "Faster close-range auto fire and more gun damage." },
+      { id: "shell", category: "Weapons", name: "Bunker Shells", max: 5, baseCost: 240, desc: "Harder shell hits, bigger structure damage, faster reload." },
+      { id: "missile", category: "Weapons", name: "Missile Rack", max: 4, baseCost: 320, desc: "Stronger missiles with faster cycling." },
+      { id: "armor", category: "Armor", name: "Reactive Plating", max: 6, baseCost: 220, desc: "Raises hull integrity so the tank lasts longer." },
+      { id: "regen", category: "Armor", name: "Field Repair System", max: 4, baseCost: 280, desc: "Slow hull recovery after you stop taking hits." },
+      { id: "engine", category: "Mobility", name: "Tracked Drive Train", max: 4, baseCost: 210, desc: "Better speed, turning, and heavy-map handling." },
+      { id: "support", category: "Assistance", name: "Base Support Network", max: 5, baseCost: 260, desc: "Home base repairs faster and reaches farther." },
+      { id: "turrets", category: "Assistance", name: "Turret Battery", max: 4, baseCost: 260, desc: "Home-base guns hit harder and cover more ground." },
+      { id: "skin-steel", category: "Skin", name: "Raw Steel Armor", max: 1, baseCost: 0, desc: "Brushed steel armored-dozer finish." },
+      { id: "skin-black", category: "Skin", name: "Blackout Armor", max: 1, baseCost: 450, desc: "Matte black tactical armor plates." },
+      { id: "skin-sand", category: "Skin", name: "Desert Armor", max: 1, baseCost: 520, desc: "Dust-road tan with darker track guards." },
+      { id: "skin-diamond", category: "Skin", name: "Pink Diamond Armor", max: 1, baseCost: 950, desc: "Premium-style bright armor with polished trim." }
+    ];
+
+    const skinPalettes = {
+      "skin-steel": { main: 0x5a6256, accent: 0x323a34, glow: 0xf7c84b },
+      "skin-black": { main: 0x15191a, accent: 0x2d3234, glow: 0x45fff4 },
+      "skin-sand": { main: 0x8c7b5f, accent: 0x453d31, glow: 0xffc14a },
+      "skin-diamond": { main: 0xe680bd, accent: 0x6b5670, glow: 0xffd5f1 }
+    };
 
     const themes = [
       { name: "Industrial Approach", ground: 0x242820, road: 0x16181b, fog: 0xb7c3bf, sky: 0x98a6a8, accent: 0x45fff4 },
@@ -651,6 +837,9 @@
     let score = 0;
     let best = Number(localStorage.getItem(BEST_KEY) || 0);
     let hull = 100;
+    let maxHull = 100;
+    let hullRegenRate = 0;
+    let gameMode = "regular";
     let missionKills = 0;
     let missionTarget = 8;
     let bossSpawned = false;
@@ -680,6 +869,7 @@
     let manualFireRequested = false;
     let missileRequested = false;
     let autoAimEnabled = true;
+    let autoFireEnabled = false;
     let manualAimActive = false;
     let manualAimPoint = new THREE.Vector3(0, 0, 80);
     let currentAimTarget = null;
@@ -692,12 +882,18 @@
     let engineGain = null;
     let concreteTexture = null;
     let armorTextureCache = new Map();
+    let tankPaintMaterials = [];
+    let tankAccentMaterials = [];
+    let selectedSkin = "skin-steel";
+    let upgradeLevels = Object.fromEntries(upgradeCatalog.map(item => [item.id, item.id === "skin-steel" ? 1 : 0]));
 
     const tmpVec = new THREE.Vector3();
     const tmpVec2 = new THREE.Vector3();
     const forward = new THREE.Vector3();
     const right = new THREE.Vector3();
 
+    loadProfile();
+    applyUpgradeEffects();
     init();
     animate();
 
@@ -908,6 +1104,7 @@
           if (Math.abs(xRoad) < 110 && Math.abs(z + 44) < 150) continue;
           addStreetLight(xRoad - 31, z, Math.PI / 2);
           if (rng() > 0.42) addTree(xRoad + 43 + rng() * 18, z + (rng() - 0.5) * 38, rng);
+          if (rng() > 0.78) addParkedVehicle(xRoad + (rng() > 0.5 ? 54 : -54), z + (rng() - 0.5) * 58, Math.PI / 2, rng);
         }
       }
       for (const zRoad of roads) {
@@ -915,6 +1112,7 @@
           if (Math.abs(x) < 110 && Math.abs(zRoad + 44) < 150) continue;
           addStreetLight(x, zRoad + 27, 0);
           if (rng() > 0.48) addTree(x + (rng() - 0.5) * 38, zRoad - 42 - rng() * 18, rng);
+          if (rng() > 0.80) addParkedVehicle(x + (rng() - 0.5) * 58, zRoad + (rng() > 0.5 ? 48 : -48), 0, rng);
         }
       }
       for (const xRoad of roads) {
@@ -923,6 +1121,53 @@
           if (rng() > 0.35) addTrafficSignal(xRoad + 24, zRoad + 24, rng);
         }
       }
+    }
+
+    function addParkedVehicle(x, z, rot, rng) {
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      group.rotation.y = rot + (rng() - 0.5) * 0.16;
+      const colors = [0x2f3942, 0x5d2026, 0x344f42, 0x797a70, 0x1e2732];
+      const carMat = new THREE.MeshStandardMaterial({ color: colors[Math.floor(rng() * colors.length)], roughness: 0.62, metalness: 0.32 });
+      const glassMat = new THREE.MeshStandardMaterial({ color: 0x0b1419, roughness: 0.22, metalness: 0.18, emissive: 0x061015, emissiveIntensity: 0.18 });
+      const tireMat = new THREE.MeshStandardMaterial({ color: 0x050606, roughness: 0.92, metalness: 0.1 });
+      const body = new THREE.Mesh(new THREE.BoxGeometry(7.8, 2.0, 13.8), carMat);
+      body.position.y = 1.9;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      const cab = new THREE.Mesh(new THREE.BoxGeometry(6.3, 1.65, 5.8), glassMat);
+      cab.position.set(0, 3.35, -0.8);
+      cab.castShadow = true;
+      for (const wx of [-4.2, 4.2]) {
+        for (const wz of [-4.6, 4.6]) {
+          const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.92, 0.92, 0.7, 18), tireMat);
+          wheel.rotation.z = Math.PI / 2;
+          wheel.position.set(wx, 1.0, wz);
+          wheel.castShadow = true;
+          group.add(wheel);
+        }
+      }
+      group.add(body, cab);
+      propRoot.add(group);
+      const entry = {
+        minX: x - 8,
+        maxX: x + 8,
+        minZ: z - 10,
+        maxZ: z + 10,
+        x,
+        z,
+        w: 16,
+        d: 20,
+        height: 5,
+        hp: 65,
+        maxHp: 65,
+        group,
+        mesh: body,
+        destructible: true,
+        destroyed: false
+      };
+      group.userData.buildingEntry = entry;
+      buildings.push(entry);
     }
 
     function addStreetLight(x, z, rot) {
@@ -1225,6 +1470,10 @@
       const accentMat = new THREE.MeshStandardMaterial({ color: 0x2c342f, roughness: 0.7, metalness: 0.5 });
       const glassMat = new THREE.MeshStandardMaterial({ color: 0x081114, roughness: 0.25, metalness: 0.15, emissive: 0x0c1e22, emissiveIntensity: 0.2 });
       const glowMat = new THREE.MeshStandardMaterial({ color: 0xf7c84b, emissive: 0xf7c84b, emissiveIntensity: 0.55, roughness: 0.35 });
+      tankPaintMaterials = [hullMat];
+      tankAccentMaterials = [accentMat, glowMat];
+      tank.userData.materials = { hullMat, accentMat, glowMat };
+      applyTankSkin();
 
       const lower = new THREE.Mesh(new THREE.BoxGeometry(11.4, 2.4, 18.8), hullMat);
       lower.position.y = 2.6;
@@ -1237,6 +1486,32 @@
       upper.castShadow = true;
       upper.receiveShadow = true;
       tank.add(upper);
+
+      const armoredCab = new THREE.Mesh(new THREE.BoxGeometry(8.4, 5.4, 7.6), hullMat);
+      armoredCab.position.set(0, 8.1, -1.7);
+      armoredCab.castShadow = true;
+      armoredCab.receiveShadow = true;
+      tank.add(armoredCab);
+
+      const visor = new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.48, 0.22), glassMat);
+      visor.position.set(0, 8.72, 2.18);
+      visor.castShadow = true;
+      tank.add(visor);
+
+      const sideSlitLeft = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.42, 4.4), glassMat);
+      sideSlitLeft.position.set(-4.32, 8.62, -1.5);
+      tank.add(sideSlitLeft);
+      const sideSlitRight = sideSlitLeft.clone();
+      sideSlitRight.position.x = 4.32;
+      tank.add(sideSlitRight);
+
+      for (const x of [-4.75, 4.75]) {
+        const sideArmor = new THREE.Mesh(new THREE.BoxGeometry(0.52, 4.4, 12.8), hullMat);
+        sideArmor.position.set(x, 6.2, -0.5);
+        sideArmor.castShadow = true;
+        sideArmor.receiveShadow = true;
+        tank.add(sideArmor);
+      }
 
       const frontSlope = new THREE.Mesh(new THREE.BoxGeometry(8.9, 1.15, 5.2), hullMat);
       frontSlope.position.set(0, 4.6, 6.1);
@@ -1279,6 +1554,14 @@
       bladeEdge.castShadow = true;
       tank.add(bladeEdge);
 
+      for (let x = -6.6; x <= 6.6; x += 2.2) {
+        const tooth = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.42, 1.35), darkMat);
+        tooth.position.set(x, 1.02, 11.35);
+        tooth.rotation.x = -0.32;
+        tooth.castShadow = true;
+        tank.add(tooth);
+      }
+
       const trackGeom = new THREE.BoxGeometry(2.6, 2.6, 20.2);
       for (const x of [-6.1, 6.1]) {
         const track = new THREE.Mesh(trackGeom, rubberMat);
@@ -1313,7 +1596,7 @@
       }
 
       turret = new THREE.Group();
-      turret.position.set(0, 7.35, 0.2);
+      turret.position.set(0, 11.55, -0.1);
       const turretBody = new THREE.Mesh(new THREE.CylinderGeometry(4.0, 4.8, 2.5, 30), hullMat);
       turretBody.rotation.x = Math.PI / 2;
       turretBody.castShadow = true;
@@ -1401,7 +1684,7 @@
       bossSpawned = false;
       missionKills = 0;
       missionTarget = Math.min(32, 7 + level + Math.floor(level / 3));
-      hull = Math.min(100, hull + 24);
+      hull = Math.min(maxHull, hull + 24 + getUpgradeLevel("support") * 4);
 
       const count = Math.min(18, 5 + Math.floor(level * 0.7));
       for (let i = 0; i < count; i += 1) spawnEnemy(false);
@@ -1508,12 +1791,18 @@
       if (load && saved) {
         level = saved.level || 1;
         score = saved.score || 0;
-        hull = saved.hull || 100;
+        gameMode = saved.mode || gameMode;
+        autoFireEnabled = !!saved.autoFireEnabled;
+        hull = saved.hull || maxHull;
       } else {
         level = 1;
         score = 0;
-        hull = 100;
+        autoFireEnabled = false;
+        hull = maxHull;
       }
+      loadProfile();
+      applyUpgradeEffects();
+      hull = Math.min(maxHull, Math.max(1, hull));
       tankPos.set(0, 0, -38);
       heading = 0;
       speed = 0;
@@ -1525,10 +1814,14 @@
       gameOver = false;
       startOverlay.style.display = "none";
       levelOverlay.style.display = "none";
+      garageOverlay.style.display = "none";
       applyTheme(level);
       buildDistrict();
       tank.position.copy(tankPos);
       updateAimUi();
+      updateAutoFireUi();
+      updateModeUi();
+      applyTankSkin();
       spawnWave();
     }
 
@@ -1545,6 +1838,10 @@
         }
         if (event.code === "KeyQ") {
           toggleAimMode();
+          event.preventDefault();
+        }
+        if (event.code === "KeyF") {
+          toggleAutoFire();
           event.preventDefault();
         }
         if (event.code === "KeyR" && started) {
@@ -1579,20 +1876,39 @@
         event.preventDefault();
         toggleAimMode();
       });
+      autoFireBtn.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        toggleAutoFire();
+      });
 
       startBtn.addEventListener("click", () => startGame({ load: false }));
       continueBtn.addEventListener("click", () => {
         if (readSave()) startGame({ load: true });
         else showToast("No save yet. Starting new run.");
       });
+      regularModeBtn.addEventListener("click", () => setGameMode("regular"));
+      hardcoreModeBtn.addEventListener("click", () => setGameMode("hardcore"));
+      garageBtn.addEventListener("click", () => openGarage());
+      garageLevelBtn.addEventListener("click", () => openGarage());
+      closeGarageBtn.addEventListener("click", () => closeGarage());
       resetSaveBtn.addEventListener("click", () => {
         localStorage.removeItem(SAVE_KEY);
         showToast("Save cleared.");
       });
       nextLevelBtn.addEventListener("click", () => {
+        const action = levelOverlay.dataset.action || "next";
+        if (action === "restart") {
+          startGame({ load: false });
+          return;
+        }
+        if (action === "retry") {
+          retryLevel();
+          return;
+        }
         level = Math.min(MAX_LEVEL, level + 1);
         paused = false;
         levelOverlay.style.display = "none";
+        levelOverlay.dataset.action = "next";
         applyTheme(level);
         if ((level - 1) % 10 === 0) buildDistrict();
         spawnWave();
@@ -1603,8 +1919,11 @@
         paused = true;
         levelOverlay.style.display = "none";
         startOverlay.style.display = "grid";
+        updateModeUi();
         showToast("Saved. Load Save brings you back.");
       });
+      updateModeUi();
+      updateAutoFireUi();
     }
 
     function beginTouch(event) {
@@ -1675,6 +1994,30 @@
       updateAimUi();
     }
 
+    function toggleAutoFire() {
+      autoFireEnabled = !autoFireEnabled;
+      updateAutoFireUi();
+      showToast(autoFireEnabled ? "Auto Fire on: close hostiles only." : "Auto Fire off: Space or Shell controls fire.");
+    }
+
+    function updateAutoFireUi() {
+      if (!autoFireBtn) return;
+      autoFireBtn.textContent = autoFireEnabled ? "Auto Fire On" : "Auto Fire Off";
+      autoFireBtn.classList.toggle("active", autoFireEnabled);
+    }
+
+    function setGameMode(mode) {
+      gameMode = mode === "hardcore" ? "hardcore" : "regular";
+      updateModeUi();
+      showToast(gameMode === "hardcore" ? "Hardcore mode: one run, reset on loss." : "Regular mode: retry the current level.");
+    }
+
+    function updateModeUi() {
+      regularModeBtn.classList.toggle("active", gameMode === "regular");
+      hardcoreModeBtn.classList.toggle("active", gameMode === "hardcore");
+      startBtn.textContent = gameMode === "hardcore" ? "Start Hardcore" : "Start Regular";
+    }
+
     function updateAimUi() {
       if (!aimBtn || !aimMarker) return;
       aimBtn.textContent = manualAimActive ? "Manual" : "Auto Aim";
@@ -1725,6 +2068,9 @@
       updateAimUi();
       updateBaseDefenses();
       updateBaseSupport(dt);
+      if (hullRegenRate > 0 && damageCooldown === 0 && hull > 0 && hull < maxHull) {
+        hull = Math.min(maxHull, hull + hullRegenRate * dt);
+      }
       updateEnemies(dt);
       updateProjectiles(dt);
       updateExplosions(dt);
@@ -1738,6 +2084,9 @@
       if (missileRequested) {
         launchMissile();
         missileRequested = false;
+      }
+      if (autoFireEnabled) {
+        autoFire();
       }
     }
 
@@ -1756,11 +2105,12 @@
     }
 
     function updateTank(dt, input) {
-      const maxSpeed = input.boost ? 74 : 58;
-      const reverseSpeed = 30;
+      const engineLevel = getUpgradeLevel("engine");
+      const maxSpeed = (input.boost ? 74 : 58) + engineLevel * 6;
+      const reverseSpeed = 30 + engineLevel * 2.5;
       const targetSpeed = input.throttle >= 0 ? input.throttle * maxSpeed : input.throttle * reverseSpeed;
       speed += (targetSpeed - speed) * Math.min(1, dt * 3.3);
-      const steerStrength = 1.34 * (0.35 + Math.min(1, Math.abs(speed) / 45) * 0.65);
+      const steerStrength = (1.34 + engineLevel * 0.07) * (0.35 + Math.min(1, Math.abs(speed) / 45) * 0.65);
       heading -= input.turn * steerStrength * dt * (speed >= -0.5 ? 1 : -1);
 
       forward.set(Math.sin(heading), 0, Math.cos(heading));
@@ -1785,7 +2135,7 @@
       if (manualAimActive) {
         aimPoint = manualAimPoint;
       } else if (autoAimEnabled) {
-        currentAimTarget = nearestEnemy(230);
+        currentAimTarget = nearestEnemy(360 + getUpgradeLevel("cannon") * 18);
         if (currentAimTarget) {
           aimPoint = currentAimTarget.group.position;
         }
@@ -1832,8 +2182,10 @@
 
     function updateBaseDefenses() {
       if (baseDefenseCooldown > 0) return;
+      const turretLevel = getUpgradeLevel("turrets");
+      const supportLevel = getUpgradeLevel("support");
       let target = null;
-      let targetDist = 190;
+      let targetDist = 190 + turretLevel * 24 + supportLevel * 10;
       for (const enemy of enemies) {
         const dist = Math.hypot(enemy.group.position.x, enemy.group.position.z + 44);
         if (dist < targetDist) {
@@ -1842,17 +2194,18 @@
         }
       }
       if (!target) return;
-      baseDefenseCooldown = 0.32;
+      baseDefenseCooldown = Math.max(0.18, 0.32 - turretLevel * 0.025);
       addExplosion(target.group.position.x, 5, target.group.position.z, currentTheme.accent, 0.35);
-      damageEnemy(target, 16 + level * 0.8, target.group.position, currentTheme.accent);
+      damageEnemy(target, 16 + level * 0.8 + turretLevel * 8 + supportLevel * 3, target.group.position, currentTheme.accent);
     }
 
     function updateBaseSupport(dt) {
       const dist = Math.hypot(tankPos.x, tankPos.z + 44);
-      if (dist > 64) return;
-      if (hull < 100) hull = Math.min(100, hull + dt * 9);
-      heavyCooldown = Math.max(0, heavyCooldown - dt * 0.7);
-      missileCooldown = Math.max(0, missileCooldown - dt * 0.55);
+      const supportLevel = getUpgradeLevel("support");
+      if (dist > 64 + supportLevel * 10) return;
+      if (hull < maxHull) hull = Math.min(maxHull, hull + dt * (9 + supportLevel * 2.1));
+      heavyCooldown = Math.max(0, heavyCooldown - dt * (0.7 + supportLevel * 0.08));
+      missileCooldown = Math.max(0, missileCooldown - dt * (0.55 + supportLevel * 0.06));
     }
 
     function updateProjectiles(dt) {
@@ -2000,21 +2353,22 @@
 
     function autoFire() {
       if (autoCooldown > 0) return;
-      const target = nearestEnemy(170);
+      const cannonLevel = getUpgradeLevel("cannon");
+      const target = nearestEnemy(150 + cannonLevel * 14);
       if (!target) return;
       shootProjectile({
         target,
-        speed: 190,
-        damage: 18 + level * 1.3,
+        speed: 190 + cannonLevel * 10,
+        damage: 18 + level * 1.3 + cannonLevel * 7,
         color: 0x45fff4,
         radius: 1.08,
         life: 2.3,
         homing: true,
         splash: 0,
-        buildingDamage: 5 + level * 0.2,
+        buildingDamage: 5 + level * 0.2 + cannonLevel * 2,
         sound: "auto"
       });
-      autoCooldown = Math.max(0.11, 0.26 - level * 0.002);
+      autoCooldown = Math.max(0.09, 0.34 - cannonLevel * 0.045 - level * 0.0012);
     }
 
     function fireHeavyShell() {
@@ -2022,21 +2376,22 @@
         showToast("Heavy shell reloading.");
         return;
       }
-      const aim = getFireAim(250);
+      const shellLevel = getUpgradeLevel("shell");
+      const aim = getFireAim(290 + shellLevel * 22);
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
-        speed: 120,
-        damage: 115 + level * 5,
+        speed: 120 + shellLevel * 6,
+        damage: 115 + level * 5 + shellLevel * 28,
         color: 0xf7c84b,
         radius: 1.55,
         life: 2.6,
         homing: !!aim.target,
-        splash: 34,
-        buildingDamage: 155 + level * 8,
+        splash: 34 + shellLevel * 3,
+        buildingDamage: 155 + level * 8 + shellLevel * 42,
         sound: "shell"
       });
-      heavyCooldown = 1.6;
+      heavyCooldown = Math.max(0.86, 1.6 - shellLevel * 0.11);
     }
 
     function launchMissile() {
@@ -2044,7 +2399,8 @@
         showToast("Missile rack cycling.");
         return;
       }
-      const aim = getFireAim(340);
+      const missileLevel = getUpgradeLevel("missile");
+      const aim = getFireAim(360 + missileLevel * 38);
       if (!aim.target && !manualAimActive) {
         showToast("No target lock.");
         return;
@@ -2052,17 +2408,17 @@
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
-        speed: 92,
-        damage: 170 + level * 7,
+        speed: 92 + missileLevel * 8,
+        damage: 170 + level * 7 + missileLevel * 42,
         color: 0xff465b,
         radius: 1.35,
         life: 4.6,
         homing: !!aim.target,
-        splash: 48,
-        buildingDamage: 220 + level * 10,
+        splash: 48 + missileLevel * 5,
+        buildingDamage: 220 + level * 10 + missileLevel * 58,
         sound: "missile"
       });
-      missileCooldown = 4.2;
+      missileCooldown = Math.max(2.55, 4.2 - missileLevel * 0.32);
     }
 
     function getFireAim(range) {
@@ -2187,16 +2543,15 @@
       score += level * 130;
       best = Math.max(best, score);
       localStorage.setItem(BEST_KEY, String(best));
+      saveProfile();
       saveProgress();
       ui.levelTitle.textContent = level >= MAX_LEVEL ? "Campaign Cleared" : "District Clear";
       ui.levelSummary.textContent = level >= MAX_LEVEL
         ? `You cleared Level ${MAX_LEVEL}. Final credits: ${score}.`
-        : `Level ${level} cleared. Credits: ${score}. Next district: ${themes[Math.min(themes.length - 1, Math.floor(level / 10))].name}.`;
+        : `Level ${level} cleared. Credits: ${score}. Open the garage to stack weapons, armor, assistance, turrets, and skins before the next district.`;
       nextLevelBtn.textContent = level >= MAX_LEVEL ? "Restart Campaign" : "Next Level";
+      levelOverlay.dataset.action = level >= MAX_LEVEL ? "restart" : "next";
       levelOverlay.style.display = "grid";
-      if (level >= MAX_LEVEL) {
-        nextLevelBtn.onclick = () => startGame({ load: false });
-      }
     }
 
     function endRun() {
@@ -2205,16 +2560,40 @@
       gameOver = true;
       best = Math.max(best, score);
       localStorage.setItem(BEST_KEY, String(best));
-      localStorage.removeItem(SAVE_KEY);
+      saveProfile();
       ui.levelTitle.textContent = "Tank Disabled";
-      ui.levelSummary.textContent = `Run ended at Level ${level} with ${score} credits. Start again or load a previous save if one exists.`;
-      nextLevelBtn.textContent = "New Run";
-      nextLevelBtn.onclick = () => {
-        nextLevelBtn.onclick = null;
-        startGame({ load: false });
-      };
+      if (gameMode === "hardcore") {
+        localStorage.removeItem(SAVE_KEY);
+        ui.levelSummary.textContent = `Hardcore run ended at Level ${level} with ${score} credits. Garage unlocks stay yours, but the run resets to Level 1.`;
+        nextLevelBtn.textContent = "New Hardcore Run";
+        levelOverlay.dataset.action = "restart";
+      } else {
+        saveProgress();
+        ui.levelSummary.textContent = `Regular mode: Level ${level} can be retried. Credits and garage progress stay available.`;
+        nextLevelBtn.textContent = "Retry Level";
+        levelOverlay.dataset.action = "retry";
+      }
       levelOverlay.style.display = "grid";
       updateHud();
+    }
+
+    function retryLevel() {
+      hull = maxHull;
+      gameOver = false;
+      paused = false;
+      levelOverlay.style.display = "none";
+      levelOverlay.dataset.action = "next";
+      tankPos.set(0, 0, -38);
+      heading = 0;
+      speed = 0;
+      manualAimActive = false;
+      autoAimEnabled = true;
+      currentAimTarget = null;
+      tank.position.copy(tankPos);
+      updateAimUi();
+      applyTheme(level);
+      if ((level - 1) % 10 === 0) buildDistrict();
+      spawnWave();
     }
 
     function nearestEnemy(range) {
@@ -2259,15 +2638,214 @@
     }
 
     function updateHud() {
+      const hullPct = Math.max(0, Math.min(100, hull / Math.max(1, maxHull) * 100));
+      const cleared = Math.min(missionKills, missionTarget);
+      const remaining = Math.max(0, missionTarget - missionKills);
       ui.level.textContent = String(level);
       ui.score.textContent = String(score);
-      ui.enemies.textContent = String(enemies.length);
+      ui.enemies.textContent = String(remaining);
       ui.best.textContent = String(best);
-      ui.hull.textContent = `${Math.max(0, Math.round(hull))}%`;
-      ui.hullFill.style.width = `${Math.max(0, Math.min(100, hull))}%`;
-      ui.hullFill.style.background = hull > 55 ? "linear-gradient(90deg, #24ff91, #e8f35f)" : hull > 25 ? "linear-gradient(90deg, #f7c84b, #ff7b45)" : "linear-gradient(90deg, #ff465b, #9e1322)";
-      ui.missionFill.style.width = `${Math.min(100, missionKills / Math.max(1, missionTarget) * 100)}%`;
-      ui.district.textContent = `${currentTheme.name} - ${manualAimActive ? "Manual aim" : bossSpawned ? "Boss active" : "Auto aim"}`;
+      ui.hull.textContent = `${Math.max(0, Math.round(hull))}/${Math.round(maxHull)}`;
+      ui.hullFill.style.width = `${hullPct}%`;
+      ui.hullFill.style.background = hullPct > 55 ? "linear-gradient(90deg, #24ff91, #e8f35f)" : hullPct > 25 ? "linear-gradient(90deg, #f7c84b, #ff7b45)" : "linear-gradient(90deg, #ff465b, #9e1322)";
+      ui.missionFill.style.width = `${Math.min(100, cleared / Math.max(1, missionTarget) * 100)}%`;
+      ui.missionText.textContent = `${cleared} cleared / ${missionTarget} target`;
+      ui.district.textContent = `${currentTheme.name} - ${manualAimActive ? "Manual aim" : bossSpawned ? "Boss active" : autoFireEnabled ? "Auto fire ready" : "Auto aim"}`;
+      updateRadar();
+    }
+
+    function updateRadar() {
+      if (!radarCtx) return;
+      const w = radar.width;
+      const h = radar.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const radius = w * 0.43;
+      radarCtx.clearRect(0, 0, w, h);
+      radarCtx.fillStyle = "rgba(2, 8, 10, 0.72)";
+      radarCtx.beginPath();
+      radarCtx.arc(cx, cy, radius + 4, 0, Math.PI * 2);
+      radarCtx.fill();
+      radarCtx.strokeStyle = "rgba(69, 255, 244, 0.34)";
+      radarCtx.lineWidth = 1.5;
+      for (const r of [0.34, 0.66, 1]) {
+        radarCtx.beginPath();
+        radarCtx.arc(cx, cy, radius * r, 0, Math.PI * 2);
+        radarCtx.stroke();
+      }
+      radarCtx.strokeStyle = "rgba(255,255,255,0.17)";
+      radarCtx.beginPath();
+      radarCtx.moveTo(cx - radius, cy);
+      radarCtx.lineTo(cx + radius, cy);
+      radarCtx.moveTo(cx, cy - radius);
+      radarCtx.lineTo(cx, cy + radius);
+      radarCtx.stroke();
+
+      drawRadarPoint(0 - tankPos.x, -44 - tankPos.z, 0x45fff4, 4, 620);
+      for (const enemy of enemies) {
+        drawRadarPoint(enemy.group.position.x - tankPos.x, enemy.group.position.z - tankPos.z, enemy.boss ? 0xff465b : 0xffa045, enemy.boss ? 4.8 : 3.2, 620);
+      }
+
+      radarCtx.fillStyle = "#f4f7fb";
+      radarCtx.beginPath();
+      radarCtx.moveTo(cx, cy - 7);
+      radarCtx.lineTo(cx - 5, cy + 6);
+      radarCtx.lineTo(cx + 5, cy + 6);
+      radarCtx.closePath();
+      radarCtx.fill();
+
+      function drawRadarPoint(dx, dz, color, size, range) {
+        const rightDot = dx * Math.cos(heading) - dz * Math.sin(heading);
+        const forwardDot = dx * Math.sin(heading) + dz * Math.cos(heading);
+        let px = rightDot / range * radius;
+        let py = -forwardDot / range * radius;
+        const dist = Math.hypot(px, py);
+        if (dist > radius) {
+          px = px / dist * radius;
+          py = py / dist * radius;
+        }
+        radarCtx.fillStyle = `#${new THREE.Color(color).getHexString()}`;
+        radarCtx.beginPath();
+        radarCtx.arc(cx + px, cy + py, size, 0, Math.PI * 2);
+        radarCtx.fill();
+      }
+    }
+
+    function openGarage() {
+      renderGarage();
+      garageOverlay.style.display = "grid";
+    }
+
+    function closeGarage() {
+      garageOverlay.style.display = "none";
+      applyUpgradeEffects();
+      applyTankSkin();
+      updateHud();
+      saveProfile();
+      if (started) saveProgress();
+    }
+
+    function renderGarage() {
+      garageSummary.textContent = `Credits ${score} - Level ${level} - ${gameMode === "hardcore" ? "Hardcore" : "Regular"} mode. Upgrades stack; skins change the tank's visible armor.`;
+      garageGrid.innerHTML = "";
+      for (const item of upgradeCatalog) {
+        const levelNow = getUpgradeLevel(item.id);
+        const isSkin = item.category === "Skin";
+        const unlocked = levelNow > 0;
+        const maxed = levelNow >= item.max;
+        const cost = upgradeCost(item);
+        const card = document.createElement("div");
+        card.className = "garage-card";
+        card.innerHTML = `
+          <h3>${item.name}</h3>
+          <p><strong>${item.category}</strong> - ${item.desc}</p>
+          <p>${isSkin ? (unlocked ? "Unlocked" : "Locked") : `Level ${levelNow}/${item.max}`} ${selectedSkin === item.id ? "- Equipped" : ""}</p>
+        `;
+        const button = document.createElement("button");
+        if (isSkin && unlocked) {
+          button.textContent = selectedSkin === item.id ? "Equipped" : "Equip";
+          button.disabled = selectedSkin === item.id;
+        } else if (maxed) {
+          button.textContent = "Maxed";
+          button.disabled = true;
+        } else {
+          button.textContent = cost === 0 ? "Unlock Free" : `Buy ${cost}`;
+          button.disabled = score < cost;
+        }
+        button.addEventListener("click", () => buyUpgrade(item.id));
+        card.appendChild(button);
+        garageGrid.appendChild(card);
+      }
+    }
+
+    function buyUpgrade(id) {
+      const item = upgradeCatalog.find(entry => entry.id === id);
+      if (!item) return;
+      const levelNow = getUpgradeLevel(id);
+      const isSkin = item.category === "Skin";
+      if (isSkin && levelNow > 0) {
+        selectedSkin = id;
+        applyTankSkin();
+        saveProfile();
+        renderGarage();
+        showToast(`${item.name} equipped.`);
+        return;
+      }
+      if (levelNow >= item.max) {
+        showToast(`${item.name} already maxed.`);
+        return;
+      }
+      const cost = upgradeCost(item);
+      if (score < cost) {
+        showToast(`Need ${cost - score} more credits.`);
+        return;
+      }
+      score -= cost;
+      upgradeLevels[id] = levelNow + 1;
+      if (isSkin) selectedSkin = id;
+      applyUpgradeEffects({ fillNewArmor: id === "armor" });
+      applyTankSkin();
+      saveProfile();
+      saveProgress();
+      renderGarage();
+      updateHud();
+      showToast(isSkin ? `${item.name} unlocked.` : `${item.name} upgraded.`);
+    }
+
+    function upgradeCost(item) {
+      const levelNow = getUpgradeLevel(item.id);
+      if (item.category === "Skin") return item.baseCost;
+      return Math.round((item.baseCost * Math.pow(levelNow + 1, 1.36)) / 10) * 10;
+    }
+
+    function getUpgradeLevel(id) {
+      return Number(upgradeLevels[id] || 0);
+    }
+
+    function applyUpgradeEffects(options = {}) {
+      const oldMaxHull = maxHull;
+      maxHull = 100 + getUpgradeLevel("armor") * 25;
+      hullRegenRate = getUpgradeLevel("regen") * 0.95;
+      if (options.fillNewArmor && maxHull > oldMaxHull) {
+        hull += maxHull - oldMaxHull;
+      }
+      hull = Math.min(maxHull, Math.max(0, hull));
+    }
+
+    function applyTankSkin() {
+      const palette = skinPalettes[selectedSkin] || skinPalettes["skin-steel"];
+      if (tank?.userData?.materials) {
+        const { hullMat, accentMat, glowMat } = tank.userData.materials;
+        hullMat.color.setHex(palette.main);
+        hullMat.map = makeArmorTexture(palette.main);
+        hullMat.needsUpdate = true;
+        accentMat.color.setHex(palette.accent);
+        accentMat.needsUpdate = true;
+        glowMat.color.setHex(palette.glow);
+        glowMat.emissive.setHex(palette.glow);
+        glowMat.needsUpdate = true;
+      }
+    }
+
+    function loadProfile() {
+      try {
+        const profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || "null");
+        if (!profile) return;
+        selectedSkin = skinPalettes[profile.selectedSkin] ? profile.selectedSkin : selectedSkin;
+        if (profile.upgradeLevels && typeof profile.upgradeLevels === "object") {
+          for (const item of upgradeCatalog) {
+            const value = Number(profile.upgradeLevels[item.id] || 0);
+            upgradeLevels[item.id] = Math.max(item.id === "skin-steel" ? 1 : 0, Math.min(item.max, value));
+          }
+        }
+      } catch {}
+    }
+
+    function saveProfile() {
+      localStorage.setItem(PROFILE_KEY, JSON.stringify({
+        selectedSkin,
+        upgradeLevels
+      }));
     }
 
     function saveProgress() {
@@ -2275,6 +2853,8 @@
         level,
         score,
         hull: Math.max(1, hull),
+        mode: gameMode,
+        autoFireEnabled,
         savedAt: new Date().toISOString()
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(save));
@@ -2309,7 +2889,7 @@
       if (!Ctx) return;
       audioCtx = new Ctx();
       masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0.62;
+      masterGain.gain.value = 0.86;
       const compressor = audioCtx.createDynamicsCompressor();
       compressor.threshold.value = -18;
       compressor.knee.value = 22;
@@ -2345,26 +2925,26 @@
       if (!audioCtx || !masterGain) return;
       if (kind === "auto") {
         playTone(220, 0.032, "square", 0.045, 120);
-        playTone(72, 0.04, "sine", 0.028, -18);
+        playTone(64, 0.055, "sine", 0.052, -18);
       } else if (kind === "shell") {
-        playTone(56, 0.18, "sawtooth", 0.24, -32);
+        playTone(48, 0.22, "sawtooth", 0.34, -28);
         playTone(310, 0.055, "square", 0.07, 180);
-        playNoise(0.14, 0.19, 1180);
+        playNoise(0.18, 0.24, 1180);
       } else if (kind === "missile") {
-        playTone(96, 0.30, "sawtooth", 0.16, 220);
+        playTone(88, 0.34, "sawtooth", 0.22, 220);
         playTone(620, 0.08, "triangle", 0.05, 260);
-        playNoise(0.22, 0.13, 1800);
+        playNoise(0.25, 0.18, 1800);
       }
     }
 
     function playExplosionSound(scale = 1) {
       if (!audioCtx || !masterGain) return;
       const s = Math.min(2.4, Math.max(0.6, scale));
-      playTone(38, 0.36 * s, "sine", 0.26 * Math.min(1.4, s), -14);
-      playTone(92, 0.22 * s, "sawtooth", 0.16 * Math.min(1.2, s), -36);
+      playTone(34, 0.42 * s, "sine", 0.34 * Math.min(1.45, s), -12);
+      playTone(88, 0.26 * s, "sawtooth", 0.2 * Math.min(1.2, s), -34);
       playTone(880, 0.055, "square", 0.055, 420);
-      playNoise(0.34 * s, 0.24 * Math.min(1.3, s), 520);
-      playNoise(0.075, 0.11, 4200);
+      playNoise(0.38 * s, 0.31 * Math.min(1.3, s), 460);
+      playNoise(0.085, 0.13, 4200);
     }
 
     function playTone(freq, duration, type, gain, slide) {
