@@ -58,26 +58,27 @@
       inset: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) auto max(12px, env(safe-area-inset-left));
       z-index: 4;
       display: grid;
-      grid-template-columns: minmax(190px, auto) minmax(150px, 1fr) auto 112px;
-      gap: 10px;
+      grid-template-columns: minmax(210px, 1fr) minmax(280px, 0.9fr) minmax(150px, 0.55fr) 78px;
+      gap: 6px;
       align-items: start;
+      max-width: 920px;
       pointer-events: none;
     }
 
     .hud-box {
-      background: linear-gradient(180deg, rgba(9, 12, 18, 0.78), rgba(3, 5, 8, 0.55));
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.36);
+      background: linear-gradient(180deg, rgba(8, 10, 11, 0.82), rgba(1, 2, 3, 0.58));
+      border: 1px solid rgba(224, 220, 196, 0.16);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
       backdrop-filter: blur(10px);
-      border-radius: 8px;
-      padding: 10px 12px;
-      min-height: 58px;
+      border-radius: 5px;
+      padding: 7px 9px;
+      min-height: 45px;
     }
 
     .title {
       font-weight: 900;
       letter-spacing: 0;
-      font-size: clamp(15px, 2.2vw, 22px);
+      font-size: clamp(13px, 1.55vw, 18px);
       line-height: 1.05;
       text-transform: uppercase;
     }
@@ -85,7 +86,7 @@
     .subtitle {
       margin-top: 4px;
       color: rgba(244, 247, 251, 0.72);
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
     }
@@ -93,8 +94,8 @@
     #hullBar,
     #missionBar {
       width: 100%;
-      height: 10px;
-      margin-top: 8px;
+      height: 7px;
+      margin-top: 5px;
       overflow: hidden;
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.14);
@@ -117,7 +118,7 @@
     #missionText {
       margin-top: 5px;
       color: rgba(244, 247, 251, 0.74);
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
     }
@@ -134,31 +135,31 @@
 
     .stat-label {
       color: rgba(244, 247, 251, 0.58);
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
     }
 
     .stat-value {
       margin-top: 2px;
-      font-size: clamp(14px, 2.5vw, 22px);
+      font-size: clamp(13px, 1.8vw, 18px);
       font-weight: 950;
       line-height: 1;
       white-space: nowrap;
     }
 
     #radarBox {
-      padding: 7px;
-      min-height: 96px;
+      padding: 5px;
+      min-height: 76px;
     }
 
     #radar {
-      width: 96px;
-      height: 96px;
+      width: 66px;
+      height: 66px;
       display: block;
-      border: 1px solid rgba(69, 255, 244, 0.34);
+      border: 1px solid rgba(218, 215, 190, 0.34);
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(69, 255, 244, 0.12), rgba(0, 0, 0, 0.38));
+      background: radial-gradient(circle, rgba(204, 214, 185, 0.12), rgba(0, 0, 0, 0.42));
     }
 
     #notice {
@@ -657,12 +658,12 @@
 
     @media (max-width: 760px) {
       #hud {
-        grid-template-columns: minmax(0, 1fr) 88px;
-        gap: 8px;
+        grid-template-columns: minmax(0, 1fr) 72px;
+        gap: 6px;
       }
 
       .hud-box {
-        padding: 8px 10px;
+        padding: 6px 8px;
         min-height: 0;
       }
 
@@ -680,12 +681,12 @@
         grid-row: 2 / span 2;
         align-self: start;
         padding: 5px;
-        min-height: 84px;
+        min-height: 70px;
       }
 
       #radar {
-        width: 76px;
-        height: 76px;
+        width: 60px;
+        height: 60px;
       }
 
       #stats {
@@ -729,16 +730,16 @@
 
     @media (orientation: landscape) and (max-height: 520px) {
       #hud {
-        grid-template-columns: 205px 1fr auto 88px;
-        gap: 8px;
+        grid-template-columns: 185px 235px 132px 66px;
+        gap: 5px;
       }
 
       .title {
-        font-size: 15px;
+        font-size: 13px;
       }
 
       .subtitle {
-        font-size: 10px;
+        font-size: 9px;
       }
 
       #stats {
@@ -746,11 +747,11 @@
       }
 
       .stat-value {
-        font-size: 16px;
+        font-size: 13px;
       }
 
       #notice {
-        top: 64px;
+        top: 112px;
         padding: 8px 12px;
         font-size: 12px;
       }
@@ -780,12 +781,12 @@
 
       #radarBox {
         padding: 5px;
-        min-height: 78px;
+        min-height: 62px;
       }
 
       #radar {
-        width: 76px;
-        height: 76px;
+        width: 56px;
+        height: 56px;
       }
 
       .action-btn.primary {
@@ -929,7 +930,7 @@
 
   <div id="notice">Boss convoy incoming</div>
   <div id="bossIntel"><strong>Boss Intel</strong><span>Clear the convoy to draw out the commander.</span></div>
-  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. F toggles Auto Fire. Space/Shell fires with aim assist. Q/Aim sets shot direction. M launches missile. Buildings are navigation obstacles.</div>
+  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. F toggles Auto Fire. Space/Shell fires at the closest locked hostile. Q/Aim sets shot direction. M launches missile. Structures are cover and obstacles.</div>
 
   <div id="joystick"><div id="stickKnob"></div></div>
   <div id="actionPad">
@@ -941,21 +942,21 @@
 
   <section id="startOverlay">
     <div class="menu">
-      <div class="start-kicker">Tactical armored campaign</div>
+      <div class="start-kicker">Modern armored campaign</div>
       <h1>Road Trip Rampage 3D</h1>
-      <p>Command a fictional armored dozer-tank through hostile city districts. Clear patrols, survive the level boss, upgrade your vehicle in the garage, and prepare for a superboss every 10 levels. Built by Levi Ray for Games.</p>
+      <p>Command an Abrams-inspired fictional battle tank through hostile city districts. Lock the closest enemy armor, clear patrols, survive the level commander, upgrade your vehicle in the garage, and prepare for a composite superboss every 10 levels. Built by Levi Ray for Games.</p>
       <div class="mode-row">
         <div class="mode-card">
-          <strong>Enemy-Only Targeting</strong>
-          <span>Auto Aim and Auto Fire prioritize hostile armor. Buildings stay out of the targeting system.</span>
+          <strong>Closest-Enemy Lock</strong>
+          <span>Auto Aim and Auto Fire select the nearest hostile tank first. Buildings stay out of the targeting system.</span>
+        </div>
+        <div class="mode-card">
+          <strong>Military-Style Armor</strong>
+          <span>Your tank uses a low, wide Abrams-style profile. Enemy armor uses fictional Leopard and T-series inspired silhouettes.</span>
         </div>
         <div class="mode-card">
           <strong>Boss Finale</strong>
           <span>Every level ends with a boss briefing. Levels 10, 20, 30 and beyond deploy composite superboss armor.</span>
-        </div>
-        <div class="mode-card">
-          <strong>Build Your Tank</strong>
-          <span>Stack firepower, hull, repair, mobility, base support, turret coverage, and skins in the garage.</span>
         </div>
       </div>
       <div class="mode-select">
@@ -1084,7 +1085,7 @@
 
     const skinPalettes = {
       "skin-steel": { main: 0x5a6256, accent: 0x323a34, glow: 0xf7c84b },
-      "skin-black": { main: 0x15191a, accent: 0x2d3234, glow: 0x45fff4 },
+      "skin-black": { main: 0x24292a, accent: 0x3c4244, glow: 0xb8d5d2 },
       "skin-sand": { main: 0x8c7b5f, accent: 0x453d31, glow: 0xffc14a },
       "skin-diamond": { main: 0xe680bd, accent: 0x6b5670, glow: 0xffd5f1 }
     };
@@ -1188,7 +1189,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 0.86;
+      renderer.toneMappingExposure = 0.76;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -1201,10 +1202,10 @@
 
       clock = new THREE.Clock();
 
-      const hemi = new THREE.HemisphereLight(0xdfe8ff, 0x2e2b22, 1.65);
+      const hemi = new THREE.HemisphereLight(0xdfe8ff, 0x2e2b22, 1.38);
       scene.add(hemi);
 
-      const sun = new THREE.DirectionalLight(0xfff3d2, 2.75);
+      const sun = new THREE.DirectionalLight(0xfff3d2, 2.35);
       sun.position.set(-95, 160, 90);
       sun.castShadow = true;
       sun.shadow.mapSize.set(2048, 2048);
@@ -1799,196 +1800,105 @@
       tank = new THREE.Group();
       tank.position.copy(tankPos);
 
-      const hullMat = new THREE.MeshStandardMaterial({ color: 0x4f574a, roughness: 0.78, metalness: 0.36, map: makeArmorTexture(0x4f574a) });
-      const darkMat = new THREE.MeshStandardMaterial({ color: 0x101314, roughness: 0.84, metalness: 0.42 });
-      const rubberMat = new THREE.MeshStandardMaterial({ color: 0x070808, roughness: 0.96, metalness: 0.18 });
-      const accentMat = new THREE.MeshStandardMaterial({ color: 0x2c342f, roughness: 0.7, metalness: 0.5 });
-      const glassMat = new THREE.MeshStandardMaterial({ color: 0x081114, roughness: 0.25, metalness: 0.15, emissive: 0x0c1e22, emissiveIntensity: 0.2 });
-      const glowMat = new THREE.MeshStandardMaterial({ color: 0xf7c84b, emissive: 0xf7c84b, emissiveIntensity: 0.55, roughness: 0.35 });
+      const hullMat = new THREE.MeshStandardMaterial({ color: 0x565c4d, roughness: 0.86, metalness: 0.42, map: makeArmorTexture(0x565c4d) });
+      const darkMat = new THREE.MeshStandardMaterial({ color: 0x0b0d0d, roughness: 0.9, metalness: 0.44 });
+      const rubberMat = new THREE.MeshStandardMaterial({ color: 0x050606, roughness: 0.98, metalness: 0.14 });
+      const accentMat = new THREE.MeshStandardMaterial({ color: 0x262d29, roughness: 0.78, metalness: 0.5, map: makeArmorTexture(0x262d29) });
+      const glassMat = new THREE.MeshStandardMaterial({ color: 0x061014, roughness: 0.24, metalness: 0.18, emissive: 0x07181c, emissiveIntensity: 0.18 });
+      const glowMat = new THREE.MeshStandardMaterial({ color: 0xf3d58a, emissive: 0xd6a84b, emissiveIntensity: 0.22, roughness: 0.45 });
       tankPaintMaterials = [hullMat];
       tankAccentMaterials = [accentMat, glowMat];
       tank.userData.materials = { hullMat, accentMat, glowMat };
       applyTankSkin();
 
-      const lower = new THREE.Mesh(new THREE.BoxGeometry(11.4, 2.4, 18.8), hullMat);
-      lower.position.y = 2.6;
-      lower.castShadow = true;
-      lower.receiveShadow = true;
-      tank.add(lower);
+      const addMesh = (parent, geometry, material, position, rotation = null) => {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(position[0], position[1], position[2]);
+        if (rotation) mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        parent.add(mesh);
+        return mesh;
+      };
 
-      const upper = new THREE.Mesh(new THREE.BoxGeometry(8.8, 3.1, 12.6), hullMat);
-      upper.position.set(0, 5.1, -0.6);
-      upper.castShadow = true;
-      upper.receiveShadow = true;
-      tank.add(upper);
+      addMesh(tank, new THREE.BoxGeometry(13.8, 2.2, 20.8), hullMat, [0, 2.7, 0]);
+      addMesh(tank, new THREE.BoxGeometry(10.6, 2.2, 13.6), hullMat, [0, 4.65, -0.8]);
+      addMesh(tank, new THREE.BoxGeometry(10.4, 0.95, 5.3), hullMat, [0, 4.35, 6.7], [-0.48, 0, 0]);
+      addMesh(tank, new THREE.BoxGeometry(10.0, 0.9, 5.8), accentMat, [0, 5.85, -7.0]);
+      addMesh(tank, new THREE.BoxGeometry(9.6, 1.7, 0.44), darkMat, [0, 4.2, -10.65]);
 
-      const armoredCab = new THREE.Mesh(new THREE.BoxGeometry(8.4, 5.4, 7.6), hullMat);
-      armoredCab.position.set(0, 8.1, -1.7);
-      armoredCab.castShadow = true;
-      armoredCab.receiveShadow = true;
-      tank.add(armoredCab);
-
-      const visor = new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.48, 0.22), glassMat);
-      visor.position.set(0, 8.72, 2.18);
-      visor.castShadow = true;
-      tank.add(visor);
-
-      const sideSlitLeft = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.42, 4.4), glassMat);
-      sideSlitLeft.position.set(-4.32, 8.62, -1.5);
-      tank.add(sideSlitLeft);
-      const sideSlitRight = sideSlitLeft.clone();
-      sideSlitRight.position.x = 4.32;
-      tank.add(sideSlitRight);
-
-      for (const x of [-4.75, 4.75]) {
-        const sideArmor = new THREE.Mesh(new THREE.BoxGeometry(0.52, 4.4, 12.8), hullMat);
-        sideArmor.position.set(x, 6.2, -0.5);
-        sideArmor.castShadow = true;
-        sideArmor.receiveShadow = true;
-        tank.add(sideArmor);
-      }
-
-      const frontSlope = new THREE.Mesh(new THREE.BoxGeometry(8.9, 1.15, 5.2), hullMat);
-      frontSlope.position.set(0, 4.6, 6.1);
-      frontSlope.rotation.x = -0.42;
-      frontSlope.castShadow = true;
-      tank.add(frontSlope);
-
-      const rearDeck = new THREE.Mesh(new THREE.BoxGeometry(8.6, 0.75, 5.6), accentMat);
-      rearDeck.position.set(0, 6.3, -6.7);
-      rearDeck.castShadow = true;
-      tank.add(rearDeck);
-
-      const rearPlate = new THREE.Mesh(new THREE.BoxGeometry(8.4, 2.3, 0.35), accentMat);
-      rearPlate.position.set(0, 4.6, -9.58);
-      rearPlate.castShadow = true;
-      tank.add(rearPlate);
-
-      for (let i = -3; i <= 3; i += 1.5) {
-        const grille = new THREE.Mesh(new THREE.BoxGeometry(0.72, 1.45, 0.18), darkMat);
-        grille.position.set(i, 4.65, -9.84);
-        grille.castShadow = true;
-        tank.add(grille);
-      }
-
-      const rearLightMat = new THREE.MeshStandardMaterial({ color: 0xff3045, emissive: 0xff1020, emissiveIntensity: 0.45, roughness: 0.2 });
-      for (const x of [-4.4, 4.4]) {
-        const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.42, 0.2), rearLightMat);
-        lamp.position.set(x, 3.55, -9.9);
-        tank.add(lamp);
-      }
-
-      const blade = new THREE.Mesh(new THREE.BoxGeometry(15.2, 2.7, 1.2), hullMat);
-      blade.position.set(0, 2.9, 10.4);
-      blade.rotation.x = -0.22;
-      blade.castShadow = true;
-      tank.add(blade);
-
-      const bladeEdge = new THREE.Mesh(new THREE.BoxGeometry(15.6, 0.32, 0.35), darkMat);
-      bladeEdge.position.set(0, 1.45, 10.95);
-      bladeEdge.castShadow = true;
-      tank.add(bladeEdge);
-
-      for (let x = -6.6; x <= 6.6; x += 2.2) {
-        const tooth = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.42, 1.35), darkMat);
-        tooth.position.set(x, 1.02, 11.35);
-        tooth.rotation.x = -0.32;
-        tooth.castShadow = true;
-        tank.add(tooth);
-      }
-
-      const trackGeom = new THREE.BoxGeometry(2.6, 2.6, 20.2);
-      for (const x of [-6.1, 6.1]) {
-        const track = new THREE.Mesh(trackGeom, rubberMat);
-        track.position.set(x, 1.85, 0);
-        track.castShadow = true;
-        track.receiveShadow = true;
-        tank.add(track);
-
-        const skirt = new THREE.Mesh(new THREE.BoxGeometry(0.55, 1.5, 18.8), hullMat);
-        skirt.position.set(x * 0.98, 3.3, -0.1);
-        skirt.castShadow = true;
-        tank.add(skirt);
-
-        for (let i = -8; i <= 8; i += 2) {
-          const pad = new THREE.Mesh(new THREE.BoxGeometry(2.85, 0.38, 1.05), accentMat);
-          pad.position.set(x, 3.3, i);
-          pad.castShadow = true;
-          tank.add(pad);
+      for (const x of [-7.25, 7.25]) {
+        addMesh(tank, new THREE.BoxGeometry(2.55, 2.45, 21.4), rubberMat, [x, 1.75, 0]);
+        addMesh(tank, new THREE.BoxGeometry(0.62, 1.75, 19.8), hullMat, [x * 0.92, 3.35, -0.2]);
+        for (let z = -9.1; z <= 9.1; z += 1.85) {
+          addMesh(tank, new THREE.BoxGeometry(2.9, 0.34, 0.92), accentMat, [x, 3.12, z]);
         }
-        for (let i = -7; i <= 7; i += 2.8) {
-          const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.92, 0.92, 0.55, 22), accentMat);
-          wheel.rotation.z = Math.PI / 2;
-          wheel.position.set(x * 1.01, 1.85, i);
-          wheel.castShadow = true;
-          tank.add(wheel);
-          const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.62, 18), darkMat);
-          hub.rotation.z = Math.PI / 2;
-          hub.position.copy(wheel.position);
-          hub.castShadow = true;
-          tank.add(hub);
+        for (let z = -7.6; z <= 7.6; z += 2.55) {
+          const wheel = addMesh(tank, new THREE.CylinderGeometry(0.9, 0.9, 0.56, 28), accentMat, [x * 1.01, 1.58, z], [0, 0, Math.PI / 2]);
+          addMesh(tank, new THREE.CylinderGeometry(0.34, 0.34, 0.66, 18), darkMat, [wheel.position.x, wheel.position.y, wheel.position.z], [0, 0, Math.PI / 2]);
         }
       }
+
+      for (const x of [-5.2, -3.1, -1.0, 1.0, 3.1, 5.2]) {
+        addMesh(tank, new THREE.BoxGeometry(1.1, 0.5, 1.7), darkMat, [x, 2.1, 10.75], [-0.18, 0, 0]);
+      }
+      for (let x = -3.6; x <= 3.6; x += 1.2) {
+        addMesh(tank, new THREE.BoxGeometry(0.72, 0.92, 0.18), darkMat, [x, 4.35, -10.92]);
+      }
+
+      const rearLightMat = new THREE.MeshStandardMaterial({ color: 0x8f1f1d, emissive: 0x4a0808, emissiveIntensity: 0.22, roughness: 0.5 });
+      for (const x of [-5.25, 5.25]) addMesh(tank, new THREE.BoxGeometry(0.48, 0.35, 0.18), rearLightMat, [x, 3.55, -10.95]);
 
       turret = new THREE.Group();
-      turret.position.set(0, 11.55, -0.1);
-      const turretBody = new THREE.Mesh(new THREE.CylinderGeometry(4.0, 4.8, 2.5, 30), hullMat);
-      turretBody.rotation.x = Math.PI / 2;
-      turretBody.castShadow = true;
-      turret.add(turretBody);
-      const turretFace = new THREE.Mesh(new THREE.BoxGeometry(5.8, 1.8, 3.5), hullMat);
-      turretFace.position.set(0, 0.1, 2.4);
-      turretFace.castShadow = true;
-      turret.add(turretFace);
-      const cannon = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.46, 14.5, 18), darkMat);
-      cannon.rotation.x = Math.PI / 2;
-      cannon.position.set(0, 0.15, 8.7);
-      cannon.castShadow = true;
-      turret.add(cannon);
-      const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 1.1, 18), darkMat);
-      muzzle.rotation.x = Math.PI / 2;
-      muzzle.position.set(0, 0.15, 15.85);
-      muzzle.castShadow = true;
-      turret.add(muzzle);
-      barrelTip = new THREE.Object3D();
-      barrelTip.position.set(0, 0.15, 16.5);
-      turret.add(barrelTip);
-
-      const hatch = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.18, 0.45, 18), accentMat);
-      hatch.position.set(-1.5, 1.55, -1.1);
-      hatch.castShadow = true;
-      turret.add(hatch);
-      const optics = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.75, 1.6), glassMat);
-      optics.position.set(2.1, 0.65, 2.9);
-      optics.castShadow = true;
-      turret.add(optics);
-      tank.add(turret);
-
-      const exhaustMat = new THREE.MeshStandardMaterial({ color: 0x12100d, roughness: 0.9, metalness: 0.55 });
-      for (const x of [-2.9, 2.9]) {
-        const exhaust = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.46, 3.6, 14), exhaustMat);
-        exhaust.rotation.x = Math.PI / 2;
-        exhaust.position.set(x, 6.8, -8.4);
-        exhaust.castShadow = true;
-        tank.add(exhaust);
+      turret.position.set(0, 6.85, -1.25);
+      addMesh(turret, new THREE.BoxGeometry(7.3, 1.75, 6.7), hullMat, [0, 0, 0]);
+      addMesh(turret, new THREE.BoxGeometry(5.9, 1.0, 4.8), hullMat, [0, 0.82, -0.45]);
+      addMesh(turret, new THREE.BoxGeometry(3.7, 1.35, 2.8), hullMat, [0, 0.02, 3.35]);
+      addMesh(turret, new THREE.BoxGeometry(7.0, 1.15, 2.4), accentMat, [0, -0.08, -4.25]);
+      for (const x of [-4.08, 4.08]) {
+        addMesh(turret, new THREE.BoxGeometry(0.78, 1.35, 5.7), accentMat, [x, 0.02, -0.1]);
       }
 
+      const cannon = addMesh(turret, new THREE.CylinderGeometry(0.26, 0.38, 17.4, 24), darkMat, [0, 0.1, 10.6], [Math.PI / 2, 0, 0]);
+      cannon.receiveShadow = false;
+      addMesh(turret, new THREE.CylinderGeometry(0.5, 0.5, 1.0, 24), darkMat, [0, 0.1, 19.45], [Math.PI / 2, 0, 0]);
+      barrelTip = new THREE.Object3D();
+      barrelTip.position.set(0, 0.1, 20.1);
+      turret.add(barrelTip);
+
+      addMesh(turret, new THREE.CylinderGeometry(0.86, 1.0, 0.34, 20), accentMat, [-1.8, 1.55, -1.2]);
+      addMesh(turret, new THREE.CylinderGeometry(0.78, 0.9, 0.32, 20), accentMat, [1.85, 1.48, -1.75]);
+      addMesh(turret, new THREE.BoxGeometry(1.2, 0.72, 1.55), glassMat, [2.55, 0.9, 2.25]);
+      addMesh(turret, new THREE.BoxGeometry(1.9, 0.42, 0.35), glassMat, [-1.1, 0.98, 2.95]);
+      addMesh(turret, new THREE.CylinderGeometry(0.08, 0.08, 4.0, 8), darkMat, [2.95, 2.82, -2.7], [0.18, 0, -0.1]);
+      for (const x of [-3.35, 3.35]) {
+        for (const z of [1.6, 2.35, 3.1]) {
+          addMesh(turret, new THREE.CylinderGeometry(0.16, 0.2, 1.15, 10), darkMat, [x, 0.4, z], [0.95, 0, 0]);
+        }
+      }
+      tank.add(turret);
+
+      const exhaustMat = new THREE.MeshStandardMaterial({ color: 0x11100e, roughness: 0.9, metalness: 0.58 });
+      for (const x of [-3.3, 3.3]) addMesh(tank, new THREE.CylinderGeometry(0.34, 0.42, 3.4, 14), exhaustMat, [x, 5.75, -8.75], [Math.PI / 2, 0, 0]);
+
       const antennaMat = new THREE.MeshBasicMaterial({ color: 0x090909 });
-      for (const x of [-3.4, 3.4]) {
+      for (const x of [-3.75, 3.75]) {
         const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 7.5, 8), antennaMat);
-        antenna.position.set(x, 10.2, -3.8);
+        antenna.position.set(x, 8.45, -5.2);
         antenna.rotation.x = x > 0 ? 0.18 : -0.14;
         tank.add(antenna);
       }
 
-      const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.42, 12, 8), glowMat);
-      beacon.position.set(0, 9.2, -2.6);
-      tank.add(beacon);
+      addMesh(tank, new THREE.BoxGeometry(4.6, 0.22, 0.18), glowMat, [0, 5.95, 8.15]);
 
       tankLight = new THREE.SpotLight(0xf7c84b, 0, 80, Math.PI / 7, 0.4, 1.2);
-      tankLight.position.set(0, 8, 5);
-      tankLight.target.position.set(0, 1, 32);
+      tankLight.position.set(0, 5.9, 7.6);
+      tankLight.target.position.set(0, 1, 34);
       tank.add(tankLight, tankLight.target);
+
+      const armorFill = new THREE.PointLight(0xd7d0b8, 0.42, 34, 1.7);
+      armorFill.position.set(0, 8.2, -3.6);
+      tank.add(armorFill);
 
       scene.add(tank);
     }
@@ -2033,66 +1943,68 @@
     function spawnEnemy(isBoss, bossProfile = null) {
       const group = new THREE.Group();
       const bossScale = isBoss ? (bossProfile?.super ? 2.28 : 1.85) : 1;
+      const enemyProfiles = [
+        { name: "Rhine Leopard-Style MBT", shape: "leopard", color: 0x3c4338, accent: 0x20261f, trim: 0x58604f },
+        { name: "Eastern Low-Profile MBT", shape: "eastern", color: 0x4a483c, accent: 0x292820, trim: 0x67614e },
+        { name: "Nordic Heavy Armor", shape: "heavy", color: 0x363f43, accent: 0x1c2226, trim: 0x56626a }
+      ];
+      const profile = isBoss
+        ? { name: bossProfile.name, shape: bossProfile?.super ? "heavy" : "leopard", color: bossProfile?.super ? 0x2f2524 : 0x46342e, accent: 0x171616, trim: 0x7a5f4b }
+        : enemyProfiles[(level + enemies.length) % enemyProfiles.length];
       const mat = new THREE.MeshStandardMaterial({
-        color: isBoss ? (bossProfile?.super ? 0x3d1116 : 0x68111b) : 0x34383c,
-        roughness: 0.64,
-        metalness: 0.35
+        color: profile.color,
+        roughness: 0.82,
+        metalness: 0.36,
+        map: makeArmorTexture(profile.color)
       });
-      const glow = new THREE.MeshStandardMaterial({
-        color: isBoss ? 0xff465b : 0xff7b45,
-        emissive: isBoss ? 0xff102f : 0xff4f14,
-        emissiveIntensity: isBoss ? 0.9 : 0.55
-      });
-
+      const accent = new THREE.MeshStandardMaterial({ color: profile.accent, roughness: 0.88, metalness: 0.46, map: makeArmorTexture(profile.accent) });
+      const trim = new THREE.MeshStandardMaterial({ color: profile.trim, roughness: 0.86, metalness: 0.32 });
       const rubber = new THREE.MeshStandardMaterial({ color: 0x080909, roughness: 0.96, metalness: 0.18 });
-      const body = new THREE.Mesh(new THREE.BoxGeometry(7.8 * bossScale, 2.7 * bossScale, 12.2 * bossScale), mat);
-      body.position.y = 2.5 * bossScale;
-      body.castShadow = true;
-      body.receiveShadow = true;
-      group.add(body);
+      const glass = new THREE.MeshStandardMaterial({ color: 0x061014, roughness: 0.25, metalness: 0.18, emissive: 0x081a20, emissiveIntensity: 0.12 });
+      const marker = new THREE.MeshStandardMaterial({ color: isBoss ? 0x9d3328 : 0x8a4a1e, emissive: isBoss ? 0x54140f : 0x351607, emissiveIntensity: 0.18, roughness: 0.6 });
 
-      const slope = new THREE.Mesh(new THREE.BoxGeometry(6.3 * bossScale, 1.0 * bossScale, 4.4 * bossScale), mat);
-      slope.position.set(0, 4.0 * bossScale, 3.5 * bossScale);
-      slope.rotation.x = -0.38;
-      slope.castShadow = true;
-      group.add(slope);
+      const addMesh = (parent, geometry, material, position, rotation = null) => {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(position[0] * bossScale, position[1] * bossScale, position[2] * bossScale);
+        if (rotation) mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        parent.add(mesh);
+        return mesh;
+      };
 
-      for (const x of [-4.9, 4.9]) {
-        const track = new THREE.Mesh(new THREE.BoxGeometry(1.65 * bossScale, 1.75 * bossScale, 12.8 * bossScale), rubber);
-        track.position.set(x * bossScale, 1.55 * bossScale, 0);
-        track.castShadow = true;
-        track.receiveShadow = true;
-        group.add(track);
-        for (let zWheel = -4.8; zWheel <= 4.8; zWheel += 2.4) {
-          const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.55 * bossScale, 0.55 * bossScale, 0.38 * bossScale, 16), mat);
-          wheel.rotation.z = Math.PI / 2;
-          wheel.position.set(x * bossScale, 1.55 * bossScale, zWheel * bossScale);
-          wheel.castShadow = true;
-          group.add(wheel);
+      addMesh(group, new THREE.BoxGeometry(8.8 * bossScale, 2.1 * bossScale, 13.8 * bossScale), mat, [0, 2.25, 0]);
+      addMesh(group, new THREE.BoxGeometry(7.2 * bossScale, 1.15 * bossScale, 8.8 * bossScale), mat, [0, 3.85, -0.7]);
+      addMesh(group, new THREE.BoxGeometry(6.7 * bossScale, 0.8 * bossScale, 3.9 * bossScale), mat, [0, 3.65, 4.6], [-0.42, 0, 0]);
+
+      for (const x of [-5.15, 5.15]) {
+        addMesh(group, new THREE.BoxGeometry(1.95 * bossScale, 1.85 * bossScale, 14.8 * bossScale), rubber, [x, 1.42, 0]);
+        addMesh(group, new THREE.BoxGeometry(0.46 * bossScale, 1.24 * bossScale, 13.5 * bossScale), accent, [x * 0.93, 2.82, -0.1]);
+        for (let zWheel = -5.8; zWheel <= 5.8; zWheel += 2.25) {
+          addMesh(group, new THREE.CylinderGeometry(0.58 * bossScale, 0.58 * bossScale, 0.4 * bossScale, 18), trim, [x, 1.42, zWheel], [0, 0, Math.PI / 2]);
         }
       }
 
       const turretEnemy = new THREE.Group();
-      turretEnemy.position.set(0, 5.2 * bossScale, -0.5 * bossScale);
-      const turretBody = new THREE.Mesh(new THREE.CylinderGeometry(2.3 * bossScale, 2.8 * bossScale, 1.5 * bossScale, 22), mat);
-      turretBody.rotation.x = Math.PI / 2;
-      turretBody.castShadow = true;
-      turretEnemy.add(turretBody);
-      const cannonEnemy = new THREE.Mesh(new THREE.CylinderGeometry(0.18 * bossScale, 0.26 * bossScale, 7.0 * bossScale, 12), rubber);
-      cannonEnemy.rotation.x = Math.PI / 2;
-      cannonEnemy.position.set(0, 0.1 * bossScale, 4.7 * bossScale);
-      cannonEnemy.castShadow = true;
-      turretEnemy.add(cannonEnemy);
+      turretEnemy.position.set(0, 5.05 * bossScale, -0.75 * bossScale);
+      if (profile.shape === "eastern") {
+        addMesh(turretEnemy, new THREE.CylinderGeometry(2.45 * bossScale, 3.05 * bossScale, 1.25 * bossScale, 28), mat, [0, 0, 0], [Math.PI / 2, 0, 0]);
+        addMesh(turretEnemy, new THREE.BoxGeometry(3.2 * bossScale, 0.86 * bossScale, 2.15 * bossScale), mat, [0, 0.08, 2.25]);
+      } else {
+        const rear = profile.shape === "heavy" ? 3.8 : 3.0;
+        addMesh(turretEnemy, new THREE.BoxGeometry(5.4 * bossScale, 1.36 * bossScale, (5.9 + rear) * bossScale), mat, [0, 0, -rear * 0.35]);
+        addMesh(turretEnemy, new THREE.BoxGeometry(3.5 * bossScale, 1.02 * bossScale, 2.4 * bossScale), mat, [0, 0.08, 3.45]);
+        addMesh(turretEnemy, new THREE.BoxGeometry(6.0 * bossScale, 0.7 * bossScale, 1.7 * bossScale), accent, [0, 0.28, -3.55]);
+      }
+      addMesh(turretEnemy, new THREE.CylinderGeometry(0.18 * bossScale, 0.27 * bossScale, (8.7 + (isBoss ? 2.8 : 0)) * bossScale, 16), rubber, [0, 0.06, 5.8 + (isBoss ? 1.3 : 0)], [Math.PI / 2, 0, 0]);
+      addMesh(turretEnemy, new THREE.BoxGeometry(1.0 * bossScale, 0.46 * bossScale, 1.25 * bossScale), glass, [1.55, 0.65, 1.55]);
+      addMesh(turretEnemy, new THREE.BoxGeometry(2.7 * bossScale, 0.18 * bossScale, 0.16 * bossScale), marker, [0, 0.82, 3.2]);
       group.add(turretEnemy);
 
-      const eye = new THREE.Mesh(new THREE.BoxGeometry(4.2 * bossScale, 0.38 * bossScale, 0.25 * bossScale), glow);
-      eye.position.set(0, 5.7 * bossScale, 5.15 * bossScale);
-      group.add(eye);
-
       const hpBarBack = new THREE.Mesh(new THREE.PlaneGeometry(10 * bossScale, 0.7 * bossScale), new THREE.MeshBasicMaterial({ color: 0x18070a, side: THREE.DoubleSide }));
-      hpBarBack.position.set(0, 8.8 * bossScale, 0);
-      const hpBar = new THREE.Mesh(new THREE.PlaneGeometry(10 * bossScale, 0.7 * bossScale), new THREE.MeshBasicMaterial({ color: isBoss ? 0xff465b : 0xffb347, side: THREE.DoubleSide }));
-      hpBar.position.set(0, 8.82 * bossScale, 0);
+      hpBarBack.position.set(0, (isBoss ? 10.4 : 7.4) * bossScale, 0);
+      const hpBar = new THREE.Mesh(new THREE.PlaneGeometry(10 * bossScale, 0.7 * bossScale), new THREE.MeshBasicMaterial({ color: isBoss ? 0xc63a30 : 0xd38b35, side: THREE.DoubleSide }));
+      hpBar.position.set(0, (isBoss ? 10.44 : 7.44) * bossScale, 0);
       group.add(hpBarBack, hpBar);
 
       let pos = randomSpawnPosition(isBoss ? 260 : 190);
@@ -2109,10 +2021,11 @@
         damage: isBoss ? bossProfile.damage : 4.5 + level * 0.14,
         radius: isBoss ? (bossProfile?.super ? 15 : 12) : 6,
         boss: isBoss,
-        name: bossProfile?.name || "Hostile Armor",
+        name: bossProfile?.name || profile.name,
         abilities: bossProfile?.abilities || [],
         specialCooldown: isBoss ? 2.4 : 0,
-        super: !!bossProfile?.super
+        super: !!bossProfile?.super,
+        hpBarHalfWidth: 5 * bossScale
       });
     }
 
@@ -2364,8 +2277,14 @@
       if (!aimBtn || !aimMarker) return;
       aimBtn.textContent = manualAimActive ? "Manual" : "Auto Aim";
       aimBtn.classList.toggle("active", manualAimActive);
-      aimMarker.visible = manualAimActive;
-      aimMarker.position.copy(manualAimPoint);
+      aimMarker.visible = manualAimActive || !!currentAimTarget;
+      if (manualAimActive) {
+        aimMarker.position.copy(manualAimPoint);
+        aimMarker.scale.setScalar(1);
+      } else if (currentAimTarget) {
+        aimMarker.position.set(currentAimTarget.group.position.x, 0.14, currentAimTarget.group.position.z);
+        aimMarker.scale.setScalar(currentAimTarget.boss ? 1.9 : 1.15);
+      }
     }
 
     function setManualAimFromPointer(event, activate) {
@@ -2477,7 +2396,7 @@
       if (manualAimActive) {
         aimPoint = manualAimPoint;
       } else if (autoAimEnabled) {
-        currentAimTarget = nearestEnemy(360 + getUpgradeLevel("cannon") * 18);
+        currentAimTarget = acquireClosestEnemy(360 + getUpgradeLevel("cannon") * 18);
         if (currentAimTarget) {
           aimPoint = currentAimTarget.group.position;
         }
@@ -2560,14 +2479,19 @@
           p.velocity.lerp(tmpVec.multiplyScalar(p.speed), Math.min(1, dt * 8));
         }
         p.mesh.position.addScaledVector(p.velocity, dt);
-        if (p.trail) p.trail.position.copy(p.mesh.position);
+        const projectileDir = p.velocity.clone().normalize();
+        p.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), projectileDir);
+        if (p.trail) {
+          p.trail.position.copy(p.mesh.position).addScaledVector(projectileDir, -3.5);
+          p.trail.quaternion.copy(p.mesh.quaternion);
+        }
 
         let hit = false;
-        for (let e = enemies.length - 1; e >= 0; e -= 1) {
-          const enemy = enemies[e];
+        const candidates = p.target && p.target.hp > 0 ? [p.target, ...enemies.filter(enemy => enemy !== p.target)] : enemies;
+        for (const enemy of candidates) {
           const dist = Math.hypot(p.mesh.position.x - enemy.group.position.x, p.mesh.position.z - enemy.group.position.z);
           const yGap = Math.abs(p.mesh.position.y - (enemy.boss ? 6 : 4));
-          if (dist < enemy.radius + p.radius + 2.2 && yGap < (enemy.boss ? 12 : 8)) {
+          if (dist < enemy.radius + Math.max(1.2, p.radius) + 2.4 && yGap < (enemy.boss ? 14 : 9)) {
             hit = true;
             damageEnemy(enemy, p.damage, p.mesh.position, p.color);
             if (p.splash > 0) splashDamage(p.mesh.position, p.splash, p.damage * 0.5, p.color);
@@ -2588,7 +2512,7 @@
       enemy.hp -= damage;
       const ratio = Math.max(0, enemy.hp / enemy.maxHp);
       enemy.hpBar.scale.x = ratio;
-      enemy.hpBar.position.x = -(1 - ratio) * (enemy.boss ? 9.25 : 5);
+      enemy.hpBar.position.x = -(1 - ratio) * (enemy.hpBarHalfWidth || (enemy.boss ? 9.25 : 5));
       addDamageNumber(enemy.group.position.x, enemy.boss ? 18 : 10, enemy.group.position.z, Math.round(damage), color);
       if (enemy.hp <= 0) {
         const reward = enemy.boss ? 450 + level * 20 : 70 + level * 7;
@@ -2622,18 +2546,19 @@
     function autoFire() {
       if (autoCooldown > 0) return;
       const cannonLevel = getUpgradeLevel("cannon");
-      const target = nearestEnemy(150 + cannonLevel * 14);
+      const target = acquireClosestEnemy(168 + cannonLevel * 16);
       if (!target) return;
       shootProjectile({
         target,
-        speed: 190 + cannonLevel * 10,
+        speed: 440 + cannonLevel * 18,
         damage: 18 + level * 1.3 + cannonLevel * 7,
-        color: 0x45fff4,
-        radius: 1.08,
-        life: 2.3,
+        color: 0xf0d18a,
+        radius: 0.18,
+        life: 1.0,
         homing: true,
         splash: 0,
-        sound: "auto"
+        sound: "auto",
+        kind: "tracer"
       });
       autoCooldown = Math.max(0.09, 0.34 - cannonLevel * 0.045 - level * 0.0012);
     }
@@ -2648,14 +2573,15 @@
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
-        speed: 120 + shellLevel * 6,
+        speed: 315 + shellLevel * 12,
         damage: 115 + level * 5 + shellLevel * 28,
-        color: 0xf7c84b,
-        radius: 1.55,
-        life: 2.6,
+        color: 0xd6c6a2,
+        radius: 0.44,
+        life: 1.7,
         homing: !!aim.target,
         splash: 34 + shellLevel * 3,
-        sound: "shell"
+        sound: "shell",
+        kind: "shell"
       });
       heavyCooldown = Math.max(0.86, 1.6 - shellLevel * 0.11);
     }
@@ -2674,14 +2600,15 @@
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
-        speed: 92 + missileLevel * 8,
+        speed: 185 + missileLevel * 13,
         damage: 170 + level * 7 + missileLevel * 42,
         color: 0xff465b,
-        radius: 1.35,
-        life: 4.6,
+        radius: 0.5,
+        life: 3.0,
         homing: !!aim.target,
         splash: 48 + missileLevel * 5,
-        sound: "missile"
+        sound: "missile",
+        kind: "missile"
       });
       missileCooldown = Math.max(2.55, 4.2 - missileLevel * 0.32);
     }
@@ -2690,7 +2617,7 @@
       if (manualAimActive) {
         return { target: null, point: manualAimPoint.clone().setY(4.2) };
       }
-      const target = currentAimTarget || nearestEnemy(range);
+      const target = acquireClosestEnemy(range);
       if (target) return { target, point: null };
       const angle = heading + turret.rotation.y;
       const point = new THREE.Vector3(
@@ -2699,6 +2626,39 @@
         tankPos.z + Math.cos(angle) * range
       );
       return { target: null, point };
+    }
+
+    function createProjectileMesh(config, direction) {
+      const material = new THREE.MeshStandardMaterial({
+        color: config.kind === "tracer" ? 0xd8c39a : config.color,
+        emissive: config.kind === "tracer" ? 0x6c4b18 : 0x151006,
+        emissiveIntensity: config.kind === "tracer" ? 0.55 : 0.12,
+        roughness: 0.42,
+        metalness: 0.58
+      });
+      const axis = new THREE.Vector3(0, 1, 0);
+      let mesh;
+      if (config.kind === "missile") {
+        mesh = new THREE.Group();
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.42, 3.4, 16), material);
+        const nose = new THREE.Mesh(new THREE.ConeGeometry(0.42, 0.9, 16), material);
+        const finMat = new THREE.MeshStandardMaterial({ color: 0x1a1b1a, roughness: 0.72, metalness: 0.5 });
+        body.position.y = 0;
+        nose.position.y = 2.1;
+        for (let i = 0; i < 4; i += 1) {
+          const fin = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.82, 0.45), finMat);
+          fin.position.set(Math.cos(i * Math.PI / 2) * 0.42, -1.35, Math.sin(i * Math.PI / 2) * 0.42);
+          fin.rotation.y = i * Math.PI / 2;
+          mesh.add(fin);
+        }
+        mesh.add(body, nose);
+      } else {
+        const length = config.kind === "tracer" ? 7.2 : 3.2;
+        mesh = new THREE.Mesh(new THREE.CylinderGeometry(config.radius, config.radius * 1.15, length, 14), material);
+      }
+      mesh.quaternion.setFromUnitVectors(axis, direction.clone().normalize());
+      mesh.castShadow = true;
+      return mesh;
     }
 
     function shootProjectile(config) {
@@ -2714,25 +2674,23 @@
         targetPoint.copy(tmpVec).addScaledVector(forward, 90);
       }
       tmpVec2.copy(targetPoint).sub(tmpVec).normalize();
-      const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(config.radius, 16, 10),
-        new THREE.MeshStandardMaterial({ color: config.color, emissive: config.color, emissiveIntensity: 1.35, roughness: 0.28 })
-      );
+      const direction = tmpVec2.clone();
+      const mesh = createProjectileMesh(config, direction);
       mesh.position.copy(tmpVec);
-      mesh.castShadow = true;
       projectileRoot.add(mesh);
 
       const trail = new THREE.Mesh(
-        new THREE.SphereGeometry(config.radius * 0.6, 10, 6),
-        new THREE.MeshBasicMaterial({ color: config.color, transparent: true, opacity: 0.26 })
+        new THREE.CylinderGeometry(Math.max(0.08, config.radius * 0.48), Math.max(0.08, config.radius * 0.18), config.kind === "tracer" ? 10 : 6, 12),
+        new THREE.MeshBasicMaterial({ color: config.color, transparent: true, opacity: config.kind === "tracer" ? 0.2 : 0.24 })
       );
+      trail.quaternion.copy(mesh.quaternion);
       projectileRoot.add(trail);
 
       projectiles.push({
         mesh,
         trail,
         target: config.target,
-        velocity: tmpVec2.multiplyScalar(config.speed),
+        velocity: direction.multiplyScalar(config.speed),
         speed: config.speed,
         damage: config.damage,
         color: config.color,
@@ -2748,16 +2706,28 @@
       const group = new THREE.Group();
       group.position.set(x, y, z);
       const core = new THREE.Mesh(
-        new THREE.SphereGeometry(3 * scale, 18, 12),
-        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.68 })
+        new THREE.DodecahedronGeometry(3.2 * scale, 1),
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.72 })
       );
-      const smoke = new THREE.Mesh(
-        new THREE.SphereGeometry(5.5 * scale, 18, 12),
-        new THREE.MeshBasicMaterial({ color: 0x161514, transparent: true, opacity: 0.24 })
+      const smoke = [];
+      for (let i = 0; i < 6; i += 1) {
+        const puff = new THREE.Mesh(
+          new THREE.DodecahedronGeometry((2.2 + Math.random() * 2.8) * scale, 1),
+          new THREE.MeshBasicMaterial({ color: 0x161514, transparent: true, opacity: 0.18 + Math.random() * 0.08 })
+        );
+        puff.position.set((Math.random() - 0.5) * 5.5 * scale, (Math.random() - 0.2) * 2.5 * scale, (Math.random() - 0.5) * 5.5 * scale);
+        smoke.push(puff);
+        group.add(puff);
+      }
+      const shock = new THREE.Mesh(
+        new THREE.RingGeometry(2.2 * scale, 3.0 * scale, 34),
+        new THREE.MeshBasicMaterial({ color: 0xd7c38a, transparent: true, opacity: 0.34, side: THREE.DoubleSide })
       );
-      group.add(core, smoke);
+      shock.rotation.x = -Math.PI / 2;
+      shock.position.y = -Math.max(0, y - 0.12);
+      group.add(core, shock);
       projectileRoot.add(group);
-      explosions.push({ group, core, smoke, life: 0.42, maxLife: 0.42, scale });
+      explosions.push({ group, core, smoke, shock, life: 0.5, maxLife: 0.5, scale });
     }
 
     function addDamageNumber(x, y, z, text, color) {
@@ -2783,9 +2753,11 @@
           e.group.lookAt(camera.position);
         } else {
           e.core.scale.setScalar(1 + t * 2.4);
-          e.smoke.scale.setScalar(1 + t * 1.7);
+          for (const puff of e.smoke) puff.scale.setScalar(1 + t * 1.7);
+          e.shock.scale.setScalar(1 + t * 5.4);
           e.core.material.opacity = Math.max(0, 0.68 * (1 - t));
-          e.smoke.material.opacity = Math.max(0, 0.24 * (1 - t));
+          e.shock.material.opacity = Math.max(0, 0.34 * (1 - t));
+          for (const puff of e.smoke) puff.material.opacity = Math.max(0, 0.22 * (1 - t));
         }
         if (e.life <= 0) {
           projectileRoot.remove(e.group);
@@ -2857,7 +2829,7 @@
         enemy.hp = Math.min(enemy.maxHp, enemy.hp + enemy.maxHp * 0.08);
         const ratio = Math.max(0, enemy.hp / enemy.maxHp);
         enemy.hpBar.scale.x = ratio;
-        enemy.hpBar.position.x = -(1 - ratio) * (enemy.super ? 11.4 : 9.25);
+        enemy.hpBar.position.x = -(1 - ratio) * (enemy.hpBarHalfWidth || (enemy.super ? 11.4 : 9.25));
         addDamageNumber(enemy.group.position.x, enemy.super ? 22 : 18, enemy.group.position.z, "REPAIR", 0x45fff4);
         showNotice(`${enemy.name}: repair pulse`);
         return;
@@ -2934,10 +2906,11 @@
       spawnWave();
     }
 
-    function nearestEnemy(range) {
+    function acquireClosestEnemy(range) {
       let bestEnemy = null;
       let bestDist = range;
       for (const enemy of enemies) {
+        if (enemy.hp <= 0) continue;
         const dist = enemy.group.position.distanceTo(tank.position);
         if (dist < bestDist) {
           bestDist = dist;
@@ -2945,6 +2918,10 @@
         }
       }
       return bestEnemy;
+    }
+
+    function nearestEnemy(range) {
+      return acquireClosestEnemy(range);
     }
 
     function updateCamera(dt) {
@@ -3031,6 +3008,9 @@
       drawRadarPoint(0 - tankPos.x, -44 - tankPos.z, 0x45fff4, 4, 620);
       for (const enemy of enemies) {
         drawRadarPoint(enemy.group.position.x - tankPos.x, enemy.group.position.z - tankPos.z, enemy.boss ? 0xff465b : 0xffa045, enemy.boss ? 4.8 : 3.2, 620);
+      }
+      if (currentAimTarget) {
+        drawRadarPoint(currentAimTarget.group.position.x - tankPos.x, currentAimTarget.group.position.z - tankPos.z, 0xffffff, currentAimTarget.boss ? 6.2 : 4.7, 620);
       }
 
       radarCtx.fillStyle = "#f4f7fb";
@@ -3490,6 +3470,22 @@
         ctx.fillStyle = `rgba(${v},${v},${v},${0.04 + Math.random() * 0.14})`;
         ctx.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 2, 1 + Math.random() * 2);
       }
+      ctx.fillStyle = "rgba(5,6,5,0.34)";
+      for (let y = 28; y < 256; y += 46) {
+        for (let x = 18; x < 256; x += 52) {
+          ctx.beginPath();
+          ctx.arc(x + Math.random() * 8, y + Math.random() * 8, 2.0 + Math.random() * 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.strokeStyle = "rgba(230,220,180,0.08)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 12; i += 1) {
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * 256, Math.random() * 256);
+        ctx.lineTo(Math.random() * 256, Math.random() * 256);
+        ctx.stroke();
+      }
       const tex = new THREE.CanvasTexture(c);
       tex.wrapS = THREE.RepeatWrapping;
       tex.wrapT = THREE.RepeatWrapping;
@@ -3527,6 +3523,22 @@
         ctx.beginPath();
         ctx.ellipse(Math.random() * 256, Math.random() * 256, 8 + Math.random() * 18, 3 + Math.random() * 9, Math.random() * Math.PI, 0, Math.PI * 2);
         ctx.fill();
+      }
+      ctx.strokeStyle = "rgba(220,214,190,0.16)";
+      ctx.lineWidth = 1.3;
+      for (let y = 20; y < 256; y += 52) {
+        ctx.beginPath();
+        ctx.moveTo(112, y);
+        ctx.lineTo(112, y + 22);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(144, y + 10);
+        ctx.lineTo(144, y + 32);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "rgba(210,205,180,0.08)";
+      for (let i = 0; i < 24; i += 1) {
+        ctx.fillRect(Math.random() * 256, Math.random() * 256, 8 + Math.random() * 20, 1 + Math.random() * 3);
       }
       ctx.strokeStyle = "rgba(215, 210, 188, 0.08)";
       ctx.lineWidth = 2;
