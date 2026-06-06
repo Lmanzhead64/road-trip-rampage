@@ -1,4 +1,4 @@
-const CACHE_NAME = "road-trip-rampage-v17";
+const CACHE_NAME = "road-trip-rampage-v18";
 const ASSETS = [
   "./",
   "./index.html",
