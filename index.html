@@ -234,7 +234,7 @@
       z-index: 7;
       right: max(16px, env(safe-area-inset-right));
       bottom: max(70px, calc(env(safe-area-inset-bottom) + 44px));
-      display: none;
+      display: flex;
       gap: 10px;
       align-items: end;
     }
@@ -261,6 +261,13 @@
       background: radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.30), rgba(247, 200, 75, 0.48) 32%, rgba(70, 33, 8, 0.82));
     }
 
+    .action-btn.missile {
+      width: 88px;
+      height: 88px;
+      border-color: rgba(255, 95, 60, 0.58);
+      background: radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.25), rgba(255, 95, 60, 0.48) 35%, rgba(72, 18, 10, 0.88));
+    }
+
     .action-btn.small {
       width: 68px;
       height: 68px;
@@ -269,7 +276,7 @@
     }
 
     .action-btn.tiny {
-      width: 108px;
+      width: 116px;
       height: 62px;
       border-radius: 10px;
       font-size: 10px;
@@ -912,6 +919,12 @@
         font-size: 9px;
       }
 
+      .action-btn.missile {
+        width: 74px;
+        height: 74px;
+        font-size: 8px;
+      }
+
       .action-btn.tiny {
         width: 88px;
         height: 54px;
@@ -1069,13 +1082,13 @@
 
   <div id="notice">Boss convoy incoming</div>
   <div id="bossIntel"><strong>Boss Intel</strong><span>Clear the convoy to draw out the commander.</span></div>
-  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. F toggles Auto Fire. Space/Shell fires bright tracer shells at the closest locked hostile. M launches missile. Drive over supply crates to recover.</div>
+  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. F toggles Auto Shoot. Space/Shell fires bright tracer shells at the closest locked hostile. M/Heavy Missile launches a high-impact missile. Drive over supply crates to recover.</div>
 
   <div id="joystick"><div id="stickKnob"></div></div>
   <div id="actionPad">
-    <button id="autoFireBtn" class="action-btn tiny" type="button">Auto Fire Off</button>
+    <button id="autoFireBtn" class="action-btn tiny" type="button">Auto Shoot Off</button>
     <button id="aimBtn" class="action-btn small" type="button">Auto Aim</button>
-    <button id="missileBtn" class="action-btn" type="button">Missile</button>
+    <button id="missileBtn" class="action-btn missile" type="button">Heavy Missile</button>
     <button id="fireBtn" class="action-btn primary" type="button">Shell</button>
   </div>
 
@@ -1087,7 +1100,7 @@
       <div class="mode-row">
         <div class="mode-card">
           <strong>Closest-Enemy Lock</strong>
-          <span>Auto Aim and Auto Fire prioritize the nearest hostile tank first. Bright tracer fire shows every shot path.</span>
+          <span>Auto Aim and Auto Shoot prioritize the nearest hostile tank first. Bright tracer fire shows every shot path.</span>
         </div>
         <div class="mode-card">
           <strong>Resupply Loop</strong>
@@ -1223,7 +1236,7 @@
     ];
 
     const upgradeCatalog = [
-      { id: "cannon", category: "combat", name: "Coax Auto-Cannon", max: 6, baseCost: 180, stat: "Firepower", desc: "Faster close-range fire and higher Auto Fire damage." },
+      { id: "cannon", category: "combat", name: "Coax Auto-Cannon", max: 6, baseCost: 180, stat: "Firepower", desc: "Faster close-range fire and higher Auto Shoot damage." },
       { id: "shell", category: "combat", name: "120mm Sabot Shells", max: 6, baseCost: 240, stat: "Firepower", desc: "Harder shell impacts, bigger splash, and faster reload." },
       { id: "missile", category: "combat", name: "Missile Pod Rack", max: 5, baseCost: 320, stat: "Firepower", desc: "Stronger missiles with faster cycling and larger blast radius." },
       { id: "stabilizer", category: "combat", name: "Gun Stabilizer", max: 4, baseCost: 260, stat: "Targeting", desc: "Turret tracks faster while driving so close targets stay locked." },
@@ -1264,16 +1277,16 @@
     };
 
     const themes = [
-      { name: "Industrial Approach", ground: 0x242820, road: 0x16181b, fog: 0xb7c3bf, sky: 0x98a6a8, accent: 0x45fff4 },
-      { name: "Dust Highway", ground: 0x6c604c, road: 0x302c27, fog: 0xcab68d, sky: 0xc7b68e, accent: 0xffc14a },
-      { name: "Rural Crossroads", ground: 0x344935, road: 0x202421, fog: 0xb8d1b7, sky: 0x9eb7aa, accent: 0x7cff7d },
-      { name: "City Blocks", ground: 0x31343a, road: 0x17191e, fog: 0xaab2c2, sky: 0x8b9bad, accent: 0x5fa6ff },
-      { name: "Flooded Port", ground: 0x263842, road: 0x1a2428, fog: 0x8fb8c4, sky: 0x7d9baa, accent: 0x45fff4 },
-      { name: "Canyon Route", ground: 0x75513c, road: 0x2a211d, fog: 0xc29372, sky: 0xbf8f72, accent: 0xff7b45 },
-      { name: "Snow Line", ground: 0x8b9495, road: 0x25292f, fog: 0xd4e1e6, sky: 0xc5d6e3, accent: 0xcaffff },
-      { name: "Night Checkpoint", ground: 0x1d2429, road: 0x111418, fog: 0x26303b, sky: 0x111821, accent: 0xf7c84b },
-      { name: "Mountain Tunnel", ground: 0x383731, road: 0x171715, fog: 0x77756d, sky: 0x6d7271, accent: 0xff5d78 },
-      { name: "Final Grid", ground: 0x22252d, road: 0x101217, fog: 0x858a94, sky: 0x707784, accent: 0xffffff }
+      { name: "Industrial Approach", ground: 0x3a4036, road: 0x2a2d30, fog: 0xd3dad4, sky: 0xb8c6c9, accent: 0x45fff4 },
+      { name: "Dust Highway", ground: 0x82745d, road: 0x413b34, fog: 0xddc9a4, sky: 0xd5c39d, accent: 0xffc14a },
+      { name: "Rural Crossroads", ground: 0x47624a, road: 0x2f3430, fog: 0xd0e2cc, sky: 0xb8ccbf, accent: 0x7cff7d },
+      { name: "City Blocks", ground: 0x4a4f57, road: 0x2a2f36, fog: 0xc8d1df, sky: 0xaebdcb, accent: 0x5fa6ff },
+      { name: "Flooded Port", ground: 0x3d5360, road: 0x2b383d, fog: 0xb4d2db, sky: 0x9fb9c7, accent: 0x45fff4 },
+      { name: "Canyon Route", ground: 0x916d55, road: 0x3c312b, fog: 0xd4a485, sky: 0xcf9e7f, accent: 0xff7b45 },
+      { name: "Snow Line", ground: 0xa4adad, road: 0x424950, fog: 0xe5eef1, sky: 0xd4e4ee, accent: 0xcaffff },
+      { name: "Night Checkpoint", ground: 0x323c42, road: 0x242a30, fog: 0x556372, sky: 0x374350, accent: 0xf7c84b },
+      { name: "Mountain Tunnel", ground: 0x515049, road: 0x2c2b28, fog: 0x96938a, sky: 0x898e8d, accent: 0xff5d78 },
+      { name: "Final Grid", ground: 0x3a3f4b, road: 0x252a32, fog: 0xa7acb8, sky: 0x8e98a8, accent: 0xffffff }
     ];
 
     let renderer;
@@ -1369,23 +1382,23 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 0.84;
+      renderer.toneMappingExposure = 1.08;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x9aa7a7);
-      scene.fog = new THREE.FogExp2(0xb6c3c2, 0.00115);
+      scene.background = new THREE.Color(0xb8c6c9);
+      scene.fog = new THREE.FogExp2(0xd3dad4, 0.00082);
 
       camera = new THREE.PerspectiveCamera(64, window.innerWidth / window.innerHeight, 0.1, 3800);
       camera.position.set(0, 15, -30);
 
       clock = new THREE.Clock();
 
-      const hemi = new THREE.HemisphereLight(0xdfe8ff, 0x2e2b22, 1.22);
+      const hemi = new THREE.HemisphereLight(0xf0f6ff, 0x4a432e, 1.62);
       scene.add(hemi);
 
-      const sun = new THREE.DirectionalLight(0xfff0d0, 2.55);
+      const sun = new THREE.DirectionalLight(0xfff0d0, 3.25);
       sun.position.set(-115, 178, 72);
       sun.castShadow = true;
       sun.shadow.mapSize.set(2048, 2048);
@@ -1394,6 +1407,10 @@
       sun.shadow.camera.top = 520;
       sun.shadow.camera.bottom = -520;
       scene.add(sun);
+
+      const urbanFill = new THREE.DirectionalLight(0xc8dfff, 0.95);
+      urbanFill.position.set(120, 85, -140);
+      scene.add(urbanFill);
 
       roadRoot = new THREE.Group();
       propRoot = new THREE.Group();
@@ -1439,16 +1456,34 @@
           map: makeNoiseTexture(currentTheme.ground, 10, 0.18)
         })
       );
+      applyGroundRelief(ground.geometry);
       ground.rotation.x = -Math.PI / 2;
       ground.receiveShadow = true;
       scene.add(ground);
       buildDistrict();
     }
 
+    function applyGroundRelief(geometry) {
+      const positions = geometry.attributes.position;
+      for (let i = 0; i < positions.count; i += 1) {
+        const x = positions.getX(i);
+        const y = positions.getY(i);
+        const edgeFade = Math.min(1, Math.hypot(x, y) / (WORLD_SIZE * 1.35));
+        const ripple =
+          Math.sin(x * 0.0042) * 0.9 +
+          Math.cos(y * 0.0038) * 0.75 +
+          Math.sin((x + y) * 0.0021) * 1.1;
+        positions.setZ(i, ripple * (0.75 + edgeFade * 1.25));
+      }
+      positions.needsUpdate = true;
+      geometry.computeVertexNormals();
+    }
+
     function applyTheme(nextLevel) {
       currentTheme = themes[Math.min(themes.length - 1, Math.floor((nextLevel - 1) / 10))];
       scene.background = new THREE.Color(currentTheme.sky);
       scene.fog.color.setHex(currentTheme.fog);
+      scene.fog.density = currentTheme.name.includes("Night") ? 0.00095 : 0.00072;
       ui.district.textContent = currentTheme.name;
       if (ground) {
         ground.material.color.setHex(currentTheme.ground);
@@ -1524,7 +1559,7 @@
       roadRoot.add(road);
       roadMeshes.push(road);
 
-      const stripeMat = new THREE.MeshBasicMaterial({ color: 0xe5dcc4, transparent: true, opacity: 0.55 });
+      const stripeMat = new THREE.MeshBasicMaterial({ color: 0xf2ecd8, transparent: true, opacity: 0.76 });
       const stripes = Math.max(8, Math.floor(d / 44));
       for (let i = 0; i < stripes; i += 1) {
         const stripe = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 13), stripeMat);
@@ -1535,10 +1570,10 @@
         roadRoot.add(stripe);
       }
 
-      const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x595e61, roughness: 0.92, metalness: 0.02, map: makeConcreteTexture() });
-      const curbMat = new THREE.MeshStandardMaterial({ color: 0xc8c0a8, roughness: 0.75, metalness: 0.03 });
-      const lineMat = new THREE.MeshBasicMaterial({ color: 0xf0e7c8, transparent: true, opacity: 0.5 });
-      const tarMat = new THREE.MeshBasicMaterial({ color: 0x050505, transparent: true, opacity: 0.28, depthWrite: false });
+      const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x747a7d, roughness: 0.9, metalness: 0.02, map: makeConcreteTexture() });
+      const curbMat = new THREE.MeshStandardMaterial({ color: 0xded5b9, roughness: 0.75, metalness: 0.03 });
+      const lineMat = new THREE.MeshBasicMaterial({ color: 0xfff5d5, transparent: true, opacity: 0.64 });
+      const tarMat = new THREE.MeshBasicMaterial({ color: 0x121314, transparent: true, opacity: 0.24, depthWrite: false });
       const drainMat = new THREE.MeshStandardMaterial({ color: 0x111416, roughness: 0.66, metalness: 0.72 });
       const sideOffset = w / 2 + 5;
       for (const side of [-1, 1]) {
@@ -1604,6 +1639,15 @@
           );
           roadRoot.add(grate);
         }
+      }
+
+      const shoulderMat = new THREE.MeshBasicMaterial({ color: 0xf5d25c, transparent: true, opacity: 0.5, depthWrite: false });
+      for (const side of [-1, 1]) {
+        const edgeLine = new THREE.Mesh(new THREE.PlaneGeometry(1.05, d), shoulderMat);
+        edgeLine.rotation.x = -Math.PI / 2;
+        edgeLine.rotation.z = rot;
+        edgeLine.position.set(x + Math.cos(rot) * (w / 2 - 2.4) * side, 0.082, z - Math.sin(rot) * (w / 2 - 2.4) * side);
+        roadRoot.add(edgeLine);
       }
     }
 
@@ -1954,9 +1998,9 @@
       const group = new THREE.Group();
       group.position.set(x, 0, z);
       const mat = new THREE.MeshStandardMaterial({
-        color: new THREE.Color().setHSL(0.58, 0.07, 0.16 + rng() * 0.19),
-        roughness: 0.76,
-        metalness: 0.18,
+        color: new THREE.Color().setHSL(0.58, 0.08, 0.26 + rng() * 0.22),
+        roughness: 0.72,
+        metalness: 0.22,
         map: makeConcreteTexture()
       });
       const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
@@ -1965,8 +2009,8 @@
       mesh.receiveShadow = true;
       group.add(mesh);
 
-      const glassMat = new THREE.MeshBasicMaterial({ color: 0xb7dce6, transparent: true, opacity: 0.28 });
-      const darkGlassMat = new THREE.MeshBasicMaterial({ color: 0x0d151b, transparent: true, opacity: 0.55 });
+      const glassMat = new THREE.MeshBasicMaterial({ color: 0xc8edf4, transparent: true, opacity: 0.38 });
+      const darkGlassMat = new THREE.MeshBasicMaterial({ color: 0x1a2930, transparent: true, opacity: 0.58 });
       const rows = Math.max(2, Math.floor(h / 9));
       const colsFront = Math.max(2, Math.floor(w / 8));
       const colsSide = Math.max(2, Math.floor(d / 8));
@@ -2604,12 +2648,12 @@
     function toggleAutoFire() {
       autoFireEnabled = !autoFireEnabled;
       updateAutoFireUi();
-      showToast(autoFireEnabled ? "Auto Fire on: close hostiles only." : "Auto Fire off: Space or Shell controls fire.");
+      showToast(autoFireEnabled ? "Auto Shoot on: close hostiles first." : "Auto Shoot off: Space or Shell controls fire.");
     }
 
     function updateAutoFireUi() {
       if (!autoFireBtn) return;
-      autoFireBtn.textContent = autoFireEnabled ? "Auto Fire On" : "Auto Fire Off";
+      autoFireBtn.textContent = autoFireEnabled ? "Auto Shoot On" : "Auto Shoot Off";
       autoFireBtn.classList.toggle("active", autoFireEnabled);
     }
 
@@ -3007,21 +3051,21 @@
       const cannonLevel = getUpgradeLevel("cannon");
       const opticsLevel = getUpgradeLevel("optics");
       const stabilizerLevel = getUpgradeLevel("stabilizer");
-      const target = acquireClosestEnemy(390 + cannonLevel * 20 + opticsLevel * 30);
+      const target = acquireClosestEnemy(500 + cannonLevel * 24 + opticsLevel * 36);
       if (!target) return;
       shootProjectile({
         target,
-        speed: 470 + cannonLevel * 20 + stabilizerLevel * 10,
-        damage: 18 + level * 1.3 + cannonLevel * 7 + stabilizerLevel * 2.5,
+        speed: 540 + cannonLevel * 24 + stabilizerLevel * 14,
+        damage: 30 + level * 2.1 + cannonLevel * 10 + stabilizerLevel * 4,
         color: 0xffe7a1,
-        radius: 0.32,
+        radius: 0.38,
         life: 1.15,
         homing: true,
         splash: 0,
         sound: "auto",
         kind: "tracer"
       });
-      autoCooldown = Math.max(0.09, 0.34 - cannonLevel * 0.045 - level * 0.0012);
+      autoCooldown = Math.max(0.07, 0.28 - cannonLevel * 0.038 - level * 0.001);
     }
 
     function fireHeavyShell() {
@@ -3034,17 +3078,17 @@
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
-        speed: 315 + shellLevel * 12 + getUpgradeLevel("stabilizer") * 7,
-        damage: 115 + level * 5 + shellLevel * 28 + getUpgradeLevel("stabilizer") * 7,
-        color: 0xd6c6a2,
-        radius: 0.44,
+        speed: 380 + shellLevel * 16 + getUpgradeLevel("stabilizer") * 10,
+        damage: 165 + level * 7 + shellLevel * 38 + getUpgradeLevel("stabilizer") * 10,
+        color: 0xffdfad,
+        radius: 0.56,
         life: 1.7,
         homing: !!aim.target,
-        splash: 34 + shellLevel * 3,
+        splash: 48 + shellLevel * 5,
         sound: "shell",
         kind: "shell"
       });
-      heavyCooldown = Math.max(0.86, 1.6 - shellLevel * 0.11);
+      heavyCooldown = Math.max(0.68, 1.35 - shellLevel * 0.095);
     }
 
     function launchMissile() {
@@ -3061,17 +3105,17 @@
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
-        speed: 185 + missileLevel * 13 + getUpgradeLevel("stabilizer") * 5,
-        damage: 170 + level * 7 + missileLevel * 42,
-        color: 0xff465b,
-        radius: 0.5,
+        speed: 255 + missileLevel * 20 + getUpgradeLevel("stabilizer") * 9,
+        damage: 280 + level * 10 + missileLevel * 64,
+        color: 0xff5f3c,
+        radius: 0.68,
         life: 3.0,
         homing: !!aim.target,
-        splash: 48 + missileLevel * 5,
+        splash: 76 + missileLevel * 9,
         sound: "missile",
         kind: "missile"
       });
-      missileCooldown = Math.max(2.55, 4.2 - missileLevel * 0.32);
+      missileCooldown = Math.max(1.85, 3.45 - missileLevel * 0.28);
     }
 
     function getFireAim(range) {
@@ -3468,7 +3512,7 @@
         ui.missionFill.style.background = "linear-gradient(90deg, #45fff4, #4d9dff)";
         ui.missionText.textContent = bossSpawned ? "Boss defeated" : `${cleared} cleared / ${missionTarget} patrol target`;
       }
-      ui.district.textContent = `${currentTheme.name} - ${manualAimActive ? "Manual aim" : bossEnemy ? "Boss finale" : autoFireEnabled ? "Auto fire ready" : "Auto aim"}`;
+      ui.district.textContent = `${currentTheme.name} - ${manualAimActive ? "Manual aim" : bossEnemy ? "Boss finale" : autoFireEnabled ? "Auto shoot ready" : "Auto aim"}`;
       updateRadar();
     }
 
@@ -3661,7 +3705,7 @@
 
     function upgradeImpact(item) {
       const impacts = {
-        cannon: "+Auto Fire DPS and fire rate",
+        cannon: "+Auto Shoot DPS and fire rate",
         shell: "+Shell damage, splash, reload",
         missile: "+Missile burst and blast radius",
         stabilizer: "+Turret tracking while moving",
@@ -4104,11 +4148,11 @@
       c.width = 256;
       c.height = 256;
       const ctx = c.getContext("2d");
-      ctx.fillStyle = "#17191b";
+      ctx.fillStyle = "#252a2e";
       ctx.fillRect(0, 0, 256, 256);
-      for (let i = 0; i < 3200; i += 1) {
-        const v = 18 + Math.random() * 82;
-        ctx.fillStyle = `rgba(${v},${v},${v},${0.06 + Math.random() * 0.20})`;
+      for (let i = 0; i < 4200; i += 1) {
+        const v = 38 + Math.random() * 108;
+        ctx.fillStyle = `rgba(${v},${v},${v},${0.055 + Math.random() * 0.18})`;
         ctx.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 5, 1 + Math.random() * 5);
       }
       for (let i = 0; i < 34; i += 1) {
@@ -4122,14 +4166,14 @@
         }
         ctx.stroke();
       }
-      ctx.fillStyle = "rgba(8,8,8,0.25)";
-      for (let i = 0; i < 8; i += 1) {
+      ctx.fillStyle = "rgba(8,8,8,0.22)";
+      for (let i = 0; i < 14; i += 1) {
         ctx.beginPath();
         ctx.ellipse(Math.random() * 256, Math.random() * 256, 8 + Math.random() * 18, 3 + Math.random() * 9, Math.random() * Math.PI, 0, Math.PI * 2);
         ctx.fill();
       }
-      ctx.strokeStyle = "rgba(220,214,190,0.16)";
-      ctx.lineWidth = 1.3;
+      ctx.strokeStyle = "rgba(244,236,210,0.28)";
+      ctx.lineWidth = 1.5;
       for (let y = 20; y < 256; y += 52) {
         ctx.beginPath();
         ctx.moveTo(112, y);
@@ -4140,8 +4184,8 @@
         ctx.lineTo(144, y + 32);
         ctx.stroke();
       }
-      ctx.fillStyle = "rgba(210,205,180,0.08)";
-      for (let i = 0; i < 24; i += 1) {
+      ctx.fillStyle = "rgba(238,230,202,0.12)";
+      for (let i = 0; i < 34; i += 1) {
         ctx.fillRect(Math.random() * 256, Math.random() * 256, 8 + Math.random() * 20, 1 + Math.random() * 3);
       }
       ctx.strokeStyle = "rgba(215, 210, 188, 0.08)";
