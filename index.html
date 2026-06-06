@@ -268,10 +268,14 @@
     }
 
     .action-btn.tiny {
-      width: 60px;
-      height: 60px;
-      font-size: 9px;
-      border-color: rgba(247, 200, 75, 0.34);
+      width: 108px;
+      height: 62px;
+      border-radius: 10px;
+      font-size: 10px;
+      border-color: rgba(247, 200, 75, 0.42);
+      background:
+        linear-gradient(180deg, rgba(24, 28, 30, 0.92), rgba(5, 6, 8, 0.86)),
+        linear-gradient(90deg, rgba(247, 200, 75, 0.18), transparent);
     }
 
     .action-btn.active {
@@ -289,8 +293,9 @@
       place-items: center;
       padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
       background:
-        linear-gradient(180deg, rgba(1, 2, 4, 0.82), rgba(1, 2, 4, 0.40) 44%, rgba(1, 2, 4, 0.90)),
-        radial-gradient(circle at 50% 32%, rgba(69, 255, 244, 0.12), transparent 34%);
+        linear-gradient(180deg, rgba(1, 2, 4, 0.88), rgba(10, 13, 14, 0.46) 44%, rgba(1, 2, 4, 0.94)),
+        radial-gradient(circle at 50% 32%, rgba(247, 200, 75, 0.09), transparent 34%),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 7px);
       backdrop-filter: blur(3px);
     }
 
@@ -311,15 +316,26 @@
     }
 
     .menu {
-      width: min(860px, calc(100vw - 32px));
+      width: min(960px, calc(100vw - 32px));
       max-height: min(700px, calc(100svh - 30px));
       overflow: auto;
       padding: clamp(18px, 3vw, 34px);
-      border-radius: 10px;
+      border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.18);
-      background: linear-gradient(180deg, rgba(12, 15, 20, 0.92), rgba(3, 5, 8, 0.86));
+      background:
+        linear-gradient(180deg, rgba(16, 18, 18, 0.96), rgba(4, 5, 6, 0.92)),
+        repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 9px);
       box-shadow: 0 26px 90px rgba(0, 0, 0, 0.62);
       text-align: center;
+    }
+
+    .start-kicker {
+      color: rgba(247, 200, 75, 0.95);
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      margin-bottom: 8px;
     }
 
     .menu h1 {
@@ -350,8 +366,8 @@
 
     .mode-card {
       border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(255, 255, 255, 0.055);
-      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.18));
+      border-radius: 5px;
       padding: 12px;
     }
 
@@ -379,37 +395,197 @@
       margin-top: 18px;
     }
 
+    .garage-close-actions {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      justify-content: flex-end;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      pointer-events: auto;
+    }
+
+    .garage-close-actions .start-main {
+      min-width: 160px;
+      min-height: 38px;
+      padding: 0 16px;
+      box-shadow: none;
+    }
+
     .garage-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 16px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
       text-align: left;
     }
 
     .garage-card {
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      padding: 11px;
-      background: rgba(255, 255, 255, 0.06);
+      border-radius: 5px;
+      padding: 9px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.20));
     }
 
     .garage-card h3 {
       margin: 0;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
     }
 
     .garage-card p {
-      margin: 6px 0 10px;
-      font-size: 11px;
-      line-height: 1.35;
+      margin: 5px 0 8px;
+      font-size: 10px;
+      line-height: 1.28;
     }
 
     .garage-card button {
       width: 100%;
-      min-height: 36px;
+      min-height: 34px;
+      font-size: 10px;
+    }
+
+    .garage-top {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.8fr) minmax(300px, 1.2fr);
+      gap: 12px;
+      align-items: stretch;
+      margin-top: 14px;
+      text-align: left;
+    }
+
+    .garage-preview,
+    .garage-stats {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.22);
+      padding: 12px;
+    }
+
+    .garage-preview-title,
+    .garage-stats-title {
+      color: rgba(244, 247, 251, 0.68);
+      font-size: 10px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .garage-tank {
+      --tank-main: #5a6256;
+      --tank-accent: #323a34;
+      position: relative;
+      width: min(260px, 100%);
+      height: 118px;
+      margin: 12px auto 4px;
+    }
+
+    .garage-tank .track {
+      position: absolute;
+      bottom: 8px;
+      width: 42px;
+      height: 84px;
+      background: #060707;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .garage-tank .track.left { left: 42px; }
+    .garage-tank .track.right { right: 42px; }
+
+    .garage-tank .body {
+      position: absolute;
+      left: 76px;
+      right: 76px;
+      bottom: 18px;
+      height: 62px;
+      background: linear-gradient(180deg, var(--tank-main), var(--tank-accent));
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow: inset 0 0 18px rgba(0,0,0,0.42);
+    }
+
+    .garage-tank .cab {
+      position: absolute;
+      left: 92px;
+      right: 92px;
+      bottom: 64px;
+      height: 42px;
+      background: linear-gradient(180deg, var(--tank-main), var(--tank-accent));
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+
+    .garage-tank .barrel {
+      position: absolute;
+      left: 50%;
+      bottom: 82px;
+      width: 92px;
+      height: 12px;
+      transform: translateX(-8px);
+      background: #111515;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .garage-tank .blade {
+      position: absolute;
+      left: 50px;
+      right: 50px;
+      bottom: 0;
+      height: 18px;
+      background: linear-gradient(180deg, #555b54, #151817);
+      border: 1px solid rgba(255,255,255,0.20);
+    }
+
+    .garage-stat {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr) 44px;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
       font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .garage-stat-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.14);
+      overflow: hidden;
+    }
+
+    .garage-stat-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f7c84b, #45fff4);
+    }
+
+    #bossIntel {
+      position: fixed;
+      left: max(12px, env(safe-area-inset-left));
+      bottom: max(14px, env(safe-area-inset-bottom));
+      z-index: 5;
+      display: none;
+      width: min(380px, calc(100vw - 24px));
+      padding: 11px 13px;
+      border: 1px solid rgba(255, 70, 91, 0.42);
+      border-radius: 5px;
+      background: linear-gradient(180deg, rgba(22, 8, 10, 0.82), rgba(4, 4, 5, 0.72));
+      box-shadow: 0 18px 44px rgba(0,0,0,0.46);
+      pointer-events: none;
+      text-transform: uppercase;
+    }
+
+    #bossIntel strong {
+      display: block;
+      color: #ff465b;
+      font-size: 13px;
+      font-weight: 1000;
+    }
+
+    #bossIntel span {
+      display: block;
+      margin-top: 5px;
+      color: rgba(244, 247, 251, 0.76);
+      font-size: 10px;
+      font-weight: 850;
+      line-height: 1.35;
     }
 
     .mode-select {
@@ -532,6 +708,10 @@
         grid-template-columns: 1fr;
       }
 
+      .garage-top {
+        grid-template-columns: 1fr;
+      }
+
       .menu {
         max-height: calc(100svh - 22px);
       }
@@ -593,7 +773,7 @@
       }
 
       .action-btn.tiny {
-        width: 54px;
+        width: 88px;
         height: 54px;
         font-size: 8px;
       }
@@ -635,6 +815,87 @@
       .start-actions {
         margin-top: 10px;
       }
+
+      .garage-close-actions {
+        position: absolute;
+        top: 8px;
+        right: 16px;
+        margin: 0;
+      }
+
+      .garage-close-actions .start-main {
+        min-width: 126px;
+        min-height: 34px;
+        font-size: 10px;
+      }
+
+      .garage-top {
+        grid-template-columns: 190px 1fr;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .garage-preview,
+      .garage-stats {
+        padding: 8px;
+      }
+
+      .garage-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .garage-card {
+        padding: 7px;
+      }
+
+      .garage-card p {
+        display: none;
+      }
+
+      .garage-tank {
+        height: 82px;
+        margin-top: 8px;
+      }
+
+      .garage-tank .track {
+        width: 30px;
+        height: 58px;
+      }
+
+      .garage-tank .track.left { left: 34px; }
+      .garage-tank .track.right { right: 34px; }
+
+      .garage-tank .body {
+        left: 60px;
+        right: 60px;
+        height: 42px;
+      }
+
+      .garage-tank .cab {
+        left: 74px;
+        right: 74px;
+        bottom: 48px;
+        height: 30px;
+      }
+
+      .garage-tank .barrel {
+        bottom: 60px;
+        width: 60px;
+      }
+
+      .garage-tank .blade {
+        left: 38px;
+        right: 38px;
+        height: 14px;
+      }
+
+      .garage-stat {
+        grid-template-columns: 72px minmax(0, 1fr) 34px;
+        font-size: 9px;
+        margin-top: 5px;
+      }
     }
   </style>
 </head>
@@ -667,7 +928,8 @@
   </div>
 
   <div id="notice">Boss convoy incoming</div>
-  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. F toggles Auto Fire. Space/Shell fires with aim assist. Q/Aim toggles Manual Aim for buildings. M launches missile.</div>
+  <div id="bossIntel"><strong>Boss Intel</strong><span>Clear the convoy to draw out the commander.</span></div>
+  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. F toggles Auto Fire. Space/Shell fires with aim assist. Q/Aim sets shot direction. M launches missile. Buildings are navigation obstacles.</div>
 
   <div id="joystick"><div id="stickKnob"></div></div>
   <div id="actionPad">
@@ -679,20 +941,21 @@
 
   <section id="startOverlay">
     <div class="menu">
+      <div class="start-kicker">Tactical armored campaign</div>
       <h1>Road Trip Rampage 3D</h1>
-      <p>Drive an armored dozer-tank through a large 3D city, use auto-aim or manual aim, fire shells with Space or the Shell button, break buildings, clear each district, and push toward Level 100. Built by Levi Ray for Games.</p>
+      <p>Command a fictional armored dozer-tank through hostile city districts. Clear patrols, survive the level boss, upgrade your vehicle in the garage, and prepare for a superboss every 10 levels. Built by Levi Ray for Games.</p>
       <div class="mode-row">
         <div class="mode-card">
-          <strong>Real 3D Drive</strong>
-          <span>Camera follows behind the tank through a larger street grid with buildings, lights, trees, and home-base support.</span>
+          <strong>Enemy-Only Targeting</strong>
+          <span>Auto Aim and Auto Fire prioritize hostile armor. Buildings stay out of the targeting system.</span>
         </div>
         <div class="mode-card">
-          <strong>Aim Control</strong>
-          <span>Auto Aim tracks enemies. Manual Aim lets you tap or click buildings and fire where you choose.</span>
+          <strong>Boss Finale</strong>
+          <span>Every level ends with a boss briefing. Levels 10, 20, 30 and beyond deploy composite superboss armor.</span>
         </div>
         <div class="mode-card">
-          <strong>100-Level Path</strong>
-          <span>District themes rotate every 10 levels, with stronger enemies and boss convoys.</span>
+          <strong>Build Your Tank</strong>
+          <span>Stack firepower, hull, repair, mobility, base support, turret coverage, and skins in the garage.</span>
         </div>
       </div>
       <div class="mode-select">
@@ -724,10 +987,27 @@
     <div class="menu">
       <h1>Garage</h1>
       <p id="garageSummary">Spend credits on stacked upgrades, base assistance, and tank skins.</p>
-      <div id="garageGrid" class="garage-grid"></div>
-      <div class="start-actions">
-        <button id="closeGarageBtn" class="start-main" type="button">Back</button>
+      <div class="start-actions garage-close-actions">
+        <button id="closeGarageBtn" class="start-main" type="button">Back To Mission</button>
       </div>
+      <div class="garage-top">
+        <div class="garage-preview">
+          <div class="garage-preview-title">Current tank</div>
+          <div id="garageTankPreview" class="garage-tank">
+            <div class="track left"></div>
+            <div class="track right"></div>
+            <div class="body"></div>
+            <div class="cab"></div>
+            <div class="barrel"></div>
+            <div class="blade"></div>
+          </div>
+        </div>
+        <div class="garage-stats">
+          <div class="garage-stats-title">Combat rating</div>
+          <div id="garageStats"></div>
+        </div>
+      </div>
+      <div id="garageGrid" class="garage-grid"></div>
     </div>
   </section>
 
@@ -762,6 +1042,9 @@
     const radarCtx = radar.getContext("2d");
     const garageGrid = document.getElementById("garageGrid");
     const garageSummary = document.getElementById("garageSummary");
+    const garageStats = document.getElementById("garageStats");
+    const garageTankPreview = document.getElementById("garageTankPreview");
+    const bossIntel = document.getElementById("bossIntel");
 
     const ui = {
       district: document.getElementById("district"),
@@ -786,7 +1069,7 @@
 
     const upgradeCatalog = [
       { id: "cannon", category: "Weapons", name: "Auto-Cannon Loader", max: 5, baseCost: 180, desc: "Faster close-range auto fire and more gun damage." },
-      { id: "shell", category: "Weapons", name: "Bunker Shells", max: 5, baseCost: 240, desc: "Harder shell hits, bigger structure damage, faster reload." },
+      { id: "shell", category: "Weapons", name: "Bunker Shells", max: 5, baseCost: 240, desc: "Harder shell hits, bigger splash, faster reload." },
       { id: "missile", category: "Weapons", name: "Missile Rack", max: 4, baseCost: 320, desc: "Stronger missiles with faster cycling." },
       { id: "armor", category: "Armor", name: "Reactive Plating", max: 6, baseCost: 220, desc: "Raises hull integrity so the tank lasts longer." },
       { id: "regen", category: "Armor", name: "Field Repair System", max: 4, baseCost: 280, desc: "Slow hull recovery after you stop taking hits." },
@@ -843,6 +1126,8 @@
     let missionKills = 0;
     let missionTarget = 8;
     let bossSpawned = false;
+    let bossDefeated = false;
+    let activeBossProfile = null;
     let heavyCooldown = 0;
     let missileCooldown = 0;
     let autoCooldown = 0;
@@ -902,6 +1187,8 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.86;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -1027,6 +1314,7 @@
       }
 
       addStreetFurniture(rng);
+      addBattlefieldDressing(rng);
       addHomeBase();
     }
 
@@ -1203,6 +1491,53 @@
         group.add(light);
       }
       propRoot.add(group);
+    }
+
+    function addBattlefieldDressing(rng) {
+      const scorchMat = new THREE.MeshBasicMaterial({ color: 0x080706, transparent: true, opacity: 0.34, depthWrite: false });
+      const barrierMat = new THREE.MeshStandardMaterial({ color: 0x74766f, roughness: 0.94, metalness: 0.02, map: makeConcreteTexture() });
+      const sandMat = new THREE.MeshStandardMaterial({ color: 0x746b55, roughness: 0.9, metalness: 0.02 });
+      for (let i = 0; i < 46; i += 1) {
+        const x = (rng() * 2 - 1) * WORLD_SIZE * 0.74;
+        const z = (rng() * 2 - 1) * WORLD_SIZE * 0.74;
+        if (Math.abs(x) < 100 && Math.abs(z + 44) < 140) continue;
+        const crater = new THREE.Mesh(new THREE.CircleGeometry(8 + rng() * 20, 28), scorchMat);
+        crater.rotation.x = -Math.PI / 2;
+        crater.rotation.z = rng() * Math.PI;
+        crater.scale.y = 0.44 + rng() * 0.34;
+        crater.position.set(x, 0.09, z);
+        propRoot.add(crater);
+      }
+      for (let i = 0; i < 34; i += 1) {
+        const roadCoord = (Math.floor(rng() * 9) - 4) * 320;
+        const along = (rng() * 2 - 1) * WORLD_SIZE * 0.75;
+        const vertical = rng() > 0.5;
+        const x = vertical ? roadCoord + (rng() > 0.5 ? 58 : -58) : along;
+        const z = vertical ? along : roadCoord + (rng() > 0.5 ? 48 : -48);
+        if (Math.abs(x) < 120 && Math.abs(z + 44) < 160) continue;
+        const barrier = new THREE.Mesh(new THREE.BoxGeometry(18, 3.2, 3.2), barrierMat);
+        barrier.position.set(x, 1.7, z);
+        barrier.rotation.y = vertical ? Math.PI / 2 + (rng() - 0.5) * 0.18 : (rng() - 0.5) * 0.18;
+        barrier.castShadow = true;
+        barrier.receiveShadow = true;
+        propRoot.add(barrier);
+      }
+      for (let i = 0; i < 22; i += 1) {
+        const x = (rng() * 2 - 1) * WORLD_SIZE * 0.68;
+        const z = (rng() * 2 - 1) * WORLD_SIZE * 0.68;
+        if (nearRoadGrid(x, z, 18) || (Math.abs(x) < 120 && Math.abs(z + 44) < 160)) continue;
+        const group = new THREE.Group();
+        group.position.set(x, 0, z);
+        group.rotation.y = rng() * Math.PI;
+        for (let s = -2; s <= 2; s += 1) {
+          const bag = new THREE.Mesh(new THREE.BoxGeometry(5.2, 1.1, 2.1), sandMat);
+          bag.position.set(s * 4.5, 0.62, 0);
+          bag.rotation.y = (rng() - 0.5) * 0.2;
+          bag.castShadow = true;
+          group.add(bag);
+        }
+        propRoot.add(group);
+      }
     }
 
     function addTree(x, z, rng) {
@@ -1682,21 +2017,24 @@
       projectiles = [];
       explosions = [];
       bossSpawned = false;
+      bossDefeated = false;
+      activeBossProfile = null;
       missionKills = 0;
       missionTarget = Math.min(32, 7 + level + Math.floor(level / 3));
       hull = Math.min(maxHull, hull + 24 + getUpgradeLevel("support") * 4);
 
       const count = Math.min(18, 5 + Math.floor(level * 0.7));
       for (let i = 0; i < count; i += 1) spawnEnemy(false);
-      showNotice(`${currentTheme.name} - Level ${level}`);
+      hideBossIntel();
+      showNotice(`${currentTheme.name} - clear patrols`);
       updateHud();
     }
 
-    function spawnEnemy(isBoss) {
+    function spawnEnemy(isBoss, bossProfile = null) {
       const group = new THREE.Group();
-      const bossScale = isBoss ? 1.85 : 1;
+      const bossScale = isBoss ? (bossProfile?.super ? 2.28 : 1.85) : 1;
       const mat = new THREE.MeshStandardMaterial({
-        color: isBoss ? 0x68111b : 0x34383c,
+        color: isBoss ? (bossProfile?.super ? 0x3d1116 : 0x68111b) : 0x34383c,
         roughness: 0.64,
         metalness: 0.35
       });
@@ -1765,12 +2103,16 @@
       enemies.push({
         group,
         hpBar,
-        maxHp: isBoss ? 420 + level * 34 : 72 + level * 9,
-        hp: isBoss ? 420 + level * 34 : 72 + level * 9,
-        speed: isBoss ? 11 + level * 0.16 : 12 + level * 0.24,
-        damage: isBoss ? 12 + level * 0.35 : 4.5 + level * 0.14,
-        radius: isBoss ? 12 : 6,
-        boss: isBoss
+        maxHp: isBoss ? bossProfile.hp : 72 + level * 9,
+        hp: isBoss ? bossProfile.hp : 72 + level * 9,
+        speed: isBoss ? bossProfile.speed : 12 + level * 0.24,
+        damage: isBoss ? bossProfile.damage : 4.5 + level * 0.14,
+        radius: isBoss ? (bossProfile?.super ? 15 : 12) : 6,
+        boss: isBoss,
+        name: bossProfile?.name || "Hostile Armor",
+        abilities: bossProfile?.abilities || [],
+        specialCooldown: isBoss ? 2.4 : 0,
+        super: !!bossProfile?.super
       });
     }
 
@@ -1987,7 +2329,7 @@
       if (manualAimActive) {
         forward.set(Math.sin(heading), 0, Math.cos(heading));
         manualAimPoint.copy(tankPos).addScaledVector(forward, 95);
-        showToast("Manual aim: tap or click a target.");
+        showToast("Manual aim: set shell direction.");
       } else {
         showToast("Auto aim: turret tracks hostiles.");
       }
@@ -2160,6 +2502,7 @@
         if (dist > 0.1) tmpVec.normalize();
         const desired = Math.atan2(tmpVec.x, tmpVec.z);
         enemy.group.rotation.y += normalizeAngle(desired - enemy.group.rotation.y) * Math.min(1, dt * 2.2);
+        if (enemy.boss) updateBossSpecial(enemy, dist, dt);
 
         if (dist > enemy.radius + 8) {
           const nx = pos.x + Math.sin(enemy.group.rotation.y) * enemy.speed * dt;
@@ -2232,17 +2575,6 @@
           }
         }
 
-        if (!hit) {
-          const building = buildingHitByProjectile(p);
-          if (building) {
-            hit = true;
-            damageBuilding(building, p.buildingDamage || p.damage * 0.6, p.mesh.position, p.color);
-            if (p.splash > 0) {
-              splashBuildingDamage(p.mesh.position, p.splash, (p.buildingDamage || p.damage) * 0.42, p.color);
-            }
-          }
-        }
-
         if (hit || p.life <= 0 || Math.abs(p.mesh.position.x) > WORLD_SIZE || Math.abs(p.mesh.position.z) > WORLD_SIZE) {
           addExplosion(p.mesh.position.x, p.mesh.position.y, p.mesh.position.z, p.color, p.splash > 0 ? 1.45 : 0.72);
           projectileRoot.remove(p.mesh);
@@ -2261,12 +2593,18 @@
       if (enemy.hp <= 0) {
         const reward = enemy.boss ? 450 + level * 20 : 70 + level * 7;
         score += reward;
-        missionKills += enemy.boss ? 3 : 1;
+        if (enemy.boss) bossDefeated = true;
+        else if (missionKills < missionTarget) missionKills += 1;
         addExplosion(enemy.group.position.x, 4, enemy.group.position.z, enemy.boss ? 0xff465b : 0xf7c84b, enemy.boss ? 2.3 : 1.35);
         enemyRoot.remove(enemy.group);
         enemies = enemies.filter(item => item !== enemy);
-        if (!enemy.boss && enemies.length < Math.min(20, 5 + Math.floor(level / 2))) spawnEnemy(false);
-        if (missionKills >= missionTarget && enemies.every(item => !item.boss)) completeLevel();
+        if (enemy.boss) {
+          hideBossIntel();
+          completeLevel();
+        } else {
+          if (missionKills < missionTarget && enemies.filter(item => !item.boss).length < Math.min(20, 5 + Math.floor(level / 2))) spawnEnemy(false);
+          if (missionKills >= missionTarget && enemies.every(item => !item.boss)) maybeSpawnBoss();
+        }
       } else if (point) {
         addExplosion(point.x, point.y, point.z, color, 0.45);
       }
@@ -2279,76 +2617,6 @@
           damageEnemy(enemy, damage * (1 - dist / radius), enemy.group.position, color);
         }
       }
-    }
-
-    function buildingHitByProjectile(projectile) {
-      const p = projectile.mesh.position;
-      for (const building of buildings) {
-        if (!building.destructible || building.destroyed) continue;
-        if (p.x >= building.minX && p.x <= building.maxX && p.z >= building.minZ && p.z <= building.maxZ && p.y <= (building.height || 12) + 8) {
-          return building;
-        }
-      }
-      return null;
-    }
-
-    function damageBuilding(building, damage, point, color) {
-      if (!building || !building.destructible || building.destroyed) return;
-      building.hp -= damage;
-      const ratio = Math.max(0, building.hp / building.maxHp);
-      if (building.mesh?.material?.color) {
-        building.mesh.material.color.lerp(new THREE.Color(0x1a1714), 0.18);
-      }
-      if (building.group && building.group.scale) {
-        building.group.scale.y = Math.max(0.72, 0.9 + ratio * 0.1);
-      }
-      addDamageNumber(point.x, Math.min((building.height || 10) + 4, point.y + 7), point.z, Math.round(damage), color);
-      if (building.hp <= 0) collapseBuilding(building, color);
-    }
-
-    function splashBuildingDamage(point, radius, damage, color) {
-      for (const building of buildings) {
-        if (!building.destructible || building.destroyed) continue;
-        const cx = THREE.MathUtils.clamp(point.x, building.minX, building.maxX);
-        const cz = THREE.MathUtils.clamp(point.z, building.minZ, building.maxZ);
-        const dist = Math.hypot(point.x - cx, point.z - cz);
-        if (dist < radius) {
-          damageBuilding(building, damage * (1 - dist / radius), new THREE.Vector3(cx, Math.min(building.height || 12, 10), cz), color);
-        }
-      }
-    }
-
-    function collapseBuilding(building, color) {
-      building.destroyed = true;
-      if (building.group) propRoot.remove(building.group);
-      const rubbleMat = new THREE.MeshStandardMaterial({ color: 0x2a2925, roughness: 0.95, metalness: 0.04 });
-      const rubble = new THREE.Mesh(new THREE.BoxGeometry(Math.max(4, building.w * 0.82), 1.2, Math.max(4, building.d * 0.82)), rubbleMat);
-      rubble.position.set(building.x || (building.minX + building.maxX) / 2, 0.65, building.z || (building.minZ + building.maxZ) / 2);
-      rubble.rotation.y = Math.random() * Math.PI;
-      rubble.receiveShadow = true;
-      rubble.castShadow = true;
-      propRoot.add(rubble);
-      debris.push(rubble);
-
-      const chunkCount = Math.min(26, Math.max(8, Math.floor((building.w + building.d + building.height) / 8)));
-      for (let i = 0; i < chunkCount; i += 1) {
-        const chunk = new THREE.Mesh(
-          new THREE.BoxGeometry(1.2 + Math.random() * 4.2, 0.7 + Math.random() * 3.2, 1.2 + Math.random() * 4.2),
-          rubbleMat
-        );
-        chunk.position.set(
-          (building.x || (building.minX + building.maxX) / 2) + (Math.random() - 0.5) * (building.w || 10),
-          0.9 + Math.random() * 4,
-          (building.z || (building.minZ + building.maxZ) / 2) + (Math.random() - 0.5) * (building.d || 10)
-        );
-        chunk.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-        chunk.castShadow = true;
-        chunk.receiveShadow = true;
-        propRoot.add(chunk);
-        debris.push(chunk);
-      }
-      addExplosion(building.x || rubble.position.x, Math.min((building.height || 16) * 0.4, 18), building.z || rubble.position.z, color || 0xf7c84b, 2.1);
-      score += 25;
     }
 
     function autoFire() {
@@ -2365,7 +2633,6 @@
         life: 2.3,
         homing: true,
         splash: 0,
-        buildingDamage: 5 + level * 0.2 + cannonLevel * 2,
         sound: "auto"
       });
       autoCooldown = Math.max(0.09, 0.34 - cannonLevel * 0.045 - level * 0.0012);
@@ -2388,7 +2655,6 @@
         life: 2.6,
         homing: !!aim.target,
         splash: 34 + shellLevel * 3,
-        buildingDamage: 155 + level * 8 + shellLevel * 42,
         sound: "shell"
       });
       heavyCooldown = Math.max(0.86, 1.6 - shellLevel * 0.11);
@@ -2415,7 +2681,6 @@
         life: 4.6,
         homing: !!aim.target,
         splash: 48 + missileLevel * 5,
-        buildingDamage: 220 + level * 10 + missileLevel * 58,
         sound: "missile"
       });
       missileCooldown = Math.max(2.55, 4.2 - missileLevel * 0.32);
@@ -2474,8 +2739,7 @@
         radius: config.radius,
         life: config.life,
         homing: config.homing,
-        splash: config.splash,
-        buildingDamage: config.buildingDamage || 0
+        splash: config.splash
       });
     }
 
@@ -2532,10 +2796,84 @@
 
     function maybeSpawnBoss() {
       if (bossSpawned) return;
-      if (missionKills < Math.max(4, Math.floor(missionTarget * 0.62))) return;
+      if (missionKills < missionTarget) return;
+      for (const patrol of enemies.filter(item => !item.boss)) {
+        enemyRoot.remove(patrol.group);
+      }
+      enemies = enemies.filter(item => item.boss);
       bossSpawned = true;
-      spawnEnemy(true);
-      showNotice(level % 10 === 0 ? "Elite boss convoy - special armor" : "Boss time - convoy commander");
+      activeBossProfile = getBossProfile(level);
+      spawnEnemy(true, activeBossProfile);
+      showBossIntel(activeBossProfile);
+      showNotice(activeBossProfile.super ? "SUPERBOSS DEPLOYED" : "BOSS FINALE DEPLOYED");
+    }
+
+    function getBossProfile(nextLevel) {
+      const tier = Math.floor((nextLevel - 1) / 10) + 1;
+      const superBoss = nextLevel % 10 === 0;
+      const profiles = [
+        { name: "Breach Commander", abilities: ["Ramming charge", "Close-range cannon"], focus: "Punishes straight-line driving" },
+        { name: "Siege Platform", abilities: ["Heavy armor", "Blast shells"], focus: "Slow but hard to burn down" },
+        { name: "Interceptor Unit", abilities: ["Fast flank", "Burst fire"], focus: "Cuts across streets quickly" },
+        { name: "Repair Carrier", abilities: ["Self-repair", "Escort call"], focus: "Survives longer near support units" },
+        { name: "Railgun Convoy", abilities: ["Long-range strike", "Armor pierce"], focus: "Rewards cover and movement" }
+      ];
+      if (superBoss) {
+        return {
+          name: `Composite Warlord T${tier}`,
+          abilities: ["Ramming charge", "Blast shells", "Escort call", "Self-repair"],
+          focus: `Combines the bosses from Levels ${nextLevel - 9}-${nextLevel - 1}`,
+          hp: 820 + nextLevel * 58,
+          speed: 12.2 + nextLevel * 0.18,
+          damage: 17 + nextLevel * 0.48,
+          super: true
+        };
+      }
+      const base = profiles[(nextLevel - 1) % profiles.length];
+      return {
+        ...base,
+        hp: 460 + nextLevel * 38 + tier * 55,
+        speed: 10.5 + nextLevel * 0.18 + (base.name.includes("Interceptor") ? 4 : 0),
+        damage: 11 + nextLevel * 0.36 + tier * 0.7,
+        super: false
+      };
+    }
+
+    function showBossIntel(profile) {
+      bossIntel.style.display = "block";
+      bossIntel.innerHTML = `<strong>${profile.super ? "Superboss" : "Boss"}: ${profile.name}</strong><span>${profile.abilities.join(" / ")}. ${profile.focus}.</span>`;
+    }
+
+    function hideBossIntel() {
+      bossIntel.style.display = "none";
+    }
+
+    function updateBossSpecial(enemy, dist, dt) {
+      enemy.specialCooldown = Math.max(0, enemy.specialCooldown - dt);
+      if (enemy.specialCooldown > 0) return;
+      const ability = enemy.abilities[Math.floor(Math.random() * Math.max(1, enemy.abilities.length))] || "Heavy strike";
+      enemy.specialCooldown = enemy.super ? 3.1 : 3.8;
+      if (ability === "Self-repair") {
+        enemy.hp = Math.min(enemy.maxHp, enemy.hp + enemy.maxHp * 0.08);
+        const ratio = Math.max(0, enemy.hp / enemy.maxHp);
+        enemy.hpBar.scale.x = ratio;
+        enemy.hpBar.position.x = -(1 - ratio) * (enemy.super ? 11.4 : 9.25);
+        addDamageNumber(enemy.group.position.x, enemy.super ? 22 : 18, enemy.group.position.z, "REPAIR", 0x45fff4);
+        showNotice(`${enemy.name}: repair pulse`);
+        return;
+      }
+      if (ability === "Escort call" && enemies.filter(item => !item.boss).length < (enemy.super ? 4 : 2)) {
+        spawnEnemy(false);
+        showNotice(`${enemy.name}: escort call`);
+        return;
+      }
+      if (dist > (ability === "Long-range strike" ? 230 : 150)) return;
+      const strikeDamage = enemy.damage * (enemy.super ? 0.75 : 0.55);
+      hull -= strikeDamage;
+      addDamageNumber(tankPos.x, 10, tankPos.z, `-${Math.round(strikeDamage)}`, 0xff465b);
+      addExplosion(tankPos.x + (Math.random() - 0.5) * 9, 4, tankPos.z + (Math.random() - 0.5) * 9, 0xff465b, enemy.super ? 1.25 : 0.95);
+      showNotice(`${enemy.name}: ${ability}`);
+      if (hull <= 0) endRun();
     }
 
     function completeLevel() {
@@ -2641,16 +2979,25 @@
       const hullPct = Math.max(0, Math.min(100, hull / Math.max(1, maxHull) * 100));
       const cleared = Math.min(missionKills, missionTarget);
       const remaining = Math.max(0, missionTarget - missionKills);
+      const bossEnemy = enemies.find(item => item.boss);
+      const bossPct = bossEnemy ? Math.max(0, bossEnemy.hp / bossEnemy.maxHp * 100) : 0;
       ui.level.textContent = String(level);
       ui.score.textContent = String(score);
-      ui.enemies.textContent = String(remaining);
+      ui.enemies.textContent = bossEnemy ? "BOSS" : String(remaining);
       ui.best.textContent = String(best);
       ui.hull.textContent = `${Math.max(0, Math.round(hull))}/${Math.round(maxHull)}`;
       ui.hullFill.style.width = `${hullPct}%`;
       ui.hullFill.style.background = hullPct > 55 ? "linear-gradient(90deg, #24ff91, #e8f35f)" : hullPct > 25 ? "linear-gradient(90deg, #f7c84b, #ff7b45)" : "linear-gradient(90deg, #ff465b, #9e1322)";
-      ui.missionFill.style.width = `${Math.min(100, cleared / Math.max(1, missionTarget) * 100)}%`;
-      ui.missionText.textContent = `${cleared} cleared / ${missionTarget} target`;
-      ui.district.textContent = `${currentTheme.name} - ${manualAimActive ? "Manual aim" : bossSpawned ? "Boss active" : autoFireEnabled ? "Auto fire ready" : "Auto aim"}`;
+      if (bossEnemy) {
+        ui.missionFill.style.width = `${Math.max(0, 100 - bossPct)}%`;
+        ui.missionFill.style.background = "linear-gradient(90deg, #ff465b, #f7c84b)";
+        ui.missionText.textContent = `${bossEnemy.name} hull ${Math.round(bossPct)}%`;
+      } else {
+        ui.missionFill.style.width = `${Math.min(100, cleared / Math.max(1, missionTarget) * 100)}%`;
+        ui.missionFill.style.background = "linear-gradient(90deg, #45fff4, #4d9dff)";
+        ui.missionText.textContent = bossSpawned ? "Boss defeated" : `${cleared} cleared / ${missionTarget} patrol target`;
+      }
+      ui.district.textContent = `${currentTheme.name} - ${manualAimActive ? "Manual aim" : bossEnemy ? "Boss finale" : autoFireEnabled ? "Auto fire ready" : "Auto aim"}`;
       updateRadar();
     }
 
@@ -2726,7 +3073,24 @@
     }
 
     function renderGarage() {
-      garageSummary.textContent = `Credits ${score} - Level ${level} - ${gameMode === "hardcore" ? "Hardcore" : "Regular"} mode. Upgrades stack; skins change the tank's visible armor.`;
+      const tankStats = getTankStats();
+      const palette = skinPalettes[selectedSkin] || skinPalettes["skin-steel"];
+      garageTankPreview.style.setProperty("--tank-main", `#${new THREE.Color(palette.main).getHexString()}`);
+      garageTankPreview.style.setProperty("--tank-accent", `#${new THREE.Color(palette.accent).getHexString()}`);
+      garageSummary.textContent = `Credits ${score} - Level ${level} - ${gameMode === "hardcore" ? "Hardcore" : "Regular"} mode. Build rating ${tankStats.rating}.`;
+      garageStats.innerHTML = [
+        ["Rating", tankStats.rating, tankStats.ratingPct],
+        ["Hull", tankStats.hull, tankStats.hullPct],
+        ["Firepower", tankStats.firepower, tankStats.firepowerPct],
+        ["Mobility", tankStats.mobility, tankStats.mobilityPct],
+        ["Support", tankStats.support, tankStats.supportPct]
+      ].map(([label, value, pct]) => `
+        <div class="garage-stat">
+          <span>${label}</span>
+          <div class="garage-stat-bar"><div class="garage-stat-fill" style="width:${Math.min(100, pct)}%"></div></div>
+          <span>${value}</span>
+        </div>
+      `).join("");
       garageGrid.innerHTML = "";
       for (const item of upgradeCatalog) {
         const levelNow = getUpgradeLevel(item.id);
@@ -2738,7 +3102,7 @@
         card.className = "garage-card";
         card.innerHTML = `
           <h3>${item.name}</h3>
-          <p><strong>${item.category}</strong> - ${item.desc}</p>
+          <p><strong>${item.category}</strong> - ${upgradeImpact(item)}</p>
           <p>${isSkin ? (unlocked ? "Unlocked" : "Locked") : `Level ${levelNow}/${item.max}`} ${selectedSkin === item.id ? "- Equipped" : ""}</p>
         `;
         const button = document.createElement("button");
@@ -2756,6 +3120,44 @@
         card.appendChild(button);
         garageGrid.appendChild(card);
       }
+    }
+
+    function getTankStats() {
+      const hullValue = maxHull;
+      const firepower = Math.round(40 + getUpgradeLevel("cannon") * 9 + getUpgradeLevel("shell") * 16 + getUpgradeLevel("missile") * 18);
+      const mobility = Math.round(36 + getUpgradeLevel("engine") * 14);
+      const support = Math.round(30 + getUpgradeLevel("support") * 10 + getUpgradeLevel("turrets") * 12 + getUpgradeLevel("regen") * 7);
+      const rating = Math.round(hullValue * 0.45 + firepower * 1.15 + mobility * 0.9 + support);
+      return {
+        rating,
+        ratingPct: rating / 4.2,
+        hull: hullValue,
+        hullPct: hullValue / 2.5,
+        firepower,
+        firepowerPct: firepower,
+        mobility,
+        mobilityPct: mobility,
+        support,
+        supportPct: support
+      };
+    }
+
+    function upgradeImpact(item) {
+      const impacts = {
+        cannon: "+Auto Fire DPS",
+        shell: "+Shell power",
+        missile: "+Missile burst",
+        armor: "+Hull integrity",
+        regen: "+Field repair",
+        engine: "+Speed/turning",
+        support: "+Base repair",
+        turrets: "+Base defense",
+        "skin-steel": "Steel armor finish",
+        "skin-black": "Blackout armor finish",
+        "skin-sand": "Desert armor finish",
+        "skin-diamond": "Showpiece armor finish"
+      };
+      return impacts[item.id] || item.desc;
     }
 
     function buyUpgrade(id) {
@@ -2814,6 +3216,10 @@
 
     function applyTankSkin() {
       const palette = skinPalettes[selectedSkin] || skinPalettes["skin-steel"];
+      if (garageTankPreview) {
+        garageTankPreview.style.setProperty("--tank-main", `#${new THREE.Color(palette.main).getHexString()}`);
+        garageTankPreview.style.setProperty("--tank-accent", `#${new THREE.Color(palette.accent).getHexString()}`);
+      }
       if (tank?.userData?.materials) {
         const { hullMat, accentMat, glowMat } = tank.userData.materials;
         hullMat.color.setHex(palette.main);
