@@ -36,12 +36,14 @@ Official Apple references:
 
 ## Current Privacy Answers
 
-- Collects personal data: No
+- Collects personal data: No accounts, email, location, contacts, camera, or microphone.
+- Optional leaderboard data: If enabled, the game sends a player-entered display name and gameplay stats to the leaderboard service.
 - Uses third-party advertising: No
 - Uses tracking: No
 - Uses location: No
 - Uses contacts/camera/microphone: No
-- Saves local gameplay progress: Yes, on device only
+- Saves local gameplay progress: Yes, on device
+- Public visibility: Optional leaderboard names and scores may be visible to other players
 
 ## App Review Risk Items To Fix Before Submission
 
@@ -51,3 +53,4 @@ Official Apple references:
 - Add sound mute control, which currently exists as `N`.
 - Add a clear support contact.
 - Test on real iPhone hardware.
+- If in-app purchases are added later, implement them through StoreKit/App Store Connect and include a restore mechanism for restorable purchases.
