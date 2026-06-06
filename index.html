@@ -238,6 +238,19 @@
       background: radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.30), rgba(247, 200, 75, 0.48) 32%, rgba(70, 33, 8, 0.82));
     }
 
+    .action-btn.small {
+      width: 68px;
+      height: 68px;
+      border-color: rgba(69, 255, 244, 0.34);
+      background: radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.22), rgba(69, 255, 244, 0.25) 35%, rgba(6, 18, 22, 0.82));
+    }
+
+    .action-btn.active {
+      color: #031011;
+      border-color: rgba(69, 255, 244, 0.86);
+      background: linear-gradient(180deg, #7ffff8, #25d8cf);
+    }
+
     #startOverlay,
     #levelOverlay {
       position: fixed;
@@ -460,6 +473,12 @@
         font-size: 10px;
       }
 
+      .action-btn.small {
+        width: 58px;
+        height: 58px;
+        font-size: 9px;
+      }
+
       .action-btn.primary {
         width: 78px;
         height: 78px;
@@ -515,10 +534,11 @@
   </div>
 
   <div id="notice">Boss convoy incoming</div>
-  <div id="controlsHint">Drive: W/S + A/D or drag anywhere on the screen. Auto cannon tracks targets. Space fires heavy shell. M launches missile.</div>
+  <div id="controlsHint">Drive: W/S + A/D or drag anywhere. Auto Aim tracks enemies. Space/Shell fires. Q/Aim toggles Manual Aim so you can click buildings. M launches missile.</div>
 
   <div id="joystick"><div id="stickKnob"></div></div>
   <div id="actionPad">
+    <button id="aimBtn" class="action-btn small" type="button">Auto Aim</button>
     <button id="missileBtn" class="action-btn" type="button">Missile</button>
     <button id="fireBtn" class="action-btn primary" type="button">Shell</button>
   </div>
@@ -526,15 +546,15 @@
   <section id="startOverlay">
     <div class="menu">
       <h1>Road Trip Rampage 3D</h1>
-      <p>Drive an armored dozer-tank through a full 3D battlefield, use auto-cannon targeting, launch heavy shells, clear each district, and push toward Level 100. Built by Levi Ray for Games.</p>
+      <p>Drive an armored dozer-tank through a large 3D city, use auto-aim or manual aim, fire shells with Space or the Shell button, break buildings, clear each district, and push toward Level 100. Built by Levi Ray for Games.</p>
       <div class="mode-row">
         <div class="mode-card">
           <strong>Real 3D Drive</strong>
-          <span>Camera follows behind the tank. Buildings, barricades, roads, and terrain are real obstacles.</span>
+          <span>Camera follows behind the tank through a larger street grid with buildings, lights, trees, and home-base support.</span>
         </div>
         <div class="mode-card">
-          <strong>Touch Anywhere</strong>
-          <span>Drag from any open screen area on iPhone to steer and throttle. No tiny fixed thumbstick.</span>
+          <strong>Aim Control</strong>
+          <span>Auto Aim tracks enemies. Manual Aim lets you tap or click buildings and fire where you choose.</span>
         </div>
         <div class="mode-card">
           <strong>100-Level Path</strong>
@@ -575,6 +595,7 @@
     const saveExitBtn = document.getElementById("saveExitBtn");
     const fireBtn = document.getElementById("fireBtn");
     const missileBtn = document.getElementById("missileBtn");
+    const aimBtn = document.getElementById("aimBtn");
     const joystick = document.getElementById("joystick");
     const stickKnob = document.getElementById("stickKnob");
     const notice = document.getElementById("notice");
@@ -596,7 +617,7 @@
     const SAVE_KEY = "roadTripRampage3DSaveV1";
     const BEST_KEY = "roadTripRampage3DBestV1";
     const MAX_LEVEL = 100;
-    const WORLD_SIZE = 680;
+    const WORLD_SIZE = 1800;
     const MAX_JOYSTICK = 78;
 
     const themes = [
@@ -658,6 +679,13 @@
     let touchInput = { throttle: 0, turn: 0 };
     let manualFireRequested = false;
     let missileRequested = false;
+    let autoAimEnabled = true;
+    let manualAimActive = false;
+    let manualAimPoint = new THREE.Vector3(0, 0, 80);
+    let currentAimTarget = null;
+    let aimMarker = null;
+    let raycaster = new THREE.Raycaster();
+    let pointerNdc = new THREE.Vector2();
     let audioCtx = null;
     let masterGain = null;
     let engineOsc = null;
@@ -683,9 +711,9 @@
 
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0x9aa7a7);
-      scene.fog = new THREE.FogExp2(0xb6c3c2, 0.0026);
+      scene.fog = new THREE.FogExp2(0xb6c3c2, 0.00115);
 
-      camera = new THREE.PerspectiveCamera(64, window.innerWidth / window.innerHeight, 0.1, 1400);
+      camera = new THREE.PerspectiveCamera(64, window.innerWidth / window.innerHeight, 0.1, 3800);
       camera.position.set(0, 15, -30);
 
       clock = new THREE.Clock();
@@ -697,10 +725,10 @@
       sun.position.set(-95, 160, 90);
       sun.castShadow = true;
       sun.shadow.mapSize.set(2048, 2048);
-      sun.shadow.camera.left = -230;
-      sun.shadow.camera.right = 230;
-      sun.shadow.camera.top = 230;
-      sun.shadow.camera.bottom = -230;
+      sun.shadow.camera.left = -520;
+      sun.shadow.camera.right = 520;
+      sun.shadow.camera.top = 520;
+      sun.shadow.camera.bottom = -520;
       scene.add(sun);
 
       roadRoot = new THREE.Group();
@@ -711,6 +739,7 @@
 
       createWorld();
       createTank();
+      createAimMarker();
       setupInput();
       updateHud();
 
@@ -729,7 +758,7 @@
     function createWorld() {
       applyTheme(1);
       ground = new THREE.Mesh(
-        new THREE.PlaneGeometry(WORLD_SIZE * 2, WORLD_SIZE * 2, 64, 64),
+        new THREE.PlaneGeometry(WORLD_SIZE * 2, WORLD_SIZE * 2, 96, 96),
         new THREE.MeshStandardMaterial({
           color: currentTheme.ground,
           roughness: 0.94,
@@ -773,36 +802,43 @@
         map: makeRoadTexture()
       });
 
-      addRoad(0, 0, 44, WORLD_SIZE * 1.8, 0);
-      addRoad(0, 0, WORLD_SIZE * 1.8, 34, 0);
-      addRoad(-170, 0, 26, WORLD_SIZE * 1.2, Math.PI / 7);
-      addRoad(210, 80, 28, WORLD_SIZE * 0.95, -Math.PI / 9);
-      addRoad(-30, 220, WORLD_SIZE * 0.7, 24, 0);
-      addRoad(90, -210, WORLD_SIZE * 0.65, 24, 0);
-
-      addBoundary();
+      for (let n = -4; n <= 4; n += 1) {
+        const coord = n * 320;
+        addRoad(coord, 0, n === 0 ? 54 : 38, WORLD_SIZE * 1.75, 0);
+        addRoad(0, coord, WORLD_SIZE * 1.75, n === 0 ? 44 : 34, 0);
+      }
+      addRoad(-460, 160, 30, WORLD_SIZE * 1.1, Math.PI / 7);
+      addRoad(520, -120, 30, WORLD_SIZE * 1.05, -Math.PI / 8);
 
       const rng = mulberry32(1337 + Math.floor((level - 1) / 10) * 91);
-      for (let i = 0; i < 72; i += 1) {
-        const x = Math.round((rng() * 2 - 1) * 560 / 32) * 32;
-        const z = Math.round((rng() * 2 - 1) * 560 / 32) * 32;
-        if (Math.abs(x) < 86 && Math.abs(z + 44) < 96) continue;
-        if (Math.abs(x) < 34 || Math.abs(z) < 30) continue;
+      for (let i = 0; i < 128; i += 1) {
+        const x = Math.round((rng() * 2 - 1) * (WORLD_SIZE * 0.76) / 32) * 32;
+        const z = Math.round((rng() * 2 - 1) * (WORLD_SIZE * 0.76) / 32) * 32;
+        if (Math.abs(x) < 120 && Math.abs(z + 44) < 132) continue;
+        if (nearRoadGrid(x, z, 74)) continue;
         const w = 18 + rng() * 42;
         const d = 16 + rng() * 38;
         const h = 18 + rng() * 68 + Math.floor((level - 1) / 10) * 3;
         addBuilding(x, z, w, h, d, rng);
       }
 
-      for (let i = 0; i < 36; i += 1) {
-        const x = (rng() * 2 - 1) * 560;
-        const z = (rng() * 2 - 1) * 560;
-        if (Math.abs(x) < 46 && Math.abs(z) < 46) continue;
-        if (Math.abs(x) < 18 || Math.abs(z) < 18) continue;
+      for (let i = 0; i < 64; i += 1) {
+        const x = (rng() * 2 - 1) * WORLD_SIZE * 0.78;
+        const z = (rng() * 2 - 1) * WORLD_SIZE * 0.78;
+        if (Math.abs(x) < 92 && Math.abs(z + 44) < 108) continue;
+        if (nearRoadGrid(x, z, 42)) continue;
         addProp(x, z, rng);
       }
 
+      addStreetFurniture(rng);
       addHomeBase();
+    }
+
+    function nearRoadGrid(x, z, clearance) {
+      const spacing = 320;
+      const dx = Math.abs(x - Math.round(x / spacing) * spacing);
+      const dz = Math.abs(z - Math.round(z / spacing) * spacing);
+      return dx < clearance || dz < clearance;
     }
 
     function addRoad(x, z, w, d, rot) {
@@ -862,6 +898,83 @@
           roadRoot.add(cross);
         }
       }
+    }
+
+    function addStreetFurniture(rng) {
+      const roads = [];
+      for (let n = -4; n <= 4; n += 1) roads.push(n * 320);
+      for (const xRoad of roads) {
+        for (let z = -1360; z <= 1360; z += 170) {
+          if (Math.abs(xRoad) < 110 && Math.abs(z + 44) < 150) continue;
+          addStreetLight(xRoad - 31, z, Math.PI / 2);
+          if (rng() > 0.42) addTree(xRoad + 43 + rng() * 18, z + (rng() - 0.5) * 38, rng);
+        }
+      }
+      for (const zRoad of roads) {
+        for (let x = -1360; x <= 1360; x += 170) {
+          if (Math.abs(x) < 110 && Math.abs(zRoad + 44) < 150) continue;
+          addStreetLight(x, zRoad + 27, 0);
+          if (rng() > 0.48) addTree(x + (rng() - 0.5) * 38, zRoad - 42 - rng() * 18, rng);
+        }
+      }
+      for (const xRoad of roads) {
+        for (const zRoad of roads) {
+          if (Math.abs(xRoad) < 120 && Math.abs(zRoad + 44) < 150) continue;
+          if (rng() > 0.35) addTrafficSignal(xRoad + 24, zRoad + 24, rng);
+        }
+      }
+    }
+
+    function addStreetLight(x, z, rot) {
+      const poleMat = new THREE.MeshStandardMaterial({ color: 0x22272a, roughness: 0.62, metalness: 0.62 });
+      const glowMat = new THREE.MeshStandardMaterial({ color: 0xfff0b7, emissive: 0xffd77b, emissiveIntensity: currentTheme.name.includes("Night") ? 1.8 : 0.28, roughness: 0.35 });
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      group.rotation.y = rot;
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.26, 12, 10), poleMat);
+      pole.position.y = 6;
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 7.2), poleMat);
+      arm.position.set(0, 11.8, 3.4);
+      const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.72, 12, 8), glowMat);
+      lamp.position.set(0, 11.65, 6.7);
+      group.add(pole, arm, lamp);
+      propRoot.add(group);
+    }
+
+    function addTrafficSignal(x, z, rng) {
+      const poleMat = new THREE.MeshStandardMaterial({ color: 0x1b1f22, roughness: 0.55, metalness: 0.65 });
+      const boxMat = new THREE.MeshStandardMaterial({ color: 0x111315, roughness: 0.62, metalness: 0.4 });
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.24, 9.4, 10), poleMat);
+      pole.position.y = 4.7;
+      const box = new THREE.Mesh(new THREE.BoxGeometry(1.2, 3.0, 0.75), boxMat);
+      box.position.set(0, 8.2, 0);
+      group.add(pole, box);
+      const colors = [0xff2838, 0xffc928, 0x37ff72];
+      for (let i = 0; i < 3; i += 1) {
+        const light = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8), new THREE.MeshBasicMaterial({ color: colors[i], transparent: true, opacity: i === Math.floor(rng() * 3) ? 0.95 : 0.28 }));
+        light.position.set(0, 9.0 - i * 0.8, 0.42);
+        group.add(light);
+      }
+      propRoot.add(group);
+    }
+
+    function addTree(x, z, rng) {
+      const trunkMat = new THREE.MeshStandardMaterial({ color: 0x453225, roughness: 0.88, metalness: 0.02 });
+      const leafMat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(0.28 + rng() * 0.08, 0.42, 0.24 + rng() * 0.12), roughness: 0.86, metalness: 0.01 });
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.62, 5.8, 10), trunkMat);
+      trunk.position.y = 2.9;
+      trunk.castShadow = true;
+      const crown = new THREE.Mesh(new THREE.DodecahedronGeometry(3.2 + rng() * 1.6, 1), leafMat);
+      crown.position.y = 7.1;
+      crown.scale.set(1.0 + rng() * 0.35, 1.2 + rng() * 0.45, 1.0 + rng() * 0.35);
+      crown.castShadow = true;
+      crown.receiveShadow = true;
+      group.add(trunk, crown);
+      propRoot.add(group);
     }
 
     function addBoundary() {
@@ -1262,6 +1375,23 @@
       scene.add(tank);
     }
 
+    function createAimMarker() {
+      aimMarker = new THREE.Group();
+      const mat = new THREE.MeshBasicMaterial({ color: 0x45fff4, transparent: true, opacity: 0.78, side: THREE.DoubleSide });
+      const ring = new THREE.Mesh(new THREE.RingGeometry(3.8, 4.6, 40), mat);
+      ring.rotation.x = -Math.PI / 2;
+      const lineA = new THREE.Mesh(new THREE.PlaneGeometry(0.45, 11), mat);
+      lineA.rotation.x = -Math.PI / 2;
+      const lineB = new THREE.Mesh(new THREE.PlaneGeometry(11, 0.45), mat);
+      lineB.rotation.x = -Math.PI / 2;
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 14, 8), mat);
+      stem.position.y = 7;
+      aimMarker.add(ring, lineA, lineB, stem);
+      aimMarker.position.copy(manualAimPoint);
+      aimMarker.visible = false;
+      scene.add(aimMarker);
+    }
+
     function spawnWave() {
       clearGroup(enemyRoot);
       clearGroup(projectileRoot);
@@ -1387,6 +1517,9 @@
       tankPos.set(0, 0, -38);
       heading = 0;
       speed = 0;
+      autoAimEnabled = true;
+      manualAimActive = false;
+      currentAimTarget = null;
       started = true;
       paused = false;
       gameOver = false;
@@ -1395,6 +1528,7 @@
       applyTheme(level);
       buildDistrict();
       tank.position.copy(tankPos);
+      updateAimUi();
       spawnWave();
     }
 
@@ -1409,6 +1543,10 @@
           missileRequested = true;
           event.preventDefault();
         }
+        if (event.code === "KeyQ") {
+          toggleAimMode();
+          event.preventDefault();
+        }
         if (event.code === "KeyR" && started) {
           startGame({ load: false });
         }
@@ -1419,6 +1557,15 @@
       window.addEventListener("pointermove", moveTouch, { passive: false });
       window.addEventListener("pointerup", endTouch, { passive: false });
       window.addEventListener("pointercancel", endTouch, { passive: false });
+      canvas.addEventListener("pointermove", (event) => {
+        if (!started || event.pointerType !== "mouse") return;
+        setManualAimFromPointer(event, false);
+      }, { passive: true });
+      canvas.addEventListener("click", (event) => {
+        if (!started || event.target.closest("button")) return;
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        setManualAimFromPointer(event, true);
+      });
 
       fireBtn.addEventListener("pointerdown", (event) => {
         event.preventDefault();
@@ -1427,6 +1574,10 @@
       missileBtn.addEventListener("pointerdown", (event) => {
         event.preventDefault();
         missileRequested = true;
+      });
+      aimBtn.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        toggleAimMode();
       });
 
       startBtn.addEventListener("click", () => startGame({ load: false }));
@@ -1459,6 +1610,17 @@
     function beginTouch(event) {
       if (!started || touchId !== null) return;
       if (event.target.closest("button")) return;
+      if (event.pointerType === "mouse") {
+        setManualAimFromPointer(event, true);
+        return;
+      }
+      if (manualAimActive) {
+        touchId = event.pointerId;
+        setManualAimFromPointer(event, true);
+        try { canvas.setPointerCapture(event.pointerId); } catch {}
+        event.preventDefault();
+        return;
+      }
       touchId = event.pointerId;
       touchStart.x = event.clientX;
       touchStart.y = event.clientY;
@@ -1474,6 +1636,11 @@
 
     function moveTouch(event) {
       if (event.pointerId !== touchId) return;
+      if (manualAimActive) {
+        setManualAimFromPointer(event, true);
+        event.preventDefault();
+        return;
+      }
       const dx = event.clientX - touchStart.x;
       const dy = event.clientY - touchStart.y;
       const len = Math.max(1, Math.hypot(dx, dy));
@@ -1495,6 +1662,47 @@
       event.preventDefault();
     }
 
+    function toggleAimMode() {
+      manualAimActive = !manualAimActive;
+      autoAimEnabled = !manualAimActive;
+      if (manualAimActive) {
+        forward.set(Math.sin(heading), 0, Math.cos(heading));
+        manualAimPoint.copy(tankPos).addScaledVector(forward, 95);
+        showToast("Manual aim: tap or click a target.");
+      } else {
+        showToast("Auto aim: turret tracks hostiles.");
+      }
+      updateAimUi();
+    }
+
+    function updateAimUi() {
+      if (!aimBtn || !aimMarker) return;
+      aimBtn.textContent = manualAimActive ? "Manual" : "Auto Aim";
+      aimBtn.classList.toggle("active", manualAimActive);
+      aimMarker.visible = manualAimActive;
+      aimMarker.position.copy(manualAimPoint);
+    }
+
+    function setManualAimFromPointer(event, activate) {
+      if (!started) return;
+      if (!manualAimActive && !activate) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+      const y = -(((event.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1);
+      pointerNdc.set(x, y);
+      raycaster.setFromCamera(pointerNdc, camera);
+      const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+      const hit = new THREE.Vector3();
+      if (raycaster.ray.intersectPlane(plane, hit)) {
+        manualAimActive = true;
+        autoAimEnabled = false;
+        manualAimPoint.copy(hit);
+        manualAimPoint.x = THREE.MathUtils.clamp(manualAimPoint.x, -WORLD_SIZE + 40, WORLD_SIZE - 40);
+        manualAimPoint.z = THREE.MathUtils.clamp(manualAimPoint.z, -WORLD_SIZE + 40, WORLD_SIZE - 40);
+        updateAimUi();
+      }
+    }
+
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(0.033, clock.getDelta());
@@ -1514,7 +1722,9 @@
       updateTank(dt, input);
       updateAudio();
       updateTurret(dt);
+      updateAimUi();
       updateBaseDefenses();
+      updateBaseSupport(dt);
       updateEnemies(dt);
       updateProjectiles(dt);
       updateExplosions(dt);
@@ -1529,7 +1739,6 @@
         launchMissile();
         missileRequested = false;
       }
-      autoFire();
     }
 
     function readInput() {
@@ -1571,13 +1780,22 @@
     }
 
     function updateTurret(dt) {
-      const target = nearestEnemy(135);
-      if (!target) {
+      let aimPoint = null;
+      currentAimTarget = null;
+      if (manualAimActive) {
+        aimPoint = manualAimPoint;
+      } else if (autoAimEnabled) {
+        currentAimTarget = nearestEnemy(230);
+        if (currentAimTarget) {
+          aimPoint = currentAimTarget.group.position;
+        }
+      }
+      if (!aimPoint) {
         turret.rotation.y += (0 - turret.rotation.y) * Math.min(1, dt * 2);
         return;
       }
-      const dx = target.group.position.x - tank.position.x;
-      const dz = target.group.position.z - tank.position.z;
+      const dx = aimPoint.x - tank.position.x;
+      const dz = aimPoint.z - tank.position.z;
       const worldAngle = Math.atan2(dx, dz);
       const localAngle = normalizeAngle(worldAngle - heading);
       turret.rotation.y += normalizeAngle(localAngle - turret.rotation.y) * Math.min(1, dt * 8);
@@ -1615,7 +1833,7 @@
     function updateBaseDefenses() {
       if (baseDefenseCooldown > 0) return;
       let target = null;
-      let targetDist = 118;
+      let targetDist = 190;
       for (const enemy of enemies) {
         const dist = Math.hypot(enemy.group.position.x, enemy.group.position.z + 44);
         if (dist < targetDist) {
@@ -1627,6 +1845,14 @@
       baseDefenseCooldown = 0.32;
       addExplosion(target.group.position.x, 5, target.group.position.z, currentTheme.accent, 0.35);
       damageEnemy(target, 16 + level * 0.8, target.group.position, currentTheme.accent);
+    }
+
+    function updateBaseSupport(dt) {
+      const dist = Math.hypot(tankPos.x, tankPos.z + 44);
+      if (dist > 64) return;
+      if (hull < 100) hull = Math.min(100, hull + dt * 9);
+      heavyCooldown = Math.max(0, heavyCooldown - dt * 0.7);
+      missileCooldown = Math.max(0, missileCooldown - dt * 0.55);
     }
 
     function updateProjectiles(dt) {
@@ -1796,15 +2022,16 @@
         showToast("Heavy shell reloading.");
         return;
       }
-      const target = nearestEnemy(180);
+      const aim = getFireAim(250);
       shootProjectile({
-        target,
+        target: aim.target,
+        targetPoint: aim.point,
         speed: 120,
         damage: 115 + level * 5,
         color: 0xf7c84b,
         radius: 1.55,
         life: 2.6,
-        homing: true,
+        homing: !!aim.target,
         splash: 34,
         buildingDamage: 155 + level * 8,
         sound: "shell"
@@ -1817,19 +2044,20 @@
         showToast("Missile rack cycling.");
         return;
       }
-      const target = nearestEnemy(260);
-      if (!target) {
+      const aim = getFireAim(340);
+      if (!aim.target && !manualAimActive) {
         showToast("No target lock.");
         return;
       }
       shootProjectile({
-        target,
+        target: aim.target,
+        targetPoint: aim.point,
         speed: 92,
         damage: 170 + level * 7,
         color: 0xff465b,
         radius: 1.35,
         life: 4.6,
-        homing: true,
+        homing: !!aim.target,
         splash: 48,
         buildingDamage: 220 + level * 10,
         sound: "missile"
@@ -1837,11 +2065,28 @@
       missileCooldown = 4.2;
     }
 
+    function getFireAim(range) {
+      if (manualAimActive) {
+        return { target: null, point: manualAimPoint.clone().setY(4.2) };
+      }
+      const target = currentAimTarget || nearestEnemy(range);
+      if (target) return { target, point: null };
+      const angle = heading + turret.rotation.y;
+      const point = new THREE.Vector3(
+        tankPos.x + Math.sin(angle) * range,
+        4.2,
+        tankPos.z + Math.cos(angle) * range
+      );
+      return { target: null, point };
+    }
+
     function shootProjectile(config) {
       playWeaponSound(config.sound);
       barrelTip.getWorldPosition(tmpVec);
       const targetPoint = new THREE.Vector3();
-      if (config.target) {
+      if (config.targetPoint) {
+        targetPoint.copy(config.targetPoint);
+      } else if (config.target) {
         targetPoint.copy(config.target.group.position).add(new THREE.Vector3(0, config.target.boss ? 7 : 4, 0));
       } else {
         forward.set(Math.sin(heading + turret.rotation.y), 0, Math.cos(heading + turret.rotation.y));
@@ -2022,7 +2267,7 @@
       ui.hullFill.style.width = `${Math.max(0, Math.min(100, hull))}%`;
       ui.hullFill.style.background = hull > 55 ? "linear-gradient(90deg, #24ff91, #e8f35f)" : hull > 25 ? "linear-gradient(90deg, #f7c84b, #ff7b45)" : "linear-gradient(90deg, #ff465b, #9e1322)";
       ui.missionFill.style.width = `${Math.min(100, missionKills / Math.max(1, missionTarget) * 100)}%`;
-      ui.district.textContent = `${currentTheme.name} - ${bossSpawned ? "Boss active" : "Clear the route"}`;
+      ui.district.textContent = `${currentTheme.name} - ${manualAimActive ? "Manual aim" : bossSpawned ? "Boss active" : "Auto aim"}`;
     }
 
     function saveProgress() {
@@ -2064,8 +2309,15 @@
       if (!Ctx) return;
       audioCtx = new Ctx();
       masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0.42;
-      masterGain.connect(audioCtx.destination);
+      masterGain.gain.value = 0.62;
+      const compressor = audioCtx.createDynamicsCompressor();
+      compressor.threshold.value = -18;
+      compressor.knee.value = 22;
+      compressor.ratio.value = 5;
+      compressor.attack.value = 0.005;
+      compressor.release.value = 0.18;
+      masterGain.connect(compressor);
+      compressor.connect(audioCtx.destination);
 
       engineOsc = audioCtx.createOscillator();
       engineOsc.type = "sawtooth";
@@ -2092,20 +2344,27 @@
     function playWeaponSound(kind) {
       if (!audioCtx || !masterGain) return;
       if (kind === "auto") {
-        playTone(180, 0.035, "square", 0.035, 90);
+        playTone(220, 0.032, "square", 0.045, 120);
+        playTone(72, 0.04, "sine", 0.028, -18);
       } else if (kind === "shell") {
-        playTone(72, 0.14, "sawtooth", 0.16, -34);
-        playNoise(0.10, 0.13, 740);
+        playTone(56, 0.18, "sawtooth", 0.24, -32);
+        playTone(310, 0.055, "square", 0.07, 180);
+        playNoise(0.14, 0.19, 1180);
       } else if (kind === "missile") {
-        playTone(120, 0.22, "sawtooth", 0.10, 180);
-        playNoise(0.18, 0.09, 1100);
+        playTone(96, 0.30, "sawtooth", 0.16, 220);
+        playTone(620, 0.08, "triangle", 0.05, 260);
+        playNoise(0.22, 0.13, 1800);
       }
     }
 
     function playExplosionSound(scale = 1) {
       if (!audioCtx || !masterGain) return;
-      playTone(54, 0.22 * Math.min(1.6, scale), "sine", 0.18 * Math.min(1.4, scale), -28);
-      playNoise(0.22 * Math.min(1.8, scale), 0.16 * Math.min(1.2, scale), 360);
+      const s = Math.min(2.4, Math.max(0.6, scale));
+      playTone(38, 0.36 * s, "sine", 0.26 * Math.min(1.4, s), -14);
+      playTone(92, 0.22 * s, "sawtooth", 0.16 * Math.min(1.2, s), -36);
+      playTone(880, 0.055, "square", 0.055, 420);
+      playNoise(0.34 * s, 0.24 * Math.min(1.3, s), 520);
+      playNoise(0.075, 0.11, 4200);
     }
 
     function playTone(freq, duration, type, gain, slide) {
