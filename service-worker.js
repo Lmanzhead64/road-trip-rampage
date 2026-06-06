@@ -1,4 +1,4 @@
-const CACHE_NAME = "road-trip-rampage-v30-war-thunder-inspired";
+const CACHE_NAME = "road-trip-rampage-v31-breacher-graphics";
 const ASSETS = [
   "./",
   "./index.html",
