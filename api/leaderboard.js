@@ -15,7 +15,7 @@ module.exports = async function handler(req, res) {
     res.status(503).json({
       ok: false,
       error: "Leaderboard storage is not configured.",
-      setup: "Set KV_REST_API_URL and KV_REST_API_TOKEN, or UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN."
+      setup: "Set KV_REST_API_URL and KV_REST_API_TOKEN, or the Upstash Redis REST variables from Vercel Marketplace."
     });
     return;
   }
@@ -51,11 +51,28 @@ module.exports = async function handler(req, res) {
 };
 
 function redisUrl() {
-  return process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "";
+  return envFirst(
+    "KV_REST_API_URL",
+    "UPSTASH_REDIS_REST_URL",
+    "UPSTASH_REDIS_REST_KV_REST_API_URL",
+    "UPSTASH_REDIS_REST_REDIS_REST_URL"
+  );
 }
 
 function redisToken() {
-  return process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "";
+  return envFirst(
+    "KV_REST_API_TOKEN",
+    "UPSTASH_REDIS_REST_TOKEN",
+    "UPSTASH_REDIS_REST_KV_REST_API_TOKEN",
+    "UPSTASH_REDIS_REST_REDIS_REST_TOKEN"
+  );
+}
+
+function envFirst(...keys) {
+  for (const key of keys) {
+    if (process.env[key]) return process.env[key];
+  }
+  return "";
 }
 
 async function redis(command) {
