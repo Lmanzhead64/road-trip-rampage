@@ -165,6 +165,65 @@
       box-shadow: 0 0 16px rgba(69, 255, 244, 0.24), inset 0 0 14px rgba(69, 255, 244, 0.18);
     }
 
+    #damagePanel {
+      position: fixed;
+      top: calc(max(10px, env(safe-area-inset-top)) + 120px);
+      right: max(12px, env(safe-area-inset-right));
+      z-index: 4;
+      width: min(270px, calc(100vw - 24px));
+      padding: 10px;
+      border: 1px solid rgba(255, 70, 91, 0.28);
+      border-radius: 5px;
+      background:
+        linear-gradient(180deg, rgba(10, 12, 12, 0.76), rgba(0, 0, 0, 0.50)),
+        repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 8px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+      text-transform: uppercase;
+    }
+
+    .damage-panel-title {
+      color: rgba(244, 247, 251, 0.72);
+      font-size: 9px;
+      font-weight: 1000;
+    }
+
+    .module-row {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr) 42px;
+      gap: 7px;
+      align-items: center;
+      margin-top: 7px;
+      color: rgba(244, 247, 251, 0.86);
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .module-bar {
+      height: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+    }
+
+    .module-fill {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #24ff91, #e8f35f);
+    }
+
+    #moduleAlert {
+      margin-top: 8px;
+      min-height: 12px;
+      color: #f7c84b;
+      font-size: 9px;
+      font-weight: 1000;
+      line-height: 1.25;
+    }
+
     #notice {
       position: fixed;
       left: 50%;
@@ -424,6 +483,143 @@
       font-size: 11px;
       font-weight: 760;
       line-height: 1.35;
+    }
+
+    .leaderboard-panel,
+    .score-submit {
+      margin: 18px auto 0;
+      width: min(720px, 100%);
+      border: 1px solid rgba(69, 255, 244, 0.22);
+      border-radius: 5px;
+      background:
+        linear-gradient(180deg, rgba(69, 255, 244, 0.08), rgba(0, 0, 0, 0.24)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 12px);
+      padding: 12px;
+      text-align: left;
+    }
+
+    .leaderboard-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: rgba(244, 247, 251, 0.94);
+      font-size: 12px;
+      font-weight: 1000;
+      text-transform: uppercase;
+    }
+
+    .leaderboard-head button {
+      min-height: 30px;
+      padding: 0 10px;
+      font-size: 9px;
+      border-radius: 5px;
+    }
+
+    .leaderboard-list {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+      margin: 10px 0 0;
+      padding: 0;
+    }
+
+    .leaderboard-list li {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      min-height: 32px;
+      padding: 6px 8px;
+      border: 1px solid rgba(255,255,255,0.11);
+      background: rgba(0, 0, 0, 0.25);
+      color: rgba(244, 247, 251, 0.82);
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .leaderboard-rank {
+      color: #45fff4;
+      font-weight: 1000;
+    }
+
+    .leaderboard-name {
+      min-width: 0;
+    }
+
+    .leaderboard-name strong,
+    .leaderboard-name span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .leaderboard-name span,
+    .leaderboard-status,
+    .score-submit-status {
+      color: rgba(244, 247, 251, 0.62);
+      font-size: 10px;
+      line-height: 1.35;
+    }
+
+    .leaderboard-score {
+      color: #f7c84b;
+      font-size: 13px;
+      font-weight: 1000;
+    }
+
+    .leaderboard-status,
+    .score-submit-status {
+      margin: 9px 0 0;
+      font-weight: 780;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .score-submit {
+      display: none;
+      text-align: center;
+    }
+
+    .score-submit-title {
+      color: #f7c84b;
+      font-size: 12px;
+      font-weight: 1000;
+      text-transform: uppercase;
+    }
+
+    .score-submit-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .score-submit input {
+      min-height: 38px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.42);
+      color: #f4f7fb;
+      padding: 0 12px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      outline: none;
+    }
+
+    .score-submit input:focus {
+      border-color: rgba(69, 255, 244, 0.74);
+      box-shadow: 0 0 0 2px rgba(69, 255, 244, 0.12);
+    }
+
+    .score-submit button {
+      min-height: 38px;
+      padding: 0 14px;
+      font-size: 10px;
     }
 
     .start-actions {
@@ -867,6 +1063,15 @@
         height: 76px;
       }
 
+      #damagePanel {
+        top: auto;
+        right: auto;
+        left: max(12px, env(safe-area-inset-left));
+        bottom: max(15px, env(safe-area-inset-bottom));
+        width: min(230px, 46vw);
+        padding: 8px;
+      }
+
       #stats {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
@@ -985,6 +1190,27 @@
         height: 64px;
       }
 
+      #damagePanel {
+        top: 112px;
+        right: max(12px, env(safe-area-inset-right));
+        left: auto;
+        bottom: auto;
+        width: 210px;
+        padding: 7px;
+      }
+
+      .module-row {
+        grid-template-columns: 48px minmax(0, 1fr) 34px;
+        gap: 5px;
+        margin-top: 5px;
+        font-size: 8px;
+      }
+
+      #moduleAlert {
+        margin-top: 5px;
+        font-size: 8px;
+      }
+
       .action-btn.primary {
         width: 78px;
         height: 78px;
@@ -1050,6 +1276,49 @@
 
       #startOverlay .start-secondary {
         min-width: 126px;
+      }
+
+      .leaderboard-panel,
+      .score-submit {
+        margin-top: 8px;
+        padding: 8px;
+      }
+
+      .leaderboard-head {
+        font-size: 10px;
+      }
+
+      .leaderboard-list {
+        gap: 4px;
+        margin-top: 7px;
+      }
+
+      .leaderboard-list li {
+        grid-template-columns: 28px minmax(0, 1fr) auto;
+        min-height: 27px;
+        padding: 4px 6px;
+        font-size: 8px;
+      }
+
+      .leaderboard-score {
+        font-size: 10px;
+      }
+
+      .leaderboard-name span,
+      .leaderboard-status,
+      .score-submit-status {
+        font-size: 8px;
+      }
+
+      .score-submit-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .score-submit input,
+      .score-submit button {
+        min-height: 32px;
+        font-size: 9px;
       }
 
       .garage-close-actions {
@@ -1163,6 +1432,12 @@
     </div>
   </div>
 
+  <div id="damagePanel" aria-live="polite">
+    <div class="damage-panel-title">Vehicle Systems</div>
+    <div id="moduleRows"></div>
+    <div id="moduleAlert">All systems operational</div>
+  </div>
+
   <div id="notice">Boss convoy incoming</div>
   <div id="bossIntel"><strong>Boss Intel</strong><span>Clear the convoy to draw out the commander.</span></div>
   <div id="controlsHint">Drive: W/S + A/D. On phone, left side drives forward/back and right side turns. F toggles Auto Shoot. Space/Shell fires visible tank rounds. M/Heavy Missile launches a high-impact missile. Supply runner retrieves field crates.</div>
@@ -1206,6 +1481,16 @@
         <button id="garageBtn" class="start-secondary" type="button">Garage</button>
         <button id="resetSaveBtn" class="start-secondary" type="button">Reset Save</button>
       </div>
+      <div class="leaderboard-panel" aria-live="polite">
+        <div class="leaderboard-head">
+          <span>Public Command Board</span>
+          <button id="leaderboardRefreshBtn" class="start-secondary" type="button">Refresh</button>
+        </div>
+        <ol id="leaderboardList" class="leaderboard-list">
+          <li><span class="leaderboard-rank">--</span><span class="leaderboard-name"><strong>Loading board</strong><span>Checking available score storage</span></span><span class="leaderboard-score">0</span></li>
+        </ol>
+        <p id="leaderboardStatus" class="leaderboard-status">Local board is ready. Global board connects through Vercel Redis.</p>
+      </div>
     </div>
   </section>
 
@@ -1217,6 +1502,14 @@
         <button id="nextLevelBtn" class="start-main" type="button">Next Level</button>
         <button id="garageLevelBtn" class="start-secondary" type="button">Garage / Upgrades</button>
         <button id="saveExitBtn" class="start-secondary" type="button">Save And Exit</button>
+      </div>
+      <div id="scoreSubmitPanel" class="score-submit">
+        <div class="score-submit-title">Optional leaderboard save</div>
+        <div class="score-submit-row">
+          <input id="playerNameInput" type="text" maxlength="20" autocomplete="nickname" placeholder="Commander name">
+          <button id="submitScoreBtn" class="start-main" type="button">Submit Score</button>
+        </div>
+        <p id="scoreSubmitStatus" class="score-submit-status">Save this run publicly, or skip and restart fast.</p>
       </div>
     </div>
   </section>
@@ -1291,6 +1584,15 @@
     const garagePreviewCaption = document.getElementById("garagePreviewCaption");
     const garageNav = document.getElementById("garageNav");
     const bossIntel = document.getElementById("bossIntel");
+    const leaderboardList = document.getElementById("leaderboardList");
+    const leaderboardStatus = document.getElementById("leaderboardStatus");
+    const leaderboardRefreshBtn = document.getElementById("leaderboardRefreshBtn");
+    const scoreSubmitPanel = document.getElementById("scoreSubmitPanel");
+    const playerNameInput = document.getElementById("playerNameInput");
+    const submitScoreBtn = document.getElementById("submitScoreBtn");
+    const scoreSubmitStatus = document.getElementById("scoreSubmitStatus");
+    const moduleRows = document.getElementById("moduleRows");
+    const moduleAlert = document.getElementById("moduleAlert");
 
     const ui = {
       district: document.getElementById("district"),
@@ -1310,6 +1612,9 @@
     const PROFILE_KEY = "roadTripRampage3DProfileV1";
     const BEST_KEY = "roadTripRampage3DBestV1";
     const STREAK_KEY = "roadTripRampage3DWinStreakV1";
+    const LOCAL_LEADERBOARD_KEY = "roadTripRampage3DLocalLeaderboardV1";
+    const PLAYER_NAME_KEY = "roadTripRampage3DPlayerNameV1";
+    const LEADERBOARD_ENDPOINT_KEY = "roadTripRampage3DLeaderboardApiV1";
     const MAX_LEVEL = 100;
     const WORLD_SIZE = 1800;
     const MAX_JOYSTICK = 78;
@@ -1320,6 +1625,14 @@
       { id: "armor", label: "Armor" },
       { id: "base", label: "Home Base" },
       { id: "cosmetic", label: "Cosmetics" }
+    ];
+
+    const moduleDefinitions = [
+      { id: "tracks", label: "Tracks", system: "mobility", bad: "Track link damaged", critical: "Tracks nearly thrown" },
+      { id: "engine", label: "Engine", system: "mobility", bad: "Turbine damaged", critical: "Engine power failing" },
+      { id: "turret", label: "Turret", system: "weapon", bad: "Turret ring hit", critical: "Turret drive jammed" },
+      { id: "optics", label: "Optics", system: "targeting", bad: "Optics cracked", critical: "Targeting degraded" },
+      { id: "armor", label: "Armor", system: "survival", bad: "Armor plate scored", critical: "Armor breach risk" }
     ];
 
     const upgradeCatalog = [
@@ -1522,8 +1835,11 @@
     let tankAccentMaterials = [];
     let selectedSkin = "skin-steel";
     let upgradeLevels = Object.fromEntries(upgradeCatalog.map(item => [item.id, item.id === "skin-steel" ? 1 : 0]));
+    let moduleHealth = Object.fromEntries(moduleDefinitions.map(item => [item.id, 100]));
+    let lastModuleAlertAt = 0;
     let activeGarageCategory = "combat";
     let wasPausedBeforeGarage = true;
+    let lastRunStats = null;
     let lastFrameAt = 0;
 
     const tmpVec = new THREE.Vector3();
@@ -1583,6 +1899,8 @@
       createAimMarker();
       setupInput();
       updateHud();
+      updateModuleHud();
+      loadLeaderboard();
 
       window.addEventListener("resize", resize);
       document.addEventListener("visibilitychange", () => {
@@ -3051,23 +3369,27 @@
         autoFireEnabled = !!saved.autoFireEnabled;
         hull = saved.hull || maxHull;
         winStreak = Number(saved.winStreak || localStorage.getItem(STREAK_KEY) || 0);
+        moduleHealth = normalizeModuleHealth(saved.moduleHealth);
       } else {
         level = 1;
         score = 0;
         autoFireEnabled = false;
         hull = maxHull;
         winStreak = 0;
+        moduleHealth = normalizeModuleHealth();
         localStorage.setItem(STREAK_KEY, String(winStreak));
       }
       loadProfile();
       applyUpgradeEffects();
       hull = Math.min(maxHull, Math.max(1, hull));
+      updateModuleHud();
       started = true;
       paused = false;
       gameOver = false;
       startOverlay.style.display = "none";
       levelOverlay.style.display = "none";
       garageOverlay.style.display = "none";
+      resetScoreSubmit();
       document.body.classList.add("playing");
       applyTheme(level);
       buildDistrict();
@@ -3134,6 +3456,8 @@
         event.preventDefault();
         toggleAutoFire();
       });
+      leaderboardRefreshBtn.addEventListener("click", () => loadLeaderboard(true));
+      submitScoreBtn.addEventListener("click", () => submitLeaderboardScore());
 
       startBtn.addEventListener("click", () => startGame({ load: false }));
       continueBtn.addEventListener("click", () => {
@@ -3177,6 +3501,7 @@
         startOverlay.style.display = "grid";
         document.body.classList.remove("playing");
         updateModeUi();
+        loadLeaderboard();
         showToast("Saved. Load Save brings you back.");
       });
       updateModeUi();
@@ -3377,11 +3702,13 @@
       const engineLevel = getUpgradeLevel("engine");
       const trackLevel = getUpgradeLevel("tracks");
       const platformTier = getTankPlatformTier();
-      const maxSpeed = (input.boost ? 74 : 58) + engineLevel * 6 + trackLevel * 2.2 + (platformTier - 1) * 2.1;
-      const reverseSpeed = 30 + engineLevel * 2.5 + trackLevel * 1.4 + (platformTier - 1) * 0.9;
+      const engineSystem = moduleEfficiency("engine", 0.42);
+      const trackSystem = moduleEfficiency("tracks", 0.38);
+      const maxSpeed = ((input.boost ? 74 : 58) + engineLevel * 6 + trackLevel * 2.2 + (platformTier - 1) * 2.1) * engineSystem;
+      const reverseSpeed = (30 + engineLevel * 2.5 + trackLevel * 1.4 + (platformTier - 1) * 0.9) * engineSystem;
       const targetSpeed = input.throttle >= 0 ? input.throttle * maxSpeed : input.throttle * reverseSpeed;
       speed += (targetSpeed - speed) * Math.min(1, dt * 3.3);
-      const steerStrength = (1.72 + engineLevel * 0.09 + trackLevel * 0.065 + (platformTier - 1) * 0.018) * (0.48 + Math.min(1, Math.abs(speed) / 42) * 0.64);
+      const steerStrength = (1.72 + engineLevel * 0.09 + trackLevel * 0.065 + (platformTier - 1) * 0.018) * trackSystem * (0.48 + Math.min(1, Math.abs(speed) / 42) * 0.64);
       heading -= input.turn * steerStrength * dt * (speed >= -0.5 ? 1 : -1);
 
       forward.set(Math.sin(heading), 0, Math.cos(heading));
@@ -3397,6 +3724,7 @@
       } else {
         speed *= -(0.18 - trackLevel * 0.018);
         addExplosion(tankPos.x + forward.x * 8, 2, tankPos.z + forward.z * 8, 0x9a8b76, 0.55);
+        applyPlayerDamage(Math.max(3, Math.abs(speed) * 0.18), "collision", tmpVec.set(tankPos.x + forward.x * 8, 2, tankPos.z + forward.z * 8));
         playClankSound();
       }
 
@@ -3411,7 +3739,8 @@
       if (manualAimActive) {
         aimPoint = manualAimPoint;
       } else if (autoAimEnabled) {
-        currentAimTarget = acquireClosestEnemy(420 + getUpgradeLevel("cannon") * 12 + getUpgradeLevel("optics") * 36 + getUpgradeLevel("fireControl") * 28 + (getTankPlatformTier() - 1) * 8);
+        const opticsSystem = moduleEfficiency("optics", 0.46);
+        currentAimTarget = acquireClosestEnemy((420 + getUpgradeLevel("cannon") * 12 + getUpgradeLevel("optics") * 36 + getUpgradeLevel("fireControl") * 28 + (getTankPlatformTier() - 1) * 8) * opticsSystem);
         if (currentAimTarget) {
           aimPoint = currentAimTarget.group.position;
         }
@@ -3424,7 +3753,8 @@
       const dz = aimPoint.z - tank.position.z;
       const worldAngle = Math.atan2(dx, dz);
       const localAngle = normalizeAngle(worldAngle - heading);
-      turret.rotation.y += normalizeAngle(localAngle - turret.rotation.y) * Math.min(1, dt * (6.2 + getUpgradeLevel("stabilizer") * 1.35 + getUpgradeLevel("fireControl") * 0.55 + (getTankPlatformTier() - 1) * 0.12));
+      const turretSystem = moduleEfficiency("turret", 0.38);
+      turret.rotation.y += normalizeAngle(localAngle - turret.rotation.y) * Math.min(1, dt * turretSystem * (6.2 + getUpgradeLevel("stabilizer") * 1.35 + getUpgradeLevel("fireControl") * 0.55 + (getTankPlatformTier() - 1) * 0.12));
     }
 
     function updateEnemies(dt) {
@@ -3449,11 +3779,9 @@
           }
         } else if (damageCooldown === 0) {
           const mitigated = enemy.damage * (1 - Math.min(0.48, getUpgradeLevel("spall") * 0.045 + getUpgradeLevel("composite") * 0.035 + (getTankPlatformTier() - 1) * 0.008));
-          hull -= mitigated;
-          damageCooldown = 0.68;
-          addDamageNumber(tankPos.x, 9, tankPos.z, `-${Math.round(mitigated)}`, 0xff465b);
-          addExplosion(tankPos.x - tmpVec.x * 5, 3, tankPos.z - tmpVec.z * 5, 0xff7b45, 0.8);
-          if (hull <= 0) endRun();
+          const impactPoint = tmpVec2.set(tankPos.x - tmpVec.x * 5, 3, tankPos.z - tmpVec.z * 5);
+          applyPlayerDamage(mitigated, "impact", impactPoint);
+          addExplosion(impactPoint.x, impactPoint.y, impactPoint.z, 0xff7b45, 0.8);
         }
       }
     }
@@ -3488,6 +3816,7 @@
       const sensorLevel = getUpgradeLevel("sensors");
       if (dist > 64 + supportLevel * 10 + repairLevel * 8) return;
       if (hull < maxHull) hull = Math.min(maxHull, hull + dt * (9 + supportLevel * 2.1 + repairLevel * 3.4));
+      repairModules(dt * (2.8 + supportLevel * 0.5 + repairLevel * 0.9));
       heavyCooldown = Math.max(0, heavyCooldown - dt * (0.7 + supportLevel * 0.08 + repairLevel * 0.08));
       missileCooldown = Math.max(0, missileCooldown - dt * (0.55 + supportLevel * 0.06 + repairLevel * 0.08 + sensorLevel * 0.03));
     }
@@ -3532,11 +3861,19 @@
     }
 
     function damageEnemy(enemy, damage, point, color) {
-      enemy.hp -= damage;
+      const hitReport = point ? getEnemyHitReport(enemy, point, damage) : { label: "ARMOR HIT", multiplier: 1, module: "armor", critical: false };
+      const finalDamage = damage * hitReport.multiplier;
+      enemy.hp -= finalDamage;
       const ratio = Math.max(0, enemy.hp / enemy.maxHp);
       enemy.hpBar.scale.x = ratio;
       enemy.hpBar.position.x = -(1 - ratio) * (enemy.hpBarHalfWidth || (enemy.boss ? 9.25 : 5));
-      addDamageNumber(enemy.group.position.x, enemy.boss ? 18 : 10, enemy.group.position.z, Math.round(damage), color);
+      if (point) {
+        addDamageNumber(point.x, point.y + 3.8, point.z, hitReport.label, hitReport.critical ? 0xff465b : color);
+        addImpactScorch(point.x, point.y, point.z, hitReport.critical ? 0xff465b : color, hitReport.critical ? 1.15 : 0.82);
+        if (hitReport.module === "tracks") enemy.speed *= 0.94;
+        if (hitReport.module === "engine") enemy.speed *= 0.90;
+      }
+      addDamageNumber(enemy.group.position.x, enemy.boss ? 18 : 10, enemy.group.position.z, Math.round(finalDamage), hitReport.critical ? 0xff465b : color);
       if (enemy.hp <= 0) {
         registerKillMomentum(enemy);
         const difficulty = getDifficulty(level);
@@ -3559,7 +3896,7 @@
           if (missionKills >= missionTarget && enemies.every(item => !item.boss)) maybeSpawnBoss();
         }
       } else if (point) {
-        addExplosion(point.x, point.y, point.z, color, 0.45);
+        addExplosion(point.x, point.y, point.z, hitReport.critical ? 0xff465b : color, hitReport.critical ? 0.7 : 0.45);
       }
     }
 
@@ -3729,7 +4066,8 @@
       if (pickup.type === "repair") {
         const repair = Math.round((18 + level * 0.8) * repairBonus);
         hull = Math.min(maxHull, hull + repair);
-        showToast(`Field repair +${repair} hull`);
+        repairModules(18 + level * 0.6, null, true);
+        showToast(`Field repair +${repair} hull and systems`);
       } else if (pickup.type === "credits") {
         const credits = Math.round(55 + level * 5 + getUpgradeLevel("sensors") * 8);
         score += credits;
@@ -3744,6 +4082,7 @@
         const credits = 220 + level * 12;
         score += credits;
         hull = Math.min(maxHull, hull + Math.round(34 * repairBonus));
+        repairModules(42 + level * 0.8, null, true);
         heavyCooldown = 0;
         missileCooldown = Math.max(0, missileCooldown - 2.8);
         showToast(`Elite resupply +${credits} credits`);
@@ -3765,6 +4104,45 @@
       }
     }
 
+    function getEnemyHitReport(enemy, point, damage) {
+      const local = enemy.group.worldToLocal(point.clone());
+      const radius = Math.max(6, enemy.radius || 6);
+      const y = local.y;
+      const side = Math.abs(local.x);
+      const frontBack = local.z;
+      let label = "ARMOR HIT";
+      let module = "armor";
+      let multiplier = 1;
+      if (side > radius * 0.58 && y < 5.2) {
+        label = "TRACK HIT";
+        module = "tracks";
+        multiplier = 0.86;
+      } else if (y > 6.2) {
+        label = "TURRET RING";
+        module = "turret";
+        multiplier = 1.14;
+      } else if (frontBack < -radius * 0.36) {
+        label = "ENGINE DECK";
+        module = "engine";
+        multiplier = 1.22;
+      } else if (Math.abs(local.x) < radius * 0.22 && y > 3.8 && damage > enemy.maxHp * 0.13) {
+        label = "AMMO BAY";
+        module = "ammo";
+        multiplier = 1.32;
+      } else if (frontBack > radius * 0.34) {
+        label = "FRONT PLATE";
+        module = "armor";
+        multiplier = 0.92;
+      }
+      const critical = multiplier > 1.18 || damage > enemy.maxHp * (enemy.boss ? 0.18 : 0.24);
+      return {
+        label: critical ? `CRITICAL ${label}` : label,
+        module,
+        multiplier: critical ? multiplier * 1.08 : multiplier,
+        critical
+      };
+    }
+
     function autoFire() {
       if (autoCooldown > 0) return;
       const cannonLevel = getUpgradeLevel("cannon");
@@ -3772,12 +4150,14 @@
       const stabilizerLevel = getUpgradeLevel("stabilizer");
       const fireControlLevel = getUpgradeLevel("fireControl");
       const platformTier = getTankPlatformTier();
-      const target = acquireClosestEnemy(315 + cannonLevel * 16 + opticsLevel * 28 + fireControlLevel * 18 + (platformTier - 1) * 6);
+      const opticsSystem = moduleEfficiency("optics", 0.45);
+      const turretSystem = moduleEfficiency("turret", 0.46);
+      const target = acquireClosestEnemy((315 + cannonLevel * 16 + opticsLevel * 28 + fireControlLevel * 18 + (platformTier - 1) * 6) * opticsSystem);
       if (!target) return;
       shootProjectile({
         target,
         speed: 420 + cannonLevel * 18 + stabilizerLevel * 12 + fireControlLevel * 12,
-        damage: 14 + level * 0.9 + cannonLevel * 7 + stabilizerLevel * 2.5 + fireControlLevel * 3 + (platformTier - 1) * 2.5,
+        damage: (14 + level * 0.9 + cannonLevel * 7 + stabilizerLevel * 2.5 + fireControlLevel * 3 + (platformTier - 1) * 2.5) * turretSystem,
         color: 0xfff4c4,
         radius: 0.58,
         life: 1.15,
@@ -3786,7 +4166,7 @@
         sound: "auto",
         kind: "tracer"
       });
-      autoCooldown = Math.max(0.26, 0.62 - cannonLevel * 0.035 - fireControlLevel * 0.018 - (platformTier - 1) * 0.012);
+      autoCooldown = Math.max(0.26, (0.62 - cannonLevel * 0.035 - fireControlLevel * 0.018 - (platformTier - 1) * 0.012) / Math.max(0.52, turretSystem));
     }
 
     function fireHeavyShell() {
@@ -3798,12 +4178,13 @@
       const autoloaderLevel = getUpgradeLevel("autoloader");
       const fireControlLevel = getUpgradeLevel("fireControl");
       const platformTier = getTankPlatformTier();
-      const aim = getFireAim(560 + shellLevel * 24 + getUpgradeLevel("optics") * 32 + fireControlLevel * 28);
+      const turretSystem = moduleEfficiency("turret", 0.45);
+      const aim = getFireAim((560 + shellLevel * 24 + getUpgradeLevel("optics") * 32 + fireControlLevel * 28) * moduleEfficiency("optics", 0.45));
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
         speed: 360 + shellLevel * 14 + getUpgradeLevel("stabilizer") * 9 + fireControlLevel * 10,
-        damage: 112 + level * 4.8 + shellLevel * 34 + getUpgradeLevel("stabilizer") * 8 + fireControlLevel * 18 + (platformTier - 1) * 18,
+        damage: (112 + level * 4.8 + shellLevel * 34 + getUpgradeLevel("stabilizer") * 8 + fireControlLevel * 18 + (platformTier - 1) * 18) * turretSystem,
         color: 0xffdfad,
         radius: 0.56,
         life: 1.7,
@@ -3812,7 +4193,7 @@
         sound: "shell",
         kind: "shell"
       });
-      heavyCooldown = Math.max(0.62, 1.72 - shellLevel * 0.085 - autoloaderLevel * 0.09 - fireControlLevel * 0.025);
+      heavyCooldown = Math.max(0.62, (1.72 - shellLevel * 0.085 - autoloaderLevel * 0.09 - fireControlLevel * 0.025) / Math.max(0.52, turretSystem));
     }
 
     function launchMissile() {
@@ -3823,7 +4204,8 @@
       const missileLevel = getUpgradeLevel("missile");
       const fireControlLevel = getUpgradeLevel("fireControl");
       const platformTier = getTankPlatformTier();
-      const aim = getFireAim(660 + missileLevel * 38 + getUpgradeLevel("optics") * 38 + fireControlLevel * 34);
+      const turretSystem = moduleEfficiency("turret", 0.45);
+      const aim = getFireAim((660 + missileLevel * 38 + getUpgradeLevel("optics") * 38 + fireControlLevel * 34) * moduleEfficiency("optics", 0.45));
       if (!aim.target && !manualAimActive) {
         showToast("No target lock.");
         return;
@@ -3832,7 +4214,7 @@
         target: aim.target,
         targetPoint: aim.point,
         speed: 240 + missileLevel * 18 + getUpgradeLevel("stabilizer") * 8 + fireControlLevel * 12,
-        damage: 215 + level * 7.2 + missileLevel * 58 + fireControlLevel * 32 + (platformTier - 1) * 32,
+        damage: (215 + level * 7.2 + missileLevel * 58 + fireControlLevel * 32 + (platformTier - 1) * 32) * turretSystem,
         color: 0xff5f3c,
         radius: 0.68,
         life: 3.0,
@@ -3841,7 +4223,7 @@
         sound: "missile",
         kind: "missile"
       });
-      missileCooldown = Math.max(1.7, 3.8 - missileLevel * 0.25 - fireControlLevel * 0.08);
+      missileCooldown = Math.max(1.7, (3.8 - missileLevel * 0.25 - fireControlLevel * 0.08) / Math.max(0.55, turretSystem));
     }
 
     function getFireAim(range) {
@@ -3980,6 +4362,33 @@
       explosions.push({ group, muzzle: true, life: 0.13, maxLife: 0.13 });
     }
 
+    function addImpactScorch(x, y, z, color, scale) {
+      const group = new THREE.Group();
+      group.position.set(x, y, z);
+      const scorch = new THREE.Mesh(
+        new THREE.CircleGeometry(2.3 * scale, 22),
+        new THREE.MeshBasicMaterial({ color: 0x070504, transparent: true, opacity: 0.46, depthWrite: false })
+      );
+      scorch.rotation.x = -Math.PI / 2;
+      const hotRing = new THREE.Mesh(
+        new THREE.RingGeometry(2.5 * scale, 3.5 * scale, 28),
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.58, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      hotRing.rotation.x = -Math.PI / 2;
+      group.add(scorch, hotRing);
+      for (let i = 0; i < 5; i += 1) {
+        const chip = new THREE.Mesh(
+          new THREE.BoxGeometry(0.24 * scale, 0.24 * scale, 1.8 * scale),
+          new THREE.MeshBasicMaterial({ color: i % 2 ? color : 0xd8c29a, transparent: true, opacity: 0.84, blending: THREE.AdditiveBlending, depthWrite: false })
+        );
+        chip.position.set((Math.random() - 0.5) * 4.2 * scale, Math.random() * 2.3 * scale, (Math.random() - 0.5) * 4.2 * scale);
+        chip.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+        group.add(chip);
+      }
+      projectileRoot.add(group);
+      explosions.push({ group, impactMark: true, life: 0.95, maxLife: 0.95 });
+    }
+
     function addExplosion(x, y, z, color, scale) {
       if (scale >= 0.7) playExplosionSound(scale);
       const group = new THREE.Group();
@@ -4030,6 +4439,12 @@
           e.group.position.y += dt * 13;
           e.group.material.opacity = Math.max(0, e.life / e.maxLife);
           e.group.lookAt(camera.position);
+        } else if (e.impactMark) {
+          const fade = Math.max(0, e.life / e.maxLife);
+          e.group.scale.setScalar(1 + (1 - fade) * 0.7);
+          e.group.traverse(child => {
+            if (child.material) child.material.opacity = Math.min(child.material.opacity, 0.64 * fade);
+          });
         } else if (e.muzzle) {
           const fade = Math.max(0, e.life / e.maxLife);
           e.group.scale.setScalar(0.72 + (1 - fade) * 1.5);
@@ -4132,11 +4547,10 @@
       }
       if (dist > (ability === "Long-range strike" ? 230 : 150)) return;
       const strikeDamage = enemy.damage * (enemy.super ? 0.75 : 0.55) * (1 - Math.min(0.44, getUpgradeLevel("spall") * 0.04 + getUpgradeLevel("composite") * 0.035 + (getTankPlatformTier() - 1) * 0.007));
-      hull -= strikeDamage;
-      addDamageNumber(tankPos.x, 10, tankPos.z, `-${Math.round(strikeDamage)}`, 0xff465b);
-      addExplosion(tankPos.x + (Math.random() - 0.5) * 9, 4, tankPos.z + (Math.random() - 0.5) * 9, 0xff465b, enemy.super ? 1.25 : 0.95);
+      const strikePoint = tmpVec.set(tankPos.x + (Math.random() - 0.5) * 9, 4, tankPos.z + (Math.random() - 0.5) * 9);
+      applyPlayerDamage(strikeDamage, "boss-strike", strikePoint);
+      addExplosion(strikePoint.x, strikePoint.y, strikePoint.z, 0xff465b, enemy.super ? 1.25 : 0.95);
       showNotice(`${enemy.name}: ${ability}`);
-      if (hull <= 0) endRun();
     }
 
     function completeLevel() {
@@ -4165,6 +4579,7 @@
         : `${progress.superBoss ? `Chapter ${progress.tier} superboss defeated. ` : ""}Level ${level} cleared. Base reward +${baseReward}, streak +${streakReward}${contractReward ? `, contract +${contractReward}` : ""}. Win streak: ${winStreak}. Credits: ${score}. ${nextUnlocks.length ? `New unlocks: ${nextUnlocks.join(", ")}. ` : ""}Next: Level ${level + 1} in ${themes[Math.min(themes.length - 1, nextProgress.chapter)].name}. Upgrade before moving on.`;
       nextLevelBtn.textContent = level >= MAX_LEVEL ? "Restart Campaign" : "Next Level";
       levelOverlay.dataset.action = level >= MAX_LEVEL ? "restart" : "next";
+      prepareScoreSubmit(level >= MAX_LEVEL ? "campaign-cleared" : "level-clear");
       levelOverlay.style.display = "grid";
     }
 
@@ -4192,6 +4607,7 @@
         nextLevelBtn.textContent = "Retry Level";
         levelOverlay.dataset.action = "retry";
       }
+      prepareScoreSubmit("tank-disabled");
       levelOverlay.style.display = "grid";
       updateHud();
     }
@@ -4385,7 +4801,7 @@
       radarCtx.lineTo(cx, cy + radius);
       radarCtx.stroke();
 
-      const radarRange = 560 + getUpgradeLevel("optics") * 58 + getUpgradeLevel("sensors") * 68 + getUpgradeLevel("drone") * 86 + (getTankPlatformTier() - 1) * 18;
+      const radarRange = (560 + getUpgradeLevel("optics") * 58 + getUpgradeLevel("sensors") * 68 + getUpgradeLevel("drone") * 86 + (getTankPlatformTier() - 1) * 18) * moduleEfficiency("optics", 0.58);
       drawRadarPoint(0 - tankPos.x, -44 - tankPos.z, 0x45fff4, 5.8, radarRange, "base");
       for (const enemy of enemies) {
         drawRadarPoint(enemy.group.position.x - tankPos.x, enemy.group.position.z - tankPos.z, enemy.boss ? 0xff263d : 0xffb13b, enemy.boss ? 7.4 : 4.8, radarRange, enemy.boss ? "boss" : "enemy");
@@ -4681,6 +5097,103 @@
       updateTankUpgradeVisuals();
     }
 
+    function normalizeModuleHealth(saved = null) {
+      const normalized = {};
+      for (const module of moduleDefinitions) {
+        const value = saved && Number.isFinite(Number(saved[module.id])) ? Number(saved[module.id]) : 100;
+        normalized[module.id] = Math.max(0, Math.min(100, value));
+      }
+      return normalized;
+    }
+
+    function moduleEfficiency(id, floor = 0.48) {
+      const health = Math.max(0, Math.min(100, Number(moduleHealth[id] ?? 100)));
+      return floor + (health / 100) * (1 - floor);
+    }
+
+    function updateModuleHud() {
+      if (!moduleRows) return;
+      moduleRows.innerHTML = moduleDefinitions.map((module) => {
+        const health = Math.round(moduleHealth[module.id] ?? 100);
+        const fill = health > 62 ? "linear-gradient(90deg, #24ff91, #e8f35f)" : health > 34 ? "linear-gradient(90deg, #f7c84b, #ff7b45)" : "linear-gradient(90deg, #ff465b, #9e1322)";
+        const state = health > 78 ? "OK" : health > 45 ? "HIT" : "CRIT";
+        return `
+          <div class="module-row">
+            <span>${module.label}</span>
+            <span class="module-bar"><span class="module-fill" style="width:${health}%; background:${fill}"></span></span>
+            <span>${state}</span>
+          </div>
+        `;
+      }).join("");
+      const worst = moduleDefinitions
+        .map(module => ({ ...module, health: moduleHealth[module.id] ?? 100 }))
+        .sort((a, b) => a.health - b.health)[0];
+      if (performance.now() - lastModuleAlertAt > 2300) {
+        moduleAlert.textContent = worst && worst.health < 100
+          ? `${worst.health < 45 ? worst.critical : worst.bad} - repair at base or recover field supplies`
+          : "All systems operational";
+      }
+    }
+
+    function showModuleAlert(text, color = "#f7c84b") {
+      lastModuleAlertAt = performance.now();
+      moduleAlert.textContent = text;
+      moduleAlert.style.color = color;
+    }
+
+    function pickDamagedModule(source, point) {
+      if (source === "collision") return Math.random() > 0.35 ? "tracks" : "armor";
+      if (source === "boss-strike") {
+        const options = ["armor", "turret", "engine", "optics", "tracks"];
+        return options[Math.floor(Math.random() * options.length)];
+      }
+      if (point) {
+        const local = point.clone().sub(tankPos);
+        const angle = normalizeAngle(Math.atan2(local.x, local.z) - heading);
+        if (Math.abs(angle) > Math.PI * 0.68) return "engine";
+        if (Math.abs(angle) > Math.PI * 0.34) return Math.random() > 0.45 ? "tracks" : "armor";
+      }
+      const options = ["armor", "tracks", "turret", "engine", "optics"];
+      return options[Math.floor(Math.random() * options.length)];
+    }
+
+    function applyPlayerDamage(amount, source = "impact", point = null) {
+      const armorMitigation = 1 - Math.min(0.18, (moduleHealth.armor || 100) / 100 * 0.08 + getUpgradeLevel("composite") * 0.012);
+      const finalDamage = Math.max(1, amount * armorMitigation);
+      hull -= finalDamage;
+      damageCooldown = Math.max(damageCooldown, 0.68);
+      const moduleId = pickDamagedModule(source, point);
+      const module = moduleDefinitions.find(item => item.id === moduleId) || moduleDefinitions[0];
+      const moduleLoss = Math.max(4, finalDamage * (source === "boss-strike" ? 0.32 : source === "collision" ? 0.24 : 0.20) * (0.82 + Math.random() * 0.55));
+      moduleHealth[moduleId] = Math.max(0, (moduleHealth[moduleId] ?? 100) - moduleLoss);
+      const hitX = point?.x ?? tankPos.x;
+      const hitZ = point?.z ?? tankPos.z;
+      addDamageNumber(tankPos.x, 10.5, tankPos.z, `-${Math.round(finalDamage)} HULL`, 0xff465b);
+      addDamageNumber(hitX, 13.5, hitZ, `${module.label.toUpperCase()} -${Math.round(moduleLoss)}`, moduleHealth[moduleId] < 45 ? 0xff465b : 0xf7c84b);
+      showModuleAlert(moduleHealth[moduleId] < 45 ? module.critical : module.bad, moduleHealth[moduleId] < 45 ? "#ff465b" : "#f7c84b");
+      updateModuleHud();
+      if (hull <= 0) endRun();
+    }
+
+    function repairModules(amount, focus = null, announce = false) {
+      const repairBoost = 1 + getUpgradeLevel("repairBay") * 0.12 + getUpgradeLevel("support") * 0.07 + getUpgradeLevel("composite") * 0.04;
+      const targets = focus ? moduleDefinitions.filter(module => module.id === focus) : moduleDefinitions;
+      let repaired = null;
+      let changed = false;
+      for (const module of targets) {
+        const current = moduleHealth[module.id] ?? 100;
+        if (current >= 100) continue;
+        const delta = amount * repairBoost * (focus ? 1.55 : 1);
+        moduleHealth[module.id] = Math.min(100, current + delta);
+        changed = true;
+        if (!repaired || current < repaired.health) repaired = { ...module, health: current, delta };
+      }
+      if (repaired && announce) {
+        showModuleAlert(`${repaired.label} repaired +${Math.round(repaired.delta)}`, "#45fff4");
+      }
+      if (changed) updateModuleHud();
+    }
+
     function updateTankUpgradeVisuals() {
       const parts = tank?.userData?.upgradeParts;
       if (!parts) return;
@@ -4744,6 +5257,7 @@
         mode: gameMode,
         autoFireEnabled,
         winStreak,
+        moduleHealth,
         savedAt: new Date().toISOString()
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(save));
@@ -4755,6 +5269,180 @@
       } catch {
         return null;
       }
+    }
+
+    function getLeaderboardEndpoint() {
+      const configured = window.ROAD_TRIP_RAMPAGE_LEADERBOARD_API || localStorage.getItem(LEADERBOARD_ENDPOINT_KEY) || "";
+      if (configured) return String(configured).replace(/\/$/, "");
+      const host = location.hostname;
+      if (host.endsWith(".vercel.app") || host === "localhost" || host === "127.0.0.1") return "/api/leaderboard";
+      return "";
+    }
+
+    function sanitizeDisplayName(value) {
+      const raw = String(value || "").trim().replace(/\s+/g, " ");
+      const cleaned = raw.replace(/[<>`{}[\]\\]/g, "").slice(0, 20);
+      return cleaned || "Commander";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function buildRunStats(result) {
+      const tankStats = getTankStats();
+      return {
+        name: sanitizeDisplayName(localStorage.getItem(PLAYER_NAME_KEY) || "Commander"),
+        score: Math.max(0, Math.round(score)),
+        level: Math.max(1, Math.min(MAX_LEVEL, Math.round(level))),
+        mode: gameMode === "hardcore" ? "hardcore" : "regular",
+        result,
+        winStreak: Math.max(0, Math.round(winStreak)),
+        tankTier: tankStats.platformTier,
+        combatRating: tankStats.rating,
+        skin: skinName(selectedSkin),
+        savedAt: new Date().toISOString(),
+        gameVersion: "v29-leaderboard-market"
+      };
+    }
+
+    function resetScoreSubmit() {
+      lastRunStats = null;
+      scoreSubmitPanel.style.display = "none";
+      submitScoreBtn.disabled = false;
+      submitScoreBtn.textContent = "Submit Score";
+      scoreSubmitStatus.textContent = "Save this run publicly, or skip and restart fast.";
+    }
+
+    function prepareScoreSubmit(result) {
+      lastRunStats = buildRunStats(result);
+      playerNameInput.value = localStorage.getItem(PLAYER_NAME_KEY) || "";
+      submitScoreBtn.disabled = false;
+      submitScoreBtn.textContent = "Submit Score";
+      scoreSubmitPanel.style.display = "block";
+      scoreSubmitStatus.textContent = `Optional: submit ${lastRunStats.score} credits, Level ${lastRunStats.level}, ${lastRunStats.mode.toUpperCase()} mode.`;
+    }
+
+    function readLocalLeaderboard() {
+      try {
+        const rows = JSON.parse(localStorage.getItem(LOCAL_LEADERBOARD_KEY) || "[]");
+        return Array.isArray(rows)
+          ? rows
+              .filter(row => Number.isFinite(Number(row.score)))
+              .sort((a, b) => Number(b.score) - Number(a.score) || Number(b.level || 0) - Number(a.level || 0))
+              .slice(0, 25)
+          : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLocalLeaderboard(entry) {
+      const rows = readLocalLeaderboard();
+      rows.push({ ...entry, localOnly: true });
+      rows.sort((a, b) => Number(b.score) - Number(a.score) || Number(b.level || 0) - Number(a.level || 0));
+      localStorage.setItem(LOCAL_LEADERBOARD_KEY, JSON.stringify(rows.slice(0, 50)));
+      return rows.slice(0, 25);
+    }
+
+    function renderLeaderboard(rows, mode = "local") {
+      const cleanRows = Array.isArray(rows) ? rows.slice(0, 8) : [];
+      if (!cleanRows.length) {
+        leaderboardList.innerHTML = `<li><span class="leaderboard-rank">--</span><span class="leaderboard-name"><strong>No scores yet</strong><span>Be the first commander on this device</span></span><span class="leaderboard-score">0</span></li>`;
+      } else {
+        leaderboardList.innerHTML = cleanRows.map((entry, index) => {
+          const scoreText = Number(entry.score || 0).toLocaleString();
+          const levelText = `L${Math.max(1, Number(entry.level || 1))}`;
+          const modeText = entry.mode === "hardcore" ? "HC" : "Regular";
+          const tierText = entry.tankTier ? `T${entry.tankTier}` : "T1";
+          const ratingText = entry.combatRating ? `CR ${entry.combatRating}` : "CR --";
+          return `
+            <li>
+              <span class="leaderboard-rank">#${index + 1}</span>
+              <span class="leaderboard-name">
+                <strong>${escapeHtml(entry.name || "Commander")}</strong>
+                <span>${escapeHtml(`${modeText} - ${levelText} - ${tierText} - ${ratingText}`)}</span>
+              </span>
+              <span class="leaderboard-score">${scoreText}</span>
+            </li>
+          `;
+        }).join("");
+      }
+      if (mode === "global") {
+        leaderboardStatus.textContent = "Global leaderboard connected. Scores are visible to everyone using the game.";
+      } else if (mode === "offline") {
+        leaderboardStatus.textContent = "Online board could not be reached, so this device leaderboard is shown.";
+      } else {
+        leaderboardStatus.textContent = "Local leaderboard shown. Connect the Vercel Redis API to make this public for everyone.";
+      }
+    }
+
+    async function loadLeaderboard(manual = false) {
+      const endpoint = getLeaderboardEndpoint();
+      if (manual) leaderboardStatus.textContent = "Refreshing command board...";
+      if (!endpoint) {
+        renderLeaderboard(readLocalLeaderboard(), "local");
+        return;
+      }
+      try {
+        const response = await fetch(endpoint, { headers: { "Accept": "application/json" }, cache: "no-store" });
+        if (!response.ok) throw new Error(`Leaderboard ${response.status}`);
+        const data = await response.json();
+        renderLeaderboard(data.entries || data.leaderboard || [], "global");
+      } catch {
+        renderLeaderboard(readLocalLeaderboard(), "offline");
+      }
+    }
+
+    async function submitLeaderboardScore() {
+      if (!lastRunStats) lastRunStats = buildRunStats("manual-save");
+      const name = sanitizeDisplayName(playerNameInput.value);
+      localStorage.setItem(PLAYER_NAME_KEY, name);
+      const entry = {
+        ...lastRunStats,
+        name,
+        score: Math.max(0, Math.round(lastRunStats.score || score)),
+        level: Math.max(1, Math.min(MAX_LEVEL, Math.round(lastRunStats.level || level))),
+        savedAt: new Date().toISOString()
+      };
+      submitScoreBtn.disabled = true;
+      submitScoreBtn.textContent = "Saving...";
+      scoreSubmitStatus.textContent = "Saving commander stats...";
+      const endpoint = getLeaderboardEndpoint();
+      if (endpoint) {
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify(entry)
+          });
+          if (!response.ok) throw new Error(`Leaderboard ${response.status}`);
+          const data = await response.json();
+          renderLeaderboard(data.entries || data.leaderboard || [entry], "global");
+          scoreSubmitStatus.textContent = "Score submitted to the public command board.";
+          submitScoreBtn.textContent = "Submitted";
+          return;
+        } catch {
+          const localRows = saveLocalLeaderboard(entry);
+          renderLeaderboard(localRows, "offline");
+          scoreSubmitStatus.textContent = "Saved on this device. Online leaderboard needs the Vercel Redis API connected.";
+          submitScoreBtn.textContent = "Saved Local";
+          return;
+        }
+      }
+      const localRows = saveLocalLeaderboard(entry);
+      renderLeaderboard(localRows, "local");
+      scoreSubmitStatus.textContent = "Saved on this device. Global sharing turns on after the backend is connected.";
+      submitScoreBtn.textContent = "Saved Local";
     }
 
     function showNotice(text) {
