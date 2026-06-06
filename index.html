@@ -58,10 +58,10 @@
       inset: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) auto max(12px, env(safe-area-inset-left));
       z-index: 4;
       display: grid;
-      grid-template-columns: minmax(210px, 1fr) minmax(280px, 0.9fr) minmax(150px, 0.55fr) 78px;
+      grid-template-columns: minmax(210px, 1fr) minmax(280px, 0.9fr) minmax(150px, 0.55fr) 112px;
       gap: 6px;
       align-items: start;
-      max-width: 920px;
+      max-width: 960px;
       pointer-events: none;
     }
 
@@ -149,17 +149,20 @@
     }
 
     #radarBox {
-      padding: 5px;
-      min-height: 76px;
+      padding: 7px;
+      min-height: 106px;
+      display: grid;
+      place-items: center;
     }
 
     #radar {
-      width: 66px;
-      height: 66px;
+      width: 92px;
+      height: 92px;
       display: block;
-      border: 1px solid rgba(218, 215, 190, 0.34);
+      border: 2px solid rgba(69, 255, 244, 0.72);
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(204, 214, 185, 0.12), rgba(0, 0, 0, 0.42));
+      background: radial-gradient(circle, rgba(69, 255, 244, 0.18), rgba(0, 0, 0, 0.76));
+      box-shadow: 0 0 16px rgba(69, 255, 244, 0.24), inset 0 0 14px rgba(69, 255, 244, 0.18);
     }
 
     #notice {
@@ -828,12 +831,12 @@
         grid-row: 2 / span 2;
         align-self: start;
         padding: 5px;
-        min-height: 70px;
+        min-height: 86px;
       }
 
       #radar {
-        width: 60px;
-        height: 60px;
+        width: 76px;
+        height: 76px;
       }
 
       #stats {
@@ -881,7 +884,7 @@
 
     @media (orientation: landscape) and (max-height: 520px) {
       #hud {
-        grid-template-columns: 185px 235px 132px 66px;
+        grid-template-columns: 185px 235px 132px 78px;
         gap: 5px;
       }
 
@@ -938,12 +941,12 @@
 
       #radarBox {
         padding: 5px;
-        min-height: 62px;
+        min-height: 78px;
       }
 
       #radar {
-        width: 56px;
-        height: 56px;
+        width: 64px;
+        height: 64px;
       }
 
       .action-btn.primary {
@@ -1376,6 +1379,8 @@
     let gameMode = "regular";
     let missionKills = 0;
     let missionTarget = 8;
+    let activeWave = 0;
+    let totalWaves = 1;
     let bossSpawned = false;
     let bossDefeated = false;
     let activeBossProfile = null;
@@ -1595,6 +1600,8 @@
         addBuilding(x, z, w, h, d, rng);
       }
 
+      addResidentialBlocks(rng);
+
       for (let i = 0; i < 64; i += 1) {
         const x = (rng() * 2 - 1) * WORLD_SIZE * 0.78;
         const z = (rng() * 2 - 1) * WORLD_SIZE * 0.78;
@@ -1608,11 +1615,119 @@
       addHomeBase();
     }
 
+    function resetTankToHomeBase() {
+      tankPos.set(0, 0, -38);
+      heading = 0;
+      speed = 0;
+      manualAimActive = false;
+      autoAimEnabled = true;
+      currentAimTarget = null;
+      heavyCooldown = 0;
+      missileCooldown = 0;
+      autoCooldown = 0;
+      damageCooldown = 0;
+      if (tank) {
+        tank.position.copy(tankPos);
+        tank.rotation.y = heading;
+      }
+      updateAimUi();
+      updateAutoFireUi();
+    }
+
     function nearRoadGrid(x, z, clearance) {
       const spacing = 320;
       const dx = Math.abs(x - Math.round(x / spacing) * spacing);
       const dz = Math.abs(z - Math.round(z / spacing) * spacing);
       return dx < clearance || dz < clearance;
+    }
+
+    function addResidentialBlocks(rng) {
+      const roads = [];
+      for (let n = -4; n <= 4; n += 1) roads.push(n * 320);
+      const houseCount = 46 + getCampaignProgress(level).chapter * 4;
+      for (let i = 0; i < houseCount; i += 1) {
+        const road = roads[Math.floor(rng() * roads.length)];
+        const along = Math.round(((rng() * 2 - 1) * WORLD_SIZE * 0.72) / 18) * 18;
+        const side = rng() > 0.5 ? 1 : -1;
+        const vertical = rng() > 0.5;
+        const setback = 86 + rng() * 58;
+        const x = vertical ? road + side * setback : along;
+        const z = vertical ? along : road + side * setback;
+        if (Math.abs(x) < 150 && Math.abs(z + 44) < 180) continue;
+        if (collides(x, z, 16)) continue;
+        addHouse(x, z, vertical ? Math.PI / 2 : 0, rng);
+        if (rng() > 0.35) addParkedVehicle(x + (vertical ? side * 22 : (rng() - 0.5) * 30), z + (vertical ? (rng() - 0.5) * 30 : side * 22), vertical ? Math.PI / 2 : 0, rng);
+      }
+    }
+
+    function addHouse(x, z, rot, rng) {
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      group.rotation.y = rot + (rng() - 0.5) * 0.08;
+      const wallColors = [0x7e7667, 0x66787a, 0x786c62, 0x5f6f5d, 0x76666a];
+      const wallMat = new THREE.MeshStandardMaterial({ color: wallColors[Math.floor(rng() * wallColors.length)], roughness: 0.78, metalness: 0.04, map: makeConcreteTexture() });
+      const roofMat = new THREE.MeshStandardMaterial({ color: [0x3b2d28, 0x34373b, 0x5c493b][Math.floor(rng() * 3)], roughness: 0.82, metalness: 0.04 });
+      const trimMat = new THREE.MeshStandardMaterial({ color: 0x1f2527, roughness: 0.66, metalness: 0.2 });
+      const glassMat = new THREE.MeshBasicMaterial({ color: 0xbdd8df, transparent: true, opacity: 0.36 });
+      const w = 20 + rng() * 14;
+      const d = 18 + rng() * 14;
+      const h = 10 + rng() * 5;
+      const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
+      body.position.y = h / 2;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      group.add(body);
+      const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) * 0.72, 7 + rng() * 2, 4), roofMat);
+      roof.position.y = h + 3.5;
+      roof.rotation.y = Math.PI / 4;
+      roof.scale.z = d / w;
+      roof.castShadow = true;
+      group.add(roof);
+      for (const wx of [-w * 0.25, w * 0.25]) {
+        const win = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 3.1), glassMat);
+        win.position.set(wx, h * 0.56, d / 2 + 0.06);
+        group.add(win);
+      }
+      const door = new THREE.Mesh(new THREE.PlaneGeometry(4, 5.8), trimMat);
+      door.position.set(0, 3.0, d / 2 + 0.08);
+      group.add(door);
+      if (rng() > 0.45) {
+        const garage = new THREE.Mesh(new THREE.BoxGeometry(10, 6, 12), wallMat);
+        garage.position.set(w * 0.72, 3, -d * 0.08);
+        garage.castShadow = true;
+        garage.receiveShadow = true;
+        group.add(garage);
+      }
+      const fenceMat = new THREE.MeshStandardMaterial({ color: 0x6f644f, roughness: 0.86, metalness: 0.02 });
+      for (const side of [-1, 1]) {
+        const fence = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.5, d + 18), fenceMat);
+        fence.position.set(side * (w / 2 + 8), 1.25, -2);
+        fence.castShadow = true;
+        group.add(fence);
+      }
+      propRoot.add(group);
+      const pad = 5;
+      const entry = {
+        minX: x - w / 2 - pad,
+        maxX: x + w / 2 + pad,
+        minZ: z - d / 2 - pad,
+        maxZ: z + d / 2 + pad,
+        x,
+        z,
+        w,
+        d,
+        height: h + 7,
+        hp: 115 + w + d,
+        maxHp: 115 + w + d,
+        group,
+        mesh: body,
+        destructible: true,
+        crushable: true,
+        kind: "house",
+        destroyed: false
+      };
+      group.userData.buildingEntry = entry;
+      buildings.push(entry);
     }
 
     function addRoad(x, z, w, d, rot) {
@@ -1786,6 +1901,8 @@
         group,
         mesh: body,
         destructible: true,
+        crushable: true,
+        kind: "vehicle",
         destroyed: false
       };
       group.userData.buildingEntry = entry;
@@ -2171,6 +2288,8 @@
         group,
         mesh,
         destructible: true,
+        crushable: h <= 34,
+        kind: h <= 34 ? "lowrise" : "tower",
         destroyed: false
       };
       group.userData.buildingEntry = entry;
@@ -2209,6 +2328,8 @@
         group: mesh,
         mesh,
         destructible: true,
+        crushable: true,
+        kind: isContainer ? "container" : "tank",
         destroyed: false
       };
       mesh.userData.buildingEntry = entry;
@@ -2393,10 +2514,12 @@
       const difficulty = getDifficulty(level);
       missionKills = 0;
       missionTarget = difficulty.missionTarget;
+      activeWave = 0;
+      totalWaves = Math.min(6, Math.max(2, Math.ceil(missionTarget / Math.max(5, 7 + difficulty.chapter))));
+      resetTankToHomeBase();
       hull = Math.min(maxHull, hull + 18 + getUpgradeLevel("support") * 4 + getTankPlatformTier() * 2);
 
-      const count = difficulty.patrolCount;
-      for (let i = 0; i < count; i += 1) spawnEnemy(false);
+      spawnNextEnemyWave(true);
       if (difficulty.superBoss) {
         activeBossProfile = getBossProfile(level);
         showBossIntel(activeBossProfile, true);
@@ -2406,6 +2529,18 @@
         showNotice(`${currentTheme.name} Level ${level} - clear ${missionTarget} patrols`);
       }
       updateHud();
+    }
+
+    function spawnNextEnemyWave(initial = false) {
+      if (missionKills >= missionTarget || bossSpawned) return;
+      const difficulty = getDifficulty(level);
+      const remaining = missionTarget - missionKills;
+      const wavesLeft = Math.max(1, totalWaves - activeWave);
+      activeWave = Math.min(totalWaves, activeWave + 1);
+      const baseCount = Math.ceil(remaining / wavesLeft);
+      const spawnCount = Math.min(remaining, Math.max(3, Math.min(12 + difficulty.chapter, baseCount + (initial ? 0 : 1))));
+      for (let i = 0; i < spawnCount; i += 1) spawnEnemy(false);
+      showNotice(`${currentTheme.name} - Wave ${activeWave}/${totalWaves}`);
     }
 
     function spawnEnemy(isBoss, bossProfile = null) {
@@ -2529,12 +2664,6 @@
       loadProfile();
       applyUpgradeEffects();
       hull = Math.min(maxHull, Math.max(1, hull));
-      tankPos.set(0, 0, -38);
-      heading = 0;
-      speed = 0;
-      autoAimEnabled = true;
-      manualAimActive = false;
-      currentAimTarget = null;
       started = true;
       paused = false;
       gameOver = false;
@@ -2543,8 +2672,7 @@
       garageOverlay.style.display = "none";
       applyTheme(level);
       buildDistrict();
-      tank.position.copy(tankPos);
-      updateAimUi();
+      resetTankToHomeBase();
       updateAutoFireUi();
       updateModeUi();
       applyTankSkin();
@@ -2637,6 +2765,7 @@
         levelOverlay.dataset.action = "next";
         applyTheme(level);
         if ((level - 1) % 10 === 0) buildDistrict();
+        resetTankToHomeBase();
         spawnWave();
       });
       saveExitBtn.addEventListener("click", () => {
@@ -2853,8 +2982,12 @@
       right.set(Math.cos(heading), 0, -Math.sin(heading));
       const nextX = tankPos.x + forward.x * speed * dt;
       const nextZ = tankPos.z + forward.z * speed * dt;
-      if (!collides(nextX, nextZ, 6.5)) {
+      const collision = getCollisionEntry(nextX, nextZ, 6.5);
+      if (!collision) {
         tankPos.set(nextX, 0, nextZ);
+      } else if (ramStructure(collision, Math.abs(speed), nextX, nextZ)) {
+        tankPos.set(nextX, 0, nextZ);
+        speed *= 0.42;
       } else {
         speed *= -(0.18 - trackLevel * 0.018);
         addExplosion(tankPos.x + forward.x * 8, 2, tankPos.z + forward.z * 8, 0x9a8b76, 0.55);
@@ -3013,7 +3146,8 @@
           hideBossIntel();
           completeLevel();
         } else {
-          if (missionKills < missionTarget && enemies.filter(item => !item.boss).length < Math.min(26, 4 + Math.floor(level / 4) + getDifficulty(level).chapterLevel)) spawnEnemy(false);
+          const activePatrols = enemies.filter(item => !item.boss).length;
+          if (missionKills < missionTarget && activePatrols === 0) spawnNextEnemyWave();
           if (missionKills >= missionTarget && enemies.every(item => !item.boss)) maybeSpawnBoss();
         }
       } else if (point) {
@@ -3529,16 +3663,9 @@
       paused = false;
       levelOverlay.style.display = "none";
       levelOverlay.dataset.action = "next";
-      tankPos.set(0, 0, -38);
-      heading = 0;
-      speed = 0;
-      manualAimActive = false;
-      autoAimEnabled = true;
-      currentAimTarget = null;
-      tank.position.copy(tankPos);
-      updateAimUi();
       applyTheme(level);
       if ((level - 1) % 10 === 0) buildDistrict();
+      resetTankToHomeBase();
       spawnWave();
     }
 
@@ -3578,14 +3705,79 @@
     }
 
     function collides(x, z, radius) {
-      if (x < -WORLD_SIZE + radius || x > WORLD_SIZE - radius || z < -WORLD_SIZE + radius || z > WORLD_SIZE - radius) return true;
+      return !!getCollisionEntry(x, z, radius);
+    }
+
+    function getCollisionEntry(x, z, radius) {
+      if (x < -WORLD_SIZE + radius || x > WORLD_SIZE - radius || z < -WORLD_SIZE + radius || z > WORLD_SIZE - radius) {
+        return { destructible: false, boundary: true };
+      }
       for (const b of buildings) {
         if (b.destroyed) continue;
         const cx = THREE.MathUtils.clamp(x, b.minX, b.maxX);
         const cz = THREE.MathUtils.clamp(z, b.minZ, b.maxZ);
-        if ((x - cx) * (x - cx) + (z - cz) * (z - cz) < radius * radius) return true;
+        if ((x - cx) * (x - cx) + (z - cz) * (z - cz) < radius * radius) return b;
       }
-      return false;
+      return null;
+    }
+
+    function ramStructure(entry, impactSpeed, x, z) {
+      if (!entry?.destructible || impactSpeed < 9) return false;
+      const platformTier = getTankPlatformTier();
+      const crushable = entry.crushable || entry.height <= 30 || entry.kind === "vehicle" || entry.kind === "house" || entry.kind === "container";
+      const ramPower = impactSpeed * (5.4 + platformTier * 0.72 + getUpgradeLevel("armor") * 0.28 + getUpgradeLevel("composite") * 0.45);
+      const damage = crushable ? ramPower * 2.15 + maxHull * 0.08 : ramPower * 0.58;
+      damageStructure(entry, damage, x, z, crushable);
+      if (entry.destroyed) {
+        if (crushable) showToast(`${entry.kind === "vehicle" ? "Vehicle" : "Structure"} crushed`);
+        return true;
+      }
+      return crushable && impactSpeed > 34 && entry.hp < entry.maxHp * 0.28;
+    }
+
+    function damageStructure(entry, damage, x, z, heavyHit = false) {
+      if (!entry || entry.destroyed) return;
+      entry.hp = Math.max(0, entry.hp - damage);
+      const ratio = Math.max(0, entry.hp / Math.max(1, entry.maxHp));
+      if (entry.group?.scale) {
+        const slump = 0.72 + ratio * 0.28;
+        entry.group.scale.y = Math.min(entry.group.scale.y || 1, slump);
+      }
+      addExplosion(x || entry.x || 0, Math.max(2, Math.min(8, (entry.height || 10) * 0.28)), z || entry.z || 0, heavyHit ? 0xb9a27b : 0x8e8a78, heavyHit ? 0.72 : 0.45);
+      if (entry.hp <= 0) collapseStructure(entry);
+    }
+
+    function collapseStructure(entry) {
+      entry.destroyed = true;
+      const parent = entry.group?.parent || entry.mesh?.parent || propRoot;
+      if (entry.group && entry.group.parent) entry.group.parent.remove(entry.group);
+      else if (entry.mesh && entry.mesh.parent) entry.mesh.parent.remove(entry.mesh);
+
+      const rubbleMat = new THREE.MeshStandardMaterial({ color: entry.kind === "vehicle" ? 0x242526 : 0x777067, roughness: 0.92, metalness: entry.kind === "vehicle" ? 0.32 : 0.08, map: entry.kind === "vehicle" ? null : makeConcreteTexture() });
+      const chunkCount = entry.kind === "vehicle" ? 5 : entry.kind === "house" ? 10 : 14;
+      for (let i = 0; i < chunkCount; i += 1) {
+        const chunk = new THREE.Mesh(
+          new THREE.BoxGeometry(2 + Math.random() * 5.5, 0.8 + Math.random() * 3.2, 2 + Math.random() * 5.5),
+          rubbleMat
+        );
+        chunk.position.set(
+          (entry.x || 0) + (Math.random() - 0.5) * Math.max(10, entry.w || 18),
+          0.45 + Math.random() * 1.6,
+          (entry.z || 0) + (Math.random() - 0.5) * Math.max(10, entry.d || 18)
+        );
+        chunk.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+        chunk.castShadow = true;
+        chunk.receiveShadow = true;
+        parent.add(chunk);
+      }
+      const dust = new THREE.Mesh(
+        new THREE.CircleGeometry(Math.max(9, Math.min(30, (entry.w || 20) * 0.55)), 28),
+        new THREE.MeshBasicMaterial({ color: 0xc2b89b, transparent: true, opacity: 0.22, depthWrite: false })
+      );
+      dust.rotation.x = -Math.PI / 2;
+      dust.position.set(entry.x || 0, 0.12, entry.z || 0);
+      parent.add(dust);
+      addExplosion(entry.x || 0, Math.max(3, Math.min(10, (entry.height || 10) * 0.32)), entry.z || 0, 0xc8b58f, entry.kind === "tower" ? 1.25 : 0.92);
     }
 
     function updateHud() {
@@ -3608,7 +3800,7 @@
       } else {
         ui.missionFill.style.width = `${Math.min(100, cleared / Math.max(1, missionTarget) * 100)}%`;
         ui.missionFill.style.background = "linear-gradient(90deg, #45fff4, #4d9dff)";
-        ui.missionText.textContent = bossSpawned ? "Boss defeated" : `${cleared} cleared / ${missionTarget} patrol target`;
+        ui.missionText.textContent = bossSpawned ? "Boss defeated" : `Wave ${Math.max(1, activeWave)}/${Math.max(1, totalWaves)} - ${cleared} cleared / ${missionTarget}`;
       }
       const progress = getCampaignProgress(level);
       const chapterLabel = progress.superBoss ? `Chapter ${progress.tier} Superboss` : `Chapter ${progress.tier}`;
@@ -3622,20 +3814,30 @@
       const h = radar.height;
       const cx = w / 2;
       const cy = h / 2;
-      const radius = w * 0.43;
+      const radius = w * 0.46;
       radarCtx.clearRect(0, 0, w, h);
-      radarCtx.fillStyle = "rgba(2, 8, 10, 0.72)";
+      radarCtx.fillStyle = "rgba(2, 10, 12, 0.9)";
       radarCtx.beginPath();
-      radarCtx.arc(cx, cy, radius + 4, 0, Math.PI * 2);
+      radarCtx.arc(cx, cy, radius + 5, 0, Math.PI * 2);
       radarCtx.fill();
-      radarCtx.strokeStyle = "rgba(69, 255, 244, 0.34)";
-      radarCtx.lineWidth = 1.5;
-      for (const r of [0.34, 0.66, 1]) {
+      const sweep = (performance.now() * 0.0014) % (Math.PI * 2);
+      const sweepGrad = radarCtx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+      sweepGrad.addColorStop(0, "rgba(69,255,244,0.15)");
+      sweepGrad.addColorStop(1, "rgba(69,255,244,0.0)");
+      radarCtx.fillStyle = sweepGrad;
+      radarCtx.beginPath();
+      radarCtx.moveTo(cx, cy);
+      radarCtx.arc(cx, cy, radius, sweep - 0.34, sweep + 0.04);
+      radarCtx.closePath();
+      radarCtx.fill();
+      radarCtx.strokeStyle = "rgba(69, 255, 244, 0.54)";
+      radarCtx.lineWidth = 1.8;
+      for (const r of [0.25, 0.5, 0.75, 1]) {
         radarCtx.beginPath();
         radarCtx.arc(cx, cy, radius * r, 0, Math.PI * 2);
         radarCtx.stroke();
       }
-      radarCtx.strokeStyle = "rgba(255,255,255,0.17)";
+      radarCtx.strokeStyle = "rgba(255,255,255,0.28)";
       radarCtx.beginPath();
       radarCtx.moveTo(cx - radius, cy);
       radarCtx.lineTo(cx + radius, cy);
@@ -3644,26 +3846,31 @@
       radarCtx.stroke();
 
       const radarRange = 560 + getUpgradeLevel("optics") * 58 + getUpgradeLevel("sensors") * 68 + getUpgradeLevel("drone") * 86 + (getTankPlatformTier() - 1) * 18;
-      drawRadarPoint(0 - tankPos.x, -44 - tankPos.z, 0x45fff4, 4, radarRange);
+      drawRadarPoint(0 - tankPos.x, -44 - tankPos.z, 0x45fff4, 5.8, radarRange, "base");
       for (const enemy of enemies) {
-        drawRadarPoint(enemy.group.position.x - tankPos.x, enemy.group.position.z - tankPos.z, enemy.boss ? 0xff465b : 0xffa045, enemy.boss ? 4.8 : 3.2, radarRange);
+        drawRadarPoint(enemy.group.position.x - tankPos.x, enemy.group.position.z - tankPos.z, enemy.boss ? 0xff263d : 0xffb13b, enemy.boss ? 7.4 : 4.8, radarRange, enemy.boss ? "boss" : "enemy");
       }
       for (const pickup of pickups) {
-        drawRadarPoint(pickup.group.position.x - tankPos.x, pickup.group.position.z - tankPos.z, pickup.color, 2.8, radarRange);
+        drawRadarPoint(pickup.group.position.x - tankPos.x, pickup.group.position.z - tankPos.z, pickup.color, 3.8, radarRange, "pickup");
       }
       if (currentAimTarget) {
-        drawRadarPoint(currentAimTarget.group.position.x - tankPos.x, currentAimTarget.group.position.z - tankPos.z, 0xffffff, currentAimTarget.boss ? 6.2 : 4.7, radarRange);
+        drawRadarPoint(currentAimTarget.group.position.x - tankPos.x, currentAimTarget.group.position.z - tankPos.z, 0xffffff, currentAimTarget.boss ? 8.4 : 6.2, radarRange, "lock");
       }
 
       radarCtx.fillStyle = "#f4f7fb";
       radarCtx.beginPath();
-      radarCtx.moveTo(cx, cy - 7);
-      radarCtx.lineTo(cx - 5, cy + 6);
-      radarCtx.lineTo(cx + 5, cy + 6);
+      radarCtx.moveTo(cx, cy - 9);
+      radarCtx.lineTo(cx - 6, cy + 7);
+      radarCtx.lineTo(cx + 6, cy + 7);
       radarCtx.closePath();
       radarCtx.fill();
 
-      function drawRadarPoint(dx, dz, color, size, range) {
+      radarCtx.fillStyle = "rgba(244,247,251,0.82)";
+      radarCtx.font = "900 10px system-ui, sans-serif";
+      radarCtx.textAlign = "center";
+      radarCtx.fillText("N", cx, cy - radius + 12);
+
+      function drawRadarPoint(dx, dz, color, size, range, kind) {
         const rightDot = dx * Math.cos(heading) - dz * Math.sin(heading);
         const forwardDot = dx * Math.sin(heading) + dz * Math.cos(heading);
         let px = rightDot / range * radius;
@@ -3674,6 +3881,17 @@
           py = py / dist * radius;
         }
         radarCtx.fillStyle = `#${new THREE.Color(color).getHexString()}`;
+        if (kind === "base") {
+          radarCtx.fillRect(cx + px - size, cy + py - size, size * 2, size * 2);
+          return;
+        }
+        if (kind === "lock" || kind === "boss") {
+          radarCtx.strokeStyle = kind === "lock" ? "#ffffff" : "#ff263d";
+          radarCtx.lineWidth = 2;
+          radarCtx.beginPath();
+          radarCtx.arc(cx + px, cy + py, size + 2, 0, Math.PI * 2);
+          radarCtx.stroke();
+        }
         radarCtx.beginPath();
         radarCtx.arc(cx + px, cy + py, size, 0, Math.PI * 2);
         radarCtx.fill();
