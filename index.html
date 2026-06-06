@@ -430,7 +430,7 @@
 
     .garage-nav {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
       gap: 8px;
       margin-top: 14px;
     }
@@ -461,6 +461,11 @@
 
     .garage-card.maxed {
       border-color: rgba(69, 255, 244, 0.34);
+    }
+
+    .garage-card.locked {
+      border-color: rgba(255, 70, 91, 0.34);
+      background: linear-gradient(180deg, rgba(255, 70, 91, 0.09), rgba(0, 0, 0, 0.28));
     }
 
     .garage-card h3 {
@@ -1230,27 +1235,42 @@
 
     const garageCategories = [
       { id: "combat", label: "Combat" },
+      { id: "tier", label: "Tank Tiers" },
       { id: "armor", label: "Armor" },
       { id: "base", label: "Home Base" },
       { id: "cosmetic", label: "Cosmetics" }
     ];
 
     const upgradeCatalog = [
-      { id: "cannon", category: "combat", name: "Coax Auto-Cannon", max: 6, baseCost: 180, stat: "Firepower", desc: "Faster close-range fire and higher Auto Shoot damage." },
-      { id: "shell", category: "combat", name: "120mm Sabot Shells", max: 6, baseCost: 240, stat: "Firepower", desc: "Harder shell impacts, bigger splash, and faster reload." },
-      { id: "missile", category: "combat", name: "Missile Pod Rack", max: 5, baseCost: 320, stat: "Firepower", desc: "Stronger missiles with faster cycling and larger blast radius." },
-      { id: "stabilizer", category: "combat", name: "Gun Stabilizer", max: 4, baseCost: 260, stat: "Targeting", desc: "Turret tracks faster while driving so close targets stay locked." },
-      { id: "optics", category: "combat", name: "Thermal Optics", max: 4, baseCost: 300, stat: "Targeting", desc: "Longer Auto Aim lock range and better radar awareness." },
-      { id: "armor", category: "armor", name: "Reactive Plating", max: 7, baseCost: 220, stat: "Hull", desc: "Raises hull integrity so the tank survives longer." },
-      { id: "spall", category: "armor", name: "Spall Liner", max: 5, baseCost: 260, stat: "Damage Control", desc: "Reduces collision and enemy-contact damage." },
-      { id: "regen", category: "armor", name: "Field Repair System", max: 5, baseCost: 280, stat: "Repair", desc: "Slow hull recovery after you stop taking damage." },
-      { id: "engine", category: "armor", name: "Turbine Drive Train", max: 5, baseCost: 210, stat: "Mobility", desc: "Better speed, turning, and heavy-map handling." },
-      { id: "tracks", category: "armor", name: "Track Grip Kit", max: 4, baseCost: 230, stat: "Mobility", desc: "More stable turning and less speed loss after impacts." },
-      { id: "support", category: "base", name: "Base Support Network", max: 5, baseCost: 260, stat: "Support", desc: "Home base repairs faster and reaches farther." },
-      { id: "turrets", category: "base", name: "Sentry Turrets", max: 5, baseCost: 260, stat: "Defense", desc: "Home-base guns hit harder and cover more ground." },
-      { id: "walls", category: "base", name: "Perimeter Armor", max: 5, baseCost: 240, stat: "Defense", desc: "Adds heavier walls, barriers, and base protection." },
-      { id: "repairBay", category: "base", name: "Repair Bay", max: 4, baseCost: 310, stat: "Repair", desc: "Improves repair speed and resupply effect near home base." },
-      { id: "sensors", category: "base", name: "Radar Mast", max: 4, baseCost: 280, stat: "Intel", desc: "Extends radar and helps base turrets acquire threats sooner." },
+      { id: "cannon", category: "combat", name: "Coax Auto-Cannon", max: 8, baseCost: 180, stat: "Firepower", desc: "Improves close-range Auto Shoot without letting it replace manual shots." },
+      { id: "shell", category: "combat", name: "120mm Sabot Shells", max: 8, baseCost: 240, stat: "Firepower", desc: "Harder shell impacts, bigger splash, and faster reload." },
+      { id: "missile", category: "combat", name: "Missile Pod Rack", max: 7, baseCost: 320, stat: "Firepower", desc: "Stronger missiles with faster cycling and larger blast radius." },
+      { id: "stabilizer", category: "combat", name: "Gun Stabilizer", max: 6, baseCost: 260, stat: "Targeting", desc: "Turret tracks faster while driving so close targets stay locked." },
+      { id: "optics", category: "combat", name: "Thermal Optics", max: 6, baseCost: 300, stat: "Targeting", desc: "Longer Auto Aim lock range and better radar awareness." },
+      { id: "autoloader", category: "combat", name: "Autoloader Drum", max: 5, baseCost: 520, reqLevel: 20, stat: "Reload", desc: "Unlocks after Level 20. Speeds up manual shell reloads." },
+      { id: "fireControl", category: "combat", name: "Fire-Control Computer", max: 5, baseCost: 680, reqLevel: 30, stat: "Targeting", desc: "Unlocks after Level 30. Better lead, missile tracking, and boss damage." },
+      { id: "tier2", category: "tier", name: "Tier II Desert Retrofit", max: 1, baseCost: 1150, reqLevel: 10, stat: "Tank Tier", desc: "Level 10 platform. Stronger hull, turret drive, and engine package." },
+      { id: "tier3", category: "tier", name: "Tier III Urban Assault", max: 1, baseCost: 1850, reqLevel: 20, stat: "Tank Tier", desc: "Level 20 platform. Built for tougher city patrols." },
+      { id: "tier4", category: "tier", name: "Tier IV Heavy Breacher", max: 1, baseCost: 2900, reqLevel: 30, stat: "Tank Tier", desc: "Level 30 platform. Heavier armor and stronger weapon mounts." },
+      { id: "tier5", category: "tier", name: "Tier V Siege Frame", max: 1, baseCost: 4200, reqLevel: 40, stat: "Tank Tier", desc: "Level 40 platform. Needed for late-campaign boss pressure." },
+      { id: "tier6", category: "tier", name: "Tier VI Arctic Command", max: 1, baseCost: 5900, reqLevel: 50, stat: "Tank Tier", desc: "Level 50 platform. Improves control on harsh maps." },
+      { id: "tier7", category: "tier", name: "Tier VII Night Ops", max: 1, baseCost: 7900, reqLevel: 60, stat: "Tank Tier", desc: "Level 60 platform. Better systems for low-visibility chapters." },
+      { id: "tier8", category: "tier", name: "Tier VIII Mountain Breaker", max: 1, baseCost: 10300, reqLevel: 70, stat: "Tank Tier", desc: "Level 70 platform. High-torque armor package." },
+      { id: "tier9", category: "tier", name: "Tier IX Grid Hunter", max: 1, baseCost: 13200, reqLevel: 80, stat: "Tank Tier", desc: "Level 80 platform. Endgame sensor and weapons backbone." },
+      { id: "tier10", category: "tier", name: "Tier X Final War Rig", max: 1, baseCost: 16800, reqLevel: 90, stat: "Tank Tier", desc: "Level 90 platform. Built for Levels 91-100 and the final superboss." },
+      { id: "armor", category: "armor", name: "Reactive Plating", max: 9, baseCost: 220, stat: "Hull", desc: "Raises hull integrity so the tank survives longer." },
+      { id: "spall", category: "armor", name: "Spall Liner", max: 7, baseCost: 260, stat: "Damage Control", desc: "Reduces collision and enemy-contact damage." },
+      { id: "regen", category: "armor", name: "Field Repair System", max: 6, baseCost: 280, stat: "Repair", desc: "Slow hull recovery after you stop taking damage." },
+      { id: "engine", category: "armor", name: "Turbine Drive Train", max: 7, baseCost: 210, stat: "Mobility", desc: "Better speed, turning, and heavy-map handling." },
+      { id: "tracks", category: "armor", name: "Track Grip Kit", max: 6, baseCost: 230, stat: "Mobility", desc: "More stable turning and less speed loss after impacts." },
+      { id: "composite", category: "armor", name: "Composite Armor Kit", max: 6, baseCost: 620, reqLevel: 30, stat: "Hull", desc: "Unlocks after Level 30. Adds late-game armor and contact mitigation." },
+      { id: "support", category: "base", name: "Base Support Network", max: 6, baseCost: 260, stat: "Support", desc: "Home base repairs faster and reaches farther." },
+      { id: "turrets", category: "base", name: "Sentry Turrets", max: 7, baseCost: 260, stat: "Defense", desc: "Home-base guns hit harder and cover more ground." },
+      { id: "walls", category: "base", name: "Perimeter Armor", max: 6, baseCost: 240, stat: "Defense", desc: "Adds heavier walls, barriers, and base protection." },
+      { id: "repairBay", category: "base", name: "Repair Bay", max: 5, baseCost: 310, stat: "Repair", desc: "Improves repair speed and resupply effect near home base." },
+      { id: "sensors", category: "base", name: "Radar Mast", max: 6, baseCost: 280, stat: "Intel", desc: "Extends radar and helps base turrets acquire threats sooner." },
+      { id: "drone", category: "base", name: "Recon Drone Uplink", max: 5, baseCost: 720, reqLevel: 40, stat: "Intel", desc: "Unlocks after Level 40. Improves radar range and target awareness." },
+      { id: "fortress", category: "base", name: "Fortress Battery", max: 5, baseCost: 900, reqLevel: 50, stat: "Defense", desc: "Unlocks after Level 50. Adds heavier home-base fire support." },
       { id: "skin-steel", category: "cosmetic", name: "Raw Steel", max: 1, baseCost: 0, stat: "Cosmetic", desc: "Brushed steel operational finish. No combat stat change." },
       { id: "skin-olive", category: "cosmetic", name: "Olive Drab", max: 1, baseCost: 240, stat: "Cosmetic", desc: "Classic green armor paint. Cosmetic only." },
       { id: "skin-sand", category: "cosmetic", name: "Desert Tan", max: 1, baseCost: 320, stat: "Cosmetic", desc: "Dust-road tan with darker track guards. Cosmetic only." },
@@ -1288,6 +1308,50 @@
       { name: "Mountain Tunnel", ground: 0x515049, road: 0x2c2b28, fog: 0x96938a, sky: 0x898e8d, accent: 0xff5d78 },
       { name: "Final Grid", ground: 0x3a3f4b, road: 0x252a32, fog: 0xa7acb8, sky: 0x8e98a8, accent: 0xffffff }
     ];
+
+    const tankTierIds = ["tier2", "tier3", "tier4", "tier5", "tier6", "tier7", "tier8", "tier9", "tier10"];
+
+    function getCampaignProgress(nextLevel = level) {
+      const capped = Math.max(1, Math.min(MAX_LEVEL, nextLevel));
+      const chapter = Math.floor((capped - 1) / 10);
+      const chapterLevel = ((capped - 1) % 10) + 1;
+      const endgame = (capped - 1) / (MAX_LEVEL - 1);
+      return {
+        level: capped,
+        chapter,
+        chapterLevel,
+        tier: chapter + 1,
+        endgame,
+        superBoss: capped % 10 === 0
+      };
+    }
+
+    function getDifficulty(nextLevel = level) {
+      const progress = getCampaignProgress(nextLevel);
+      const chapterPressure = 1 + progress.chapter * 0.13;
+      const stepPressure = 1 + (progress.chapterLevel - 1) * 0.045;
+      const endgamePressure = 1 + Math.pow(progress.endgame, 1.55) * 0.75;
+      return {
+        ...progress,
+        enemyHp: chapterPressure * stepPressure * endgamePressure,
+        enemyDamage: (1 + progress.chapter * 0.09 + (progress.chapterLevel - 1) * 0.03) * (1 + Math.pow(progress.endgame, 1.65) * 0.9),
+        enemySpeed: 1 + progress.chapter * 0.035 + Math.min(0.32, progress.endgame * 0.26),
+        patrolCount: Math.min(34, 4 + progress.chapterLevel + Math.floor(progress.level * 0.22) + progress.chapter),
+        missionTarget: Math.min(58, 6 + progress.chapterLevel * 2 + progress.chapter * 4 + Math.floor(progress.level * 0.08))
+      };
+    }
+
+    function getTankPlatformTier() {
+      return 1 + tankTierIds.reduce((total, id) => total + getUpgradeLevel(id), 0);
+    }
+
+    function isUpgradeUnlocked(item) {
+      return !item.reqLevel || level >= item.reqLevel;
+    }
+
+    function unlockText(item) {
+      return item.reqLevel ? `Requires Level ${item.reqLevel}` : "Available";
+    }
 
     let renderer;
     let scene;
@@ -1480,11 +1544,12 @@
     }
 
     function applyTheme(nextLevel) {
-      currentTheme = themes[Math.min(themes.length - 1, Math.floor((nextLevel - 1) / 10))];
+      const progress = getCampaignProgress(nextLevel);
+      currentTheme = themes[Math.min(themes.length - 1, progress.chapter)];
       scene.background = new THREE.Color(currentTheme.sky);
       scene.fog.color.setHex(currentTheme.fog);
       scene.fog.density = currentTheme.name.includes("Night") ? 0.00095 : 0.00072;
-      ui.district.textContent = currentTheme.name;
+      ui.district.textContent = `${currentTheme.name} - Chapter ${progress.tier}`;
       if (ground) {
         ground.material.color.setHex(currentTheme.ground);
         ground.material.map = makeNoiseTexture(currentTheme.ground, 10, 0.18);
@@ -2325,14 +2390,21 @@
       bossSpawned = false;
       bossDefeated = false;
       activeBossProfile = null;
+      const difficulty = getDifficulty(level);
       missionKills = 0;
-      missionTarget = Math.min(32, 7 + level + Math.floor(level / 3));
-      hull = Math.min(maxHull, hull + 24 + getUpgradeLevel("support") * 4);
+      missionTarget = difficulty.missionTarget;
+      hull = Math.min(maxHull, hull + 18 + getUpgradeLevel("support") * 4 + getTankPlatformTier() * 2);
 
-      const count = Math.min(18, 5 + Math.floor(level * 0.7));
+      const count = difficulty.patrolCount;
       for (let i = 0; i < count; i += 1) spawnEnemy(false);
-      hideBossIntel();
-      showNotice(`${currentTheme.name} - clear patrols`);
+      if (difficulty.superBoss) {
+        activeBossProfile = getBossProfile(level);
+        showBossIntel(activeBossProfile, true);
+        showNotice(`LEVEL ${level} CHAPTER FINALE: SUPERBOSS INTEL READY`);
+      } else {
+        hideBossIntel();
+        showNotice(`${currentTheme.name} Level ${level} - clear ${missionTarget} patrols`);
+      }
       updateHud();
     }
 
@@ -2408,13 +2480,16 @@
       group.rotation.y = Math.atan2(tankPos.x - pos.x, tankPos.z - pos.z);
       enemyRoot.add(group);
 
+      const difficulty = getDifficulty(level);
+      const patrolHp = Math.round((72 + level * 7 + difficulty.chapter * 28 + difficulty.chapterLevel * 4) * difficulty.enemyHp);
+      const patrolDamage = (4.2 + level * 0.09 + difficulty.chapter * 0.35) * difficulty.enemyDamage;
       enemies.push({
         group,
         hpBar,
-        maxHp: isBoss ? bossProfile.hp : 72 + level * 9,
-        hp: isBoss ? bossProfile.hp : 72 + level * 9,
-        speed: isBoss ? bossProfile.speed : 16 + level * 0.32,
-        damage: isBoss ? bossProfile.damage : 4.5 + level * 0.14,
+        maxHp: isBoss ? bossProfile.hp : patrolHp,
+        hp: isBoss ? bossProfile.hp : patrolHp,
+        speed: isBoss ? bossProfile.speed : (14.5 + level * 0.18 + difficulty.chapterLevel * 0.12) * difficulty.enemySpeed,
+        damage: isBoss ? bossProfile.damage : patrolDamage,
         radius: isBoss ? (bossProfile?.super ? 15 : 12) : 6,
         boss: isBoss,
         name: bossProfile?.name || profile.name,
@@ -2766,8 +2841,9 @@
     function updateTank(dt, input) {
       const engineLevel = getUpgradeLevel("engine");
       const trackLevel = getUpgradeLevel("tracks");
-      const maxSpeed = (input.boost ? 74 : 58) + engineLevel * 6 + trackLevel * 2.2;
-      const reverseSpeed = 30 + engineLevel * 2.5 + trackLevel * 1.4;
+      const platformTier = getTankPlatformTier();
+      const maxSpeed = (input.boost ? 74 : 58) + engineLevel * 6 + trackLevel * 2.2 + (platformTier - 1) * 2.1;
+      const reverseSpeed = 30 + engineLevel * 2.5 + trackLevel * 1.4 + (platformTier - 1) * 0.9;
       const targetSpeed = input.throttle >= 0 ? input.throttle * maxSpeed : input.throttle * reverseSpeed;
       speed += (targetSpeed - speed) * Math.min(1, dt * 3.3);
       const steerStrength = (1.34 + engineLevel * 0.07 + trackLevel * 0.045) * (0.35 + Math.min(1, Math.abs(speed) / 45) * 0.65);
@@ -2796,7 +2872,7 @@
       if (manualAimActive) {
         aimPoint = manualAimPoint;
       } else if (autoAimEnabled) {
-        currentAimTarget = acquireClosestEnemy(560 + getUpgradeLevel("cannon") * 18 + getUpgradeLevel("optics") * 42);
+        currentAimTarget = acquireClosestEnemy(420 + getUpgradeLevel("cannon") * 12 + getUpgradeLevel("optics") * 36 + getUpgradeLevel("fireControl") * 28 + (getTankPlatformTier() - 1) * 8);
         if (currentAimTarget) {
           aimPoint = currentAimTarget.group.position;
         }
@@ -2809,7 +2885,7 @@
       const dz = aimPoint.z - tank.position.z;
       const worldAngle = Math.atan2(dx, dz);
       const localAngle = normalizeAngle(worldAngle - heading);
-      turret.rotation.y += normalizeAngle(localAngle - turret.rotation.y) * Math.min(1, dt * (8 + getUpgradeLevel("stabilizer") * 1.55));
+      turret.rotation.y += normalizeAngle(localAngle - turret.rotation.y) * Math.min(1, dt * (6.2 + getUpgradeLevel("stabilizer") * 1.35 + getUpgradeLevel("fireControl") * 0.55 + (getTankPlatformTier() - 1) * 0.12));
     }
 
     function updateEnemies(dt) {
@@ -2833,7 +2909,7 @@
             enemy.group.rotation.y += 1.3 * dt;
           }
         } else if (damageCooldown === 0) {
-          const mitigated = enemy.damage * (1 - Math.min(0.34, getUpgradeLevel("spall") * 0.055));
+          const mitigated = enemy.damage * (1 - Math.min(0.48, getUpgradeLevel("spall") * 0.045 + getUpgradeLevel("composite") * 0.035 + (getTankPlatformTier() - 1) * 0.008));
           hull -= mitigated;
           damageCooldown = 0.68;
           addDamageNumber(tankPos.x, 9, tankPos.z, `-${Math.round(mitigated)}`, 0xff465b);
@@ -2849,8 +2925,10 @@
       const supportLevel = getUpgradeLevel("support");
       const sensorLevel = getUpgradeLevel("sensors");
       const wallLevel = getUpgradeLevel("walls");
+      const droneLevel = getUpgradeLevel("drone");
+      const fortressLevel = getUpgradeLevel("fortress");
       let target = null;
-      let targetDist = 190 + turretLevel * 24 + supportLevel * 10 + sensorLevel * 32 + wallLevel * 8;
+      let targetDist = 170 + turretLevel * 22 + supportLevel * 9 + sensorLevel * 28 + droneLevel * 42 + wallLevel * 7 + fortressLevel * 18;
       for (const enemy of enemies) {
         const dist = Math.hypot(enemy.group.position.x, enemy.group.position.z + 44);
         if (dist < targetDist) {
@@ -2859,9 +2937,9 @@
         }
       }
       if (!target) return;
-      baseDefenseCooldown = Math.max(0.14, 0.32 - turretLevel * 0.03 - sensorLevel * 0.015);
+      baseDefenseCooldown = Math.max(0.16, 0.42 - turretLevel * 0.028 - sensorLevel * 0.012 - fortressLevel * 0.018);
       addExplosion(target.group.position.x, 5, target.group.position.z, currentTheme.accent, 0.35);
-      damageEnemy(target, 16 + level * 0.8 + turretLevel * 9 + supportLevel * 3 + sensorLevel * 3 + wallLevel * 1.5, target.group.position, currentTheme.accent);
+      damageEnemy(target, 12 + level * 0.55 + turretLevel * 8 + supportLevel * 2.5 + sensorLevel * 2.5 + droneLevel * 4 + wallLevel * 1.2 + fortressLevel * 12, target.group.position, currentTheme.accent);
     }
 
     function updateBaseSupport(dt) {
@@ -2920,7 +2998,10 @@
       enemy.hpBar.position.x = -(1 - ratio) * (enemy.hpBarHalfWidth || (enemy.boss ? 9.25 : 5));
       addDamageNumber(enemy.group.position.x, enemy.boss ? 18 : 10, enemy.group.position.z, Math.round(damage), color);
       if (enemy.hp <= 0) {
-        const reward = enemy.boss ? 450 + level * 20 : 70 + level * 7;
+        const difficulty = getDifficulty(level);
+        const reward = enemy.boss
+          ? Math.round(520 + level * 32 + difficulty.chapter * 260 + (enemy.super ? 1200 : 0))
+          : Math.round(70 + level * 8 + difficulty.chapter * 22 + difficulty.chapterLevel * 3);
         score += reward;
         if (enemy.boss) bossDefeated = true;
         else if (missionKills < missionTarget) missionKills += 1;
@@ -2932,7 +3013,7 @@
           hideBossIntel();
           completeLevel();
         } else {
-          if (missionKills < missionTarget && enemies.filter(item => !item.boss).length < Math.min(20, 5 + Math.floor(level / 2))) spawnEnemy(false);
+          if (missionKills < missionTarget && enemies.filter(item => !item.boss).length < Math.min(26, 4 + Math.floor(level / 4) + getDifficulty(level).chapterLevel)) spawnEnemy(false);
           if (missionKills >= missionTarget && enemies.every(item => !item.boss)) maybeSpawnBoss();
         }
       } else if (point) {
@@ -3051,12 +3132,14 @@
       const cannonLevel = getUpgradeLevel("cannon");
       const opticsLevel = getUpgradeLevel("optics");
       const stabilizerLevel = getUpgradeLevel("stabilizer");
-      const target = acquireClosestEnemy(500 + cannonLevel * 24 + opticsLevel * 36);
+      const fireControlLevel = getUpgradeLevel("fireControl");
+      const platformTier = getTankPlatformTier();
+      const target = acquireClosestEnemy(315 + cannonLevel * 16 + opticsLevel * 28 + fireControlLevel * 18 + (platformTier - 1) * 6);
       if (!target) return;
       shootProjectile({
         target,
-        speed: 540 + cannonLevel * 24 + stabilizerLevel * 14,
-        damage: 30 + level * 2.1 + cannonLevel * 10 + stabilizerLevel * 4,
+        speed: 420 + cannonLevel * 18 + stabilizerLevel * 12 + fireControlLevel * 12,
+        damage: 14 + level * 0.9 + cannonLevel * 7 + stabilizerLevel * 2.5 + fireControlLevel * 3 + (platformTier - 1) * 2.5,
         color: 0xffe7a1,
         radius: 0.38,
         life: 1.15,
@@ -3065,7 +3148,7 @@
         sound: "auto",
         kind: "tracer"
       });
-      autoCooldown = Math.max(0.07, 0.28 - cannonLevel * 0.038 - level * 0.001);
+      autoCooldown = Math.max(0.26, 0.62 - cannonLevel * 0.035 - fireControlLevel * 0.018 - (platformTier - 1) * 0.012);
     }
 
     function fireHeavyShell() {
@@ -3074,21 +3157,24 @@
         return;
       }
       const shellLevel = getUpgradeLevel("shell");
-      const aim = getFireAim(620 + shellLevel * 28 + getUpgradeLevel("optics") * 34);
+      const autoloaderLevel = getUpgradeLevel("autoloader");
+      const fireControlLevel = getUpgradeLevel("fireControl");
+      const platformTier = getTankPlatformTier();
+      const aim = getFireAim(560 + shellLevel * 24 + getUpgradeLevel("optics") * 32 + fireControlLevel * 28);
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
-        speed: 380 + shellLevel * 16 + getUpgradeLevel("stabilizer") * 10,
-        damage: 165 + level * 7 + shellLevel * 38 + getUpgradeLevel("stabilizer") * 10,
+        speed: 360 + shellLevel * 14 + getUpgradeLevel("stabilizer") * 9 + fireControlLevel * 10,
+        damage: 112 + level * 4.8 + shellLevel * 34 + getUpgradeLevel("stabilizer") * 8 + fireControlLevel * 18 + (platformTier - 1) * 18,
         color: 0xffdfad,
         radius: 0.56,
         life: 1.7,
         homing: !!aim.target,
-        splash: 48 + shellLevel * 5,
+        splash: 42 + shellLevel * 5 + fireControlLevel * 2,
         sound: "shell",
         kind: "shell"
       });
-      heavyCooldown = Math.max(0.68, 1.35 - shellLevel * 0.095);
+      heavyCooldown = Math.max(0.62, 1.72 - shellLevel * 0.085 - autoloaderLevel * 0.09 - fireControlLevel * 0.025);
     }
 
     function launchMissile() {
@@ -3097,7 +3183,9 @@
         return;
       }
       const missileLevel = getUpgradeLevel("missile");
-      const aim = getFireAim(720 + missileLevel * 44 + getUpgradeLevel("optics") * 42);
+      const fireControlLevel = getUpgradeLevel("fireControl");
+      const platformTier = getTankPlatformTier();
+      const aim = getFireAim(660 + missileLevel * 38 + getUpgradeLevel("optics") * 38 + fireControlLevel * 34);
       if (!aim.target && !manualAimActive) {
         showToast("No target lock.");
         return;
@@ -3105,17 +3193,17 @@
       shootProjectile({
         target: aim.target,
         targetPoint: aim.point,
-        speed: 255 + missileLevel * 20 + getUpgradeLevel("stabilizer") * 9,
-        damage: 280 + level * 10 + missileLevel * 64,
+        speed: 240 + missileLevel * 18 + getUpgradeLevel("stabilizer") * 8 + fireControlLevel * 12,
+        damage: 215 + level * 7.2 + missileLevel * 58 + fireControlLevel * 32 + (platformTier - 1) * 32,
         color: 0xff5f3c,
         radius: 0.68,
         life: 3.0,
         homing: !!aim.target,
-        splash: 76 + missileLevel * 9,
+        splash: 68 + missileLevel * 8 + fireControlLevel * 4,
         sound: "missile",
         kind: "missile"
       });
-      missileCooldown = Math.max(1.85, 3.45 - missileLevel * 0.28);
+      missileCooldown = Math.max(1.7, 3.8 - missileLevel * 0.25 - fireControlLevel * 0.08);
     }
 
     function getFireAim(range) {
@@ -3319,8 +3407,9 @@
     }
 
     function getBossProfile(nextLevel) {
-      const tier = Math.floor((nextLevel - 1) / 10) + 1;
-      const superBoss = nextLevel % 10 === 0;
+      const difficulty = getDifficulty(nextLevel);
+      const tier = difficulty.tier;
+      const superBoss = difficulty.superBoss;
       const profiles = [
         { name: "Breach Commander", abilities: ["Ramming charge", "Close-range cannon"], focus: "Punishes straight-line driving" },
         { name: "Siege Platform", abilities: ["Heavy armor", "Blast shells"], focus: "Slow but hard to burn down" },
@@ -3328,30 +3417,33 @@
         { name: "Repair Carrier", abilities: ["Self-repair", "Escort call"], focus: "Survives longer near support units" },
         { name: "Railgun Convoy", abilities: ["Long-range strike", "Armor pierce"], focus: "Rewards cover and movement" }
       ];
+      const hpCurve = difficulty.enemyHp * (1 + tier * 0.13);
+      const damageCurve = difficulty.enemyDamage * (1 + tier * 0.08);
       if (superBoss) {
         return {
           name: `Composite Warlord T${tier}`,
-          abilities: ["Ramming charge", "Blast shells", "Escort call", "Self-repair"],
-          focus: `Combines the bosses from Levels ${nextLevel - 9}-${nextLevel - 1}`,
-          hp: 820 + nextLevel * 58,
-          speed: 12.2 + nextLevel * 0.18,
-          damage: 17 + nextLevel * 0.48,
+          abilities: ["Ramming charge", "Blast shells", "Escort call", "Self-repair", "Armor pierce"],
+          focus: `Chapter ${tier} finale. Combines bosses from Levels ${nextLevel - 9}-${nextLevel - 1}`,
+          hp: Math.round((650 + nextLevel * 42 + tier * 220) * hpCurve * 1.35),
+          speed: (10.8 + nextLevel * 0.105 + tier * 0.45) * difficulty.enemySpeed,
+          damage: (12 + nextLevel * 0.23 + tier * 1.4) * damageCurve,
           super: true
         };
       }
       const base = profiles[(nextLevel - 1) % profiles.length];
       return {
         ...base,
-        hp: 460 + nextLevel * 38 + tier * 55,
-        speed: 10.5 + nextLevel * 0.18 + (base.name.includes("Interceptor") ? 4 : 0),
-        damage: 11 + nextLevel * 0.36 + tier * 0.7,
+        focus: `Level ${nextLevel} commander. ${base.focus}`,
+        hp: Math.round((360 + nextLevel * 26 + tier * 85) * hpCurve),
+        speed: (9.5 + nextLevel * 0.105 + tier * 0.32 + (base.name.includes("Interceptor") ? 3.2 : 0)) * difficulty.enemySpeed,
+        damage: (8.2 + nextLevel * 0.19 + tier * 0.9) * damageCurve,
         super: false
       };
     }
 
-    function showBossIntel(profile) {
+    function showBossIntel(profile, preview = false) {
       bossIntel.style.display = "block";
-      bossIntel.innerHTML = `<strong>${profile.super ? "Superboss" : "Boss"}: ${profile.name}</strong><span>${profile.abilities.join(" / ")}. ${profile.focus}.</span>`;
+      bossIntel.innerHTML = `<strong>${preview ? "Upcoming " : ""}${profile.super ? "Superboss" : "Boss"}: ${profile.name}</strong><span>${profile.abilities.join(" / ")}. ${profile.focus}.</span>`;
     }
 
     function hideBossIntel() {
@@ -3378,7 +3470,7 @@
         return;
       }
       if (dist > (ability === "Long-range strike" ? 230 : 150)) return;
-      const strikeDamage = enemy.damage * (enemy.super ? 0.75 : 0.55) * (1 - Math.min(0.3, getUpgradeLevel("spall") * 0.045));
+      const strikeDamage = enemy.damage * (enemy.super ? 0.75 : 0.55) * (1 - Math.min(0.44, getUpgradeLevel("spall") * 0.04 + getUpgradeLevel("composite") * 0.035 + (getTankPlatformTier() - 1) * 0.007));
       hull -= strikeDamage;
       addDamageNumber(tankPos.x, 10, tankPos.z, `-${Math.round(strikeDamage)}`, 0xff465b);
       addExplosion(tankPos.x + (Math.random() - 0.5) * 9, 4, tankPos.z + (Math.random() - 0.5) * 9, 0xff465b, enemy.super ? 1.25 : 0.95);
@@ -3388,15 +3480,21 @@
 
     function completeLevel() {
       paused = true;
-      score += level * 130;
+      const progress = getCampaignProgress(level);
+      score += Math.round(level * 145 + progress.chapter * 260 + (progress.superBoss ? 1400 : 0));
       best = Math.max(best, score);
       localStorage.setItem(BEST_KEY, String(best));
       saveProfile();
       saveProgress();
       ui.levelTitle.textContent = level >= MAX_LEVEL ? "Campaign Cleared" : "District Clear";
+      const nextProgress = getCampaignProgress(Math.min(MAX_LEVEL, level + 1));
+      const nextUnlocks = upgradeCatalog
+        .filter(item => item.reqLevel === level)
+        .map(item => item.name)
+        .slice(0, 3);
       ui.levelSummary.textContent = level >= MAX_LEVEL
         ? `You cleared Level ${MAX_LEVEL}. Final credits: ${score}.`
-        : `Level ${level} cleared. Credits: ${score}. Open the garage to stack weapons, armor, assistance, turrets, and skins before the next district.`;
+        : `${progress.superBoss ? `Chapter ${progress.tier} superboss defeated. ` : ""}Level ${level} cleared. Credits: ${score}. ${nextUnlocks.length ? `New unlocks: ${nextUnlocks.join(", ")}. ` : ""}Next: Level ${level + 1} in ${themes[Math.min(themes.length - 1, nextProgress.chapter)].name}. Upgrade before moving on.`;
       nextLevelBtn.textContent = level >= MAX_LEVEL ? "Restart Campaign" : "Next Level";
       levelOverlay.dataset.action = level >= MAX_LEVEL ? "restart" : "next";
       levelOverlay.style.display = "grid";
@@ -3512,7 +3610,9 @@
         ui.missionFill.style.background = "linear-gradient(90deg, #45fff4, #4d9dff)";
         ui.missionText.textContent = bossSpawned ? "Boss defeated" : `${cleared} cleared / ${missionTarget} patrol target`;
       }
-      ui.district.textContent = `${currentTheme.name} - ${manualAimActive ? "Manual aim" : bossEnemy ? "Boss finale" : autoFireEnabled ? "Auto shoot ready" : "Auto aim"}`;
+      const progress = getCampaignProgress(level);
+      const chapterLabel = progress.superBoss ? `Chapter ${progress.tier} Superboss` : `Chapter ${progress.tier}`;
+      ui.district.textContent = `${currentTheme.name} - ${chapterLabel} - ${manualAimActive ? "Manual aim" : bossEnemy ? "Boss finale" : autoFireEnabled ? "Auto shoot support" : "Auto aim"}`;
       updateRadar();
     }
 
@@ -3543,7 +3643,7 @@
       radarCtx.lineTo(cx, cy + radius);
       radarCtx.stroke();
 
-      const radarRange = 620 + getUpgradeLevel("optics") * 65 + getUpgradeLevel("sensors") * 75;
+      const radarRange = 560 + getUpgradeLevel("optics") * 58 + getUpgradeLevel("sensors") * 68 + getUpgradeLevel("drone") * 86 + (getTankPlatformTier() - 1) * 18;
       drawRadarPoint(0 - tankPos.x, -44 - tankPos.z, 0x45fff4, 4, radarRange);
       for (const enemy of enemies) {
         drawRadarPoint(enemy.group.position.x - tankPos.x, enemy.group.position.z - tankPos.z, enemy.boss ? 0xff465b : 0xffa045, enemy.boss ? 4.8 : 3.2, radarRange);
@@ -3607,13 +3707,15 @@
       garageTankPreview.style.setProperty("--tank-main", `#${new THREE.Color(palette.main).getHexString()}`);
       garageTankPreview.style.setProperty("--tank-accent", `#${new THREE.Color(palette.accent).getHexString()}`);
       garageTankPreview.style.setProperty("--tank-glow", `#${new THREE.Color(palette.glow).getHexString()}`);
-      garageTankPreview.classList.toggle("up-armor", getUpgradeLevel("armor") + getUpgradeLevel("spall") > 0);
-      garageTankPreview.classList.toggle("up-weapons", getUpgradeLevel("missile") + getUpgradeLevel("shell") > 0);
-      garageTankPreview.classList.toggle("up-optics", getUpgradeLevel("optics") + getUpgradeLevel("stabilizer") > 0);
-      garageTankPreview.classList.toggle("up-base", getUpgradeLevel("support") + getUpgradeLevel("sensors") > 0);
-      garagePreviewCaption.textContent = `${skinName(selectedSkin)} paint equipped. Armor ${getUpgradeLevel("armor") + getUpgradeLevel("spall")}, weapons ${getUpgradeLevel("cannon") + getUpgradeLevel("shell") + getUpgradeLevel("missile")}, base ${getUpgradeLevel("support") + getUpgradeLevel("turrets") + getUpgradeLevel("walls")}.`;
-      garageSummary.textContent = `Credits ${score} - Level ${level} - ${gameMode === "hardcore" ? "Hardcore" : "Regular"} mode. Combat rating ${tankStats.rating}. Cosmetics do not change stats.`;
+      const platformTier = getTankPlatformTier();
+      garageTankPreview.classList.toggle("up-armor", getUpgradeLevel("armor") + getUpgradeLevel("spall") + getUpgradeLevel("composite") + platformTier > 1);
+      garageTankPreview.classList.toggle("up-weapons", getUpgradeLevel("missile") + getUpgradeLevel("shell") + getUpgradeLevel("autoloader") + getUpgradeLevel("fireControl") > 0);
+      garageTankPreview.classList.toggle("up-optics", getUpgradeLevel("optics") + getUpgradeLevel("stabilizer") + getUpgradeLevel("fireControl") + getUpgradeLevel("drone") > 0);
+      garageTankPreview.classList.toggle("up-base", getUpgradeLevel("support") + getUpgradeLevel("sensors") + getUpgradeLevel("fortress") > 0);
+      garagePreviewCaption.textContent = `${skinName(selectedSkin)} paint equipped. Tier ${platformTier} platform. Armor ${getUpgradeLevel("armor") + getUpgradeLevel("spall") + getUpgradeLevel("composite")}, weapons ${getUpgradeLevel("cannon") + getUpgradeLevel("shell") + getUpgradeLevel("missile") + getUpgradeLevel("autoloader") + getUpgradeLevel("fireControl")}, base ${getUpgradeLevel("support") + getUpgradeLevel("turrets") + getUpgradeLevel("walls") + getUpgradeLevel("fortress")}.`;
+      garageSummary.textContent = `Credits ${score} - Level ${level} - Tier ${platformTier} tank - ${gameMode === "hardcore" ? "Hardcore" : "Regular"} mode. Combat rating ${tankStats.rating}. Cosmetics do not change stats.`;
       garageStats.innerHTML = [
+        ["Tank Tier", tankStats.platformTier, tankStats.platformTier * 10],
         ["Rating", tankStats.rating, tankStats.ratingPct],
         ["Hull", tankStats.hull, tankStats.hullPct],
         ["Firepower", tankStats.firepower, tankStats.firepowerPct],
@@ -3632,24 +3734,29 @@
       for (const item of upgradeCatalog.filter(entry => entry.category === activeGarageCategory)) {
         const levelNow = getUpgradeLevel(item.id);
         const isSkin = isCosmetic(item);
+        const levelUnlocked = isUpgradeUnlocked(item);
         const unlocked = levelNow > 0;
         const maxed = levelNow >= item.max;
         const cost = upgradeCost(item);
         const card = document.createElement("div");
-        card.className = `garage-card ${isSkin ? "cosmetic" : ""} ${maxed ? "maxed" : ""}`;
+        card.className = `garage-card ${isSkin ? "cosmetic" : ""} ${maxed ? "maxed" : ""} ${levelUnlocked ? "" : "locked"}`;
         card.innerHTML = `
           <h3>${item.name}</h3>
           <p>${item.desc}</p>
           <div class="garage-meta">
             <span class="garage-pill">${isSkin ? "Look only" : item.stat}</span>
             <span class="garage-pill">${isSkin ? (unlocked ? "Unlocked" : "Locked") : `Level ${levelNow}/${item.max}`}</span>
+            ${item.reqLevel ? `<span class="garage-pill">${unlockText(item)}</span>` : ""}
             ${selectedSkin === item.id ? '<span class="garage-pill">Equipped</span>' : ""}
           </div>
           <div class="garage-level"><span style="width:${Math.min(100, levelNow / item.max * 100)}%"></span></div>
           <p><strong>${upgradeImpact(item)}</strong></p>
         `;
         const button = document.createElement("button");
-        if (isSkin && unlocked) {
+        if (!levelUnlocked) {
+          button.textContent = unlockText(item);
+          button.disabled = true;
+        } else if (isSkin && unlocked) {
           button.textContent = selectedSkin === item.id ? "Equipped" : "Equip";
           button.disabled = selectedSkin === item.id;
         } else if (maxed) {
@@ -3681,11 +3788,12 @@
     }
 
     function getTankStats() {
-      const hullValue = maxHull + getUpgradeLevel("spall") * 9;
-      const firepower = Math.round(40 + getUpgradeLevel("cannon") * 10 + getUpgradeLevel("shell") * 17 + getUpgradeLevel("missile") * 19 + getUpgradeLevel("stabilizer") * 5);
-      const targeting = Math.round(28 + getUpgradeLevel("optics") * 16 + getUpgradeLevel("stabilizer") * 13 + getUpgradeLevel("sensors") * 5);
-      const mobility = Math.round(36 + getUpgradeLevel("engine") * 14 + getUpgradeLevel("tracks") * 9);
-      const support = Math.round(30 + getUpgradeLevel("support") * 10 + getUpgradeLevel("turrets") * 12 + getUpgradeLevel("regen") * 7 + getUpgradeLevel("repairBay") * 11 + getUpgradeLevel("walls") * 8 + getUpgradeLevel("sensors") * 7);
+      const platformTier = getTankPlatformTier();
+      const hullValue = maxHull + getUpgradeLevel("spall") * 9 + getUpgradeLevel("composite") * 18;
+      const firepower = Math.round(40 + getUpgradeLevel("cannon") * 10 + getUpgradeLevel("shell") * 17 + getUpgradeLevel("missile") * 19 + getUpgradeLevel("stabilizer") * 5 + getUpgradeLevel("autoloader") * 9 + getUpgradeLevel("fireControl") * 14 + (platformTier - 1) * 18);
+      const targeting = Math.round(28 + getUpgradeLevel("optics") * 16 + getUpgradeLevel("stabilizer") * 13 + getUpgradeLevel("sensors") * 5 + getUpgradeLevel("fireControl") * 16 + getUpgradeLevel("drone") * 9 + (platformTier - 1) * 9);
+      const mobility = Math.round(36 + getUpgradeLevel("engine") * 14 + getUpgradeLevel("tracks") * 9 + (platformTier - 1) * 7);
+      const support = Math.round(30 + getUpgradeLevel("support") * 10 + getUpgradeLevel("turrets") * 12 + getUpgradeLevel("regen") * 7 + getUpgradeLevel("repairBay") * 11 + getUpgradeLevel("walls") * 8 + getUpgradeLevel("sensors") * 7 + getUpgradeLevel("drone") * 9 + getUpgradeLevel("fortress") * 17);
       const rating = Math.round(hullValue * 0.42 + firepower * 1.12 + targeting * 0.86 + mobility * 0.75 + support * 0.94);
       return {
         rating,
@@ -3699,7 +3807,8 @@
         mobility,
         mobilityPct: mobility / 1.2,
         support,
-        supportPct: support / 1.7
+        supportPct: support / 1.7,
+        platformTier
       };
     }
 
@@ -3710,16 +3819,30 @@
         missile: "+Missile burst and blast radius",
         stabilizer: "+Turret tracking while moving",
         optics: "+Lock range and radar clarity",
+        autoloader: "+Manual shell reload speed",
+        fireControl: "+Manual weapon tracking and boss DPS",
+        tier2: "+Tank platform tier, hull, mobility, firepower",
+        tier3: "+Tank platform tier, hull, mobility, firepower",
+        tier4: "+Tank platform tier, hull, mobility, firepower",
+        tier5: "+Tank platform tier, hull, mobility, firepower",
+        tier6: "+Tank platform tier, hull, mobility, firepower",
+        tier7: "+Tank platform tier, hull, mobility, firepower",
+        tier8: "+Tank platform tier, hull, mobility, firepower",
+        tier9: "+Tank platform tier, hull, mobility, firepower",
+        tier10: "+Final tank platform for Levels 91-100",
         armor: "+25 max hull each level",
         spall: "-Enemy contact damage",
         regen: "+Passive field repair",
         engine: "+Speed and turning",
         tracks: "+Grip and collision recovery",
+        composite: "+Late-game hull and mitigation",
         support: "+Base repair radius",
         turrets: "+Base turret firepower",
         walls: "+Visible perimeter defenses",
         repairBay: "+Base and crate repair power",
-        sensors: "+Base targeting and radar reach"
+        sensors: "+Base targeting and radar reach",
+        drone: "+Radar clarity and target awareness",
+        fortress: "+Heavy home-base fire support"
       };
       return isCosmetic(item) ? `${item.name} visual style only` : impacts[item.id] || item.desc;
     }
@@ -3729,6 +3852,10 @@
       if (!item) return;
       const levelNow = getUpgradeLevel(id);
       const isSkin = isCosmetic(item);
+      if (!isUpgradeUnlocked(item)) {
+        showToast(`${item.name} unlocks after Level ${item.reqLevel}.`);
+        return;
+      }
       if (isSkin && levelNow > 0) {
         selectedSkin = id;
         applyTankSkin();
@@ -3749,7 +3876,7 @@
       score -= cost;
       upgradeLevels[id] = levelNow + 1;
       if (isSkin) selectedSkin = id;
-      applyUpgradeEffects({ fillNewArmor: id === "armor" });
+      applyUpgradeEffects({ fillNewArmor: id === "armor" || id === "composite" || id.startsWith("tier") });
       applyTankSkin();
       updateTankUpgradeVisuals();
       if (started && (item.category === "base")) buildDistrict();
@@ -3780,8 +3907,9 @@
 
     function applyUpgradeEffects(options = {}) {
       const oldMaxHull = maxHull;
-      maxHull = 100 + getUpgradeLevel("armor") * 25;
-      hullRegenRate = getUpgradeLevel("regen") * 0.95 + getUpgradeLevel("repairBay") * 0.25;
+      const platformTier = getTankPlatformTier();
+      maxHull = 100 + getUpgradeLevel("armor") * 25 + getUpgradeLevel("composite") * 18 + (platformTier - 1) * 34;
+      hullRegenRate = getUpgradeLevel("regen") * 0.95 + getUpgradeLevel("repairBay") * 0.25 + (platformTier - 1) * 0.08;
       if (options.fillNewArmor && maxHull > oldMaxHull) {
         hull += maxHull - oldMaxHull;
       }
@@ -3796,11 +3924,12 @@
       parts.weapons.visible = getUpgradeLevel("missile") > 0;
       parts.optics.visible = getUpgradeLevel("optics") + getUpgradeLevel("stabilizer") > 0;
       parts.base.visible = getUpgradeLevel("support") + getUpgradeLevel("sensors") > 0;
-      const armorScale = 0.72 + Math.min(0.42, (getUpgradeLevel("armor") + getUpgradeLevel("spall")) * 0.035);
+      const platformTier = getTankPlatformTier();
+      const armorScale = 0.72 + Math.min(0.5, (getUpgradeLevel("armor") + getUpgradeLevel("spall") + getUpgradeLevel("composite") + (platformTier - 1)) * 0.03);
       parts.armor.scale.setScalar(armorScale);
-      parts.weapons.scale.setScalar(0.82 + getUpgradeLevel("missile") * 0.055);
-      parts.optics.scale.setScalar(0.86 + (getUpgradeLevel("optics") + getUpgradeLevel("stabilizer")) * 0.035);
-      parts.base.scale.setScalar(0.82 + (getUpgradeLevel("support") + getUpgradeLevel("sensors")) * 0.04);
+      parts.weapons.scale.setScalar(0.82 + (getUpgradeLevel("missile") + getUpgradeLevel("autoloader") + getUpgradeLevel("fireControl")) * 0.04 + (platformTier - 1) * 0.018);
+      parts.optics.scale.setScalar(0.86 + (getUpgradeLevel("optics") + getUpgradeLevel("stabilizer") + getUpgradeLevel("fireControl") + getUpgradeLevel("drone")) * 0.028);
+      parts.base.scale.setScalar(0.82 + (getUpgradeLevel("support") + getUpgradeLevel("sensors") + getUpgradeLevel("fortress")) * 0.035);
     }
 
     function applyTankSkin() {
