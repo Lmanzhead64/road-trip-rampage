@@ -391,15 +391,46 @@
       place-items: center;
       padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
       background:
-        linear-gradient(180deg, rgba(1, 2, 4, 0.88), rgba(10, 13, 14, 0.46) 44%, rgba(1, 2, 4, 0.94)),
-        radial-gradient(circle at 50% 32%, rgba(247, 200, 75, 0.09), transparent 34%),
+        linear-gradient(180deg, rgba(1, 2, 4, 0.72), rgba(6, 8, 9, 0.44) 42%, rgba(1, 2, 4, 0.92)),
+        radial-gradient(circle at 50% 34%, rgba(247, 200, 75, 0.12), transparent 34%),
         repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 7px);
       backdrop-filter: blur(3px);
     }
 
+    #startOverlay::before,
+    #levelOverlay::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(180deg, rgba(160, 178, 186, 0.42), rgba(70, 76, 72, 0.20) 35%, rgba(3, 5, 6, 0.86) 100%),
+        radial-gradient(circle at 18% 62%, rgba(255, 210, 116, 0.20), transparent 22%),
+        radial-gradient(circle at 74% 52%, rgba(255, 82, 61, 0.18), transparent 18%),
+        linear-gradient(115deg, transparent 0 38%, rgba(255,255,255,0.10) 38% 39%, transparent 39% 100%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 66px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 88px),
+        linear-gradient(145deg, #263129, #111719 48%, #080a0c);
+      filter: saturate(0.86) contrast(1.22);
+    }
+
+    #startOverlay::after,
+    #levelOverlay::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 46%, transparent 0 32%, rgba(0,0,0,0.38) 62%, rgba(0,0,0,0.78)),
+        linear-gradient(90deg, rgba(0,0,0,0.68), transparent 18% 82%, rgba(0,0,0,0.68)),
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 4px);
+      opacity: 0.92;
+      pointer-events: none;
+    }
+
     #levelOverlay {
       display: none;
-      background: rgba(0, 0, 0, 0.72);
+      background: rgba(0, 0, 0, 0.34);
     }
 
     #garageOverlay {
@@ -427,6 +458,31 @@
       text-align: center;
     }
 
+    .start-menu,
+    .level-menu {
+      width: min(1180px, calc(100vw - 34px));
+      max-height: min(780px, calc(100svh - 28px));
+      padding: clamp(16px, 2.4vw, 30px);
+      border-color: rgba(222, 225, 214, 0.24);
+      background:
+        linear-gradient(180deg, rgba(16, 20, 20, 0.84), rgba(3, 5, 6, 0.88)),
+        radial-gradient(circle at 74% 24%, rgba(69, 255, 244, 0.10), transparent 32%),
+        repeating-linear-gradient(90deg, rgba(69,255,244,0.045) 0 1px, transparent 1px 20px);
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.72), inset 0 0 0 1px rgba(255,255,255,0.06);
+      text-align: left;
+    }
+
+    .start-command-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(330px, 0.72fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .start-briefing {
+      min-width: 0;
+    }
+
     .start-kicker {
       color: rgba(247, 200, 75, 0.95);
       font-size: 11px;
@@ -445,6 +501,12 @@
       text-transform: uppercase;
     }
 
+    .start-menu h1 {
+      font-size: clamp(48px, 7.6vw, 96px);
+      max-width: 760px;
+      text-shadow: 0 22px 48px rgba(0,0,0,0.74);
+    }
+
     .menu p {
       max-width: 720px;
       margin: 12px auto 0;
@@ -452,6 +514,146 @@
       font-size: clamp(13px, 2vw, 16px);
       font-weight: 760;
       line-height: 1.5;
+    }
+
+    .start-menu p,
+    .level-menu p {
+      margin-left: 0;
+      margin-right: 0;
+      color: rgba(244, 247, 251, 0.82);
+    }
+
+    .start-intel-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .start-intel-strip span {
+      min-height: 48px;
+      padding: 9px 10px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(0,0,0,0.22));
+      color: rgba(244,247,251,0.78);
+      font-size: 10px;
+      font-weight: 1000;
+      text-transform: uppercase;
+    }
+
+    .start-intel-strip strong {
+      display: block;
+      color: #f7c84b;
+      font-size: 15px;
+      line-height: 1.05;
+    }
+
+    .start-war-room {
+      position: relative;
+      min-height: 318px;
+      overflow: hidden;
+      border: 1px solid rgba(69,255,244,0.24);
+      border-radius: 5px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(69,255,244,0.18), transparent 28%),
+        radial-gradient(circle at 50% 50%, rgba(247,200,75,0.08), transparent 48%),
+        repeating-radial-gradient(circle at 50% 50%, rgba(69,255,244,0.18) 0 1px, transparent 1px 32px),
+        linear-gradient(180deg, rgba(7, 15, 17, 0.88), rgba(0, 0, 0, 0.76));
+      box-shadow: inset 0 0 60px rgba(69,255,244,0.08), 0 20px 48px rgba(0,0,0,0.38);
+    }
+
+    .start-war-room::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(from 0deg, transparent 0 75%, rgba(69,255,244,0.22) 84%, transparent 92%);
+      animation: radarSweep 7s linear infinite;
+    }
+
+    .start-war-room::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 49.6%, rgba(69,255,244,0.24) 50%, transparent 50.4%),
+        linear-gradient(0deg, transparent 49.6%, rgba(69,255,244,0.18) 50%, transparent 50.4%);
+      opacity: 0.38;
+    }
+
+    @keyframes radarSweep {
+      to { transform: rotate(360deg); }
+    }
+
+    .hologram-tank {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      z-index: 1;
+      width: min(290px, 78%);
+      height: 150px;
+      transform: translate(-50%, -50%) perspective(680px) rotateX(58deg) rotateZ(-8deg);
+      filter: drop-shadow(0 0 22px rgba(69,255,244,0.42));
+    }
+
+    .hologram-tank span {
+      position: absolute;
+      display: block;
+      border: 1px solid rgba(203, 255, 250, 0.78);
+      background: linear-gradient(180deg, rgba(226,255,250,0.80), rgba(69,255,244,0.22));
+      box-shadow: inset 0 0 22px rgba(255,255,255,0.22), 0 0 18px rgba(69,255,244,0.28);
+    }
+
+    .hologram-tank .track-l,
+    .hologram-tank .track-r {
+      top: 22px;
+      width: 54px;
+      height: 106px;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.42) 0 8px, rgba(255,255,255,0.16) 8px 13px),
+        linear-gradient(180deg, rgba(69,255,244,0.28), rgba(0,0,0,0.44));
+    }
+
+    .hologram-tank .track-l { left: 22px; }
+    .hologram-tank .track-r { right: 22px; }
+    .hologram-tank .hull {
+      left: 70px;
+      right: 70px;
+      top: 20px;
+      height: 110px;
+      clip-path: polygon(10% 0, 90% 0, 100% 32%, 88% 100%, 12% 100%, 0 32%);
+    }
+    .hologram-tank .turret {
+      left: 108px;
+      right: 108px;
+      top: 44px;
+      height: 58px;
+      clip-path: polygon(12% 0, 88% 0, 100% 42%, 82% 100%, 18% 100%, 0 42%);
+    }
+    .hologram-tank .barrel {
+      left: 50%;
+      top: 68px;
+      width: 132px;
+      height: 12px;
+      transform: translateX(8px);
+      background: rgba(224,255,250,0.78);
+    }
+    .hologram-tank .blade {
+      left: 58px;
+      right: 58px;
+      bottom: 0;
+      height: 18px;
+      background: linear-gradient(180deg, rgba(224,255,250,0.68), rgba(69,255,244,0.18));
+    }
+
+    .war-room-label {
+      position: absolute;
+      left: 14px;
+      bottom: 12px;
+      z-index: 2;
+      color: rgba(244,247,251,0.82);
+      font-size: 10px;
+      font-weight: 1000;
+      text-transform: uppercase;
     }
 
     .mode-row {
@@ -464,7 +666,9 @@
 
     .mode-card {
       border: 1px solid rgba(255, 255, 255, 0.15);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.18));
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.24)),
+        linear-gradient(90deg, rgba(69,255,244,0.08), transparent);
       border-radius: 5px;
       padding: 12px;
     }
@@ -488,7 +692,7 @@
     .leaderboard-panel,
     .score-submit {
       margin: 18px auto 0;
-      width: min(720px, 100%);
+      width: min(840px, 100%);
       border: 1px solid rgba(69, 255, 244, 0.22);
       border-radius: 5px;
       background:
@@ -537,6 +741,42 @@
       font-size: 10px;
       font-weight: 850;
       text-transform: uppercase;
+    }
+
+    .debrief-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 16px 0 4px;
+      text-align: left;
+    }
+
+    .debrief-card {
+      min-height: 76px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      padding: 10px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.24)),
+        repeating-linear-gradient(90deg, rgba(69,255,244,0.032) 0 1px, transparent 1px 12px);
+      text-transform: uppercase;
+    }
+
+    .debrief-card span {
+      display: block;
+      color: rgba(244,247,251,0.56);
+      font-size: 9px;
+      font-weight: 950;
+    }
+
+    .debrief-card strong {
+      display: block;
+      margin-top: 6px;
+      color: #f4f7fb;
+      font-size: clamp(16px, 2.2vw, 24px);
+      line-height: 1;
+      font-weight: 1000;
+      overflow-wrap: anywhere;
     }
 
     .leaderboard-rank {
@@ -1246,6 +1486,19 @@
         grid-template-columns: 1fr;
       }
 
+      .start-command-grid,
+      .debrief-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .start-intel-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .start-war-room {
+        min-height: 168px;
+      }
+
       .campaign-map {
         grid-template-columns: 1fr;
       }
@@ -1395,6 +1648,10 @@
         font-size: clamp(24px, 5vw, 36px);
       }
 
+      .start-menu h1 {
+        font-size: clamp(30px, 6vw, 46px);
+      }
+
       .menu p {
         font-size: 10px;
         line-height: 1.28;
@@ -1405,6 +1662,55 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 7px;
         margin: 8px 0;
+      }
+
+      .start-command-grid {
+        grid-template-columns: minmax(0, 1.15fr) minmax(230px, 0.85fr);
+        gap: 8px;
+      }
+
+      .start-intel-strip {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 5px;
+        margin-top: 7px;
+      }
+
+      .start-intel-strip span {
+        min-height: 34px;
+        padding: 5px 6px;
+        font-size: 7px;
+      }
+
+      .start-intel-strip strong {
+        font-size: 11px;
+      }
+
+      .start-war-room {
+        min-height: 188px;
+      }
+
+      .hologram-tank {
+        width: 210px;
+        height: 110px;
+      }
+
+      .debrief-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .debrief-card {
+        min-height: 54px;
+        padding: 7px;
+      }
+
+      .debrief-card span {
+        font-size: 7px;
+      }
+
+      .debrief-card strong {
+        font-size: 13px;
       }
 
       .campaign-map {
@@ -1660,10 +1966,41 @@
   </div>
 
   <section id="startOverlay">
-    <div class="menu">
-      <div class="start-kicker">Three-war armored RPG campaign</div>
-      <h1>Road Trip Rampage 3D</h1>
-      <p>Command a fictional heavy breacher tank through 300 levels across three wars. War I reclaims American cities, War II pushes into global flashpoints, and War III becomes a final worldwide armored uprising. Keep your tank, skins, base defenses, and War Systems as the campaign expands. Built by Levi Ray for Games.</p>
+    <div class="menu start-menu">
+      <div class="start-command-grid">
+        <div class="start-briefing">
+          <div class="start-kicker">Live armored command operation</div>
+          <h1>Road Trip Rampage 3D</h1>
+          <p>Command a fictional heavy breacher tank through a 300-level armored RPG campaign. Clear hostile armor, build your base, upgrade the platform, collect battlefield caches, and push city by city through three escalating wars. Built by Levi Ray for Games.</p>
+          <div class="start-intel-strip" aria-label="Campaign overview">
+            <span><strong>300</strong>Levels</span>
+            <span><strong>30</strong>City fronts</span>
+            <span><strong>3</strong>Wars</span>
+            <span><strong>Live</strong>Leaderboard</span>
+          </div>
+        </div>
+        <div class="start-war-room" aria-hidden="true">
+          <div class="hologram-tank">
+            <span class="track-l"></span>
+            <span class="track-r"></span>
+            <span class="hull"></span>
+            <span class="turret"></span>
+            <span class="barrel"></span>
+            <span class="blade"></span>
+          </div>
+          <div class="war-room-label">Armor telemetry / threat radar / base uplink</div>
+        </div>
+      </div>
+      <div class="mode-select">
+        <button id="regularModeBtn" class="active" type="button">Regular Mode</button>
+        <button id="hardcoreModeBtn" type="button">Hardcore Mode</button>
+      </div>
+      <div class="start-actions">
+        <button id="startBtn" class="start-main" type="button">Start 3D Drive</button>
+        <button id="continueBtn" class="start-secondary" type="button">Load Save</button>
+        <button id="garageBtn" class="start-secondary" type="button">Garage</button>
+        <button id="resetSaveBtn" class="start-secondary" type="button">Reset Save</button>
+      </div>
       <div class="mode-row">
         <div class="mode-card">
           <strong>Closest-Enemy Lock</strong>
@@ -1679,16 +2016,6 @@
         </div>
       </div>
       <div id="campaignMap" class="campaign-map"></div>
-      <div class="mode-select">
-        <button id="regularModeBtn" class="active" type="button">Regular Mode</button>
-        <button id="hardcoreModeBtn" type="button">Hardcore Mode</button>
-      </div>
-      <div class="start-actions">
-        <button id="startBtn" class="start-main" type="button">Start 3D Drive</button>
-        <button id="continueBtn" class="start-secondary" type="button">Load Save</button>
-        <button id="garageBtn" class="start-secondary" type="button">Garage</button>
-        <button id="resetSaveBtn" class="start-secondary" type="button">Reset Save</button>
-      </div>
       <div class="leaderboard-panel" aria-live="polite">
         <div class="leaderboard-head">
           <span>Public Command Board</span>
@@ -1703,9 +2030,11 @@
   </section>
 
   <section id="levelOverlay">
-    <div class="menu">
+    <div class="menu level-menu">
+      <div class="start-kicker">After-action combat debrief</div>
       <h1 id="levelTitle">District Clear</h1>
       <p id="levelSummary">Your tank recovered at home base. Spend credits later in the full garage, then move to the next district.</p>
+      <div id="debriefStats" class="debrief-grid" aria-live="polite"></div>
       <div id="milestoneAwardPanel" class="milestone-award" aria-live="polite"></div>
       <div class="start-actions">
         <button id="nextLevelBtn" class="start-main" type="button">Next Level</button>
@@ -1804,6 +2133,7 @@
     const submitScoreBtn = document.getElementById("submitScoreBtn");
     const scoreSubmitStatus = document.getElementById("scoreSubmitStatus");
     const milestoneAwardPanel = document.getElementById("milestoneAwardPanel");
+    const debriefStats = document.getElementById("debriefStats");
     const moduleRows = document.getElementById("moduleRows");
     const moduleAlert = document.getElementById("moduleAlert");
     const campaignMap = document.getElementById("campaignMap");
@@ -2151,6 +2481,8 @@
     let trackGain = null;
     let trackNoiseSource = null;
     let concreteTexture = null;
+    let grassTexture = null;
+    let mudTexture = null;
     let armorTextureCache = new Map();
     let tankPaintMaterials = [];
     let tankAccentMaterials = [];
@@ -2344,6 +2676,7 @@
 
       const rng = mulberry32(1337 + Math.floor((level - 1) / 10) * 91);
       const progress = getCampaignProgress(level);
+      addTerrainAtmosphere(rng, progress);
       const chapterVisualBoost = Math.min(46, progress.chapter * 5);
       for (let i = 0; i < 158 + chapterVisualBoost; i += 1) {
         const x = Math.round((rng() * 2 - 1) * (WORLD_SIZE * 0.76) / 32) * 32;
@@ -2371,6 +2704,118 @@
       addStreetFurniture(rng);
       addBattlefieldDressing(rng);
       addHomeBase();
+    }
+
+    function addTerrainAtmosphere(rng, progress) {
+      const city = currentTheme.city || "global";
+      const greenCities = ["nyc", "san-francisco", "chicago", "miami", "boston", "seattle", "denver", "london", "paris", "tokyo", "seoul", "sydney", "singapore", "rio", "capetown", "panama"];
+      const aridCities = ["vegas", "cairo", "dubai"];
+      const winterCities = ["reykjavik", "moscow", "anchorage"];
+      const fieldCount = greenCities.includes(city) ? 24 : aridCities.includes(city) ? 10 : 16;
+      for (let i = 0; i < fieldCount; i += 1) {
+        const x = (rng() * 2 - 1) * WORLD_SIZE * 0.78;
+        const z = (rng() * 2 - 1) * WORLD_SIZE * 0.78;
+        if (Math.abs(x) < 150 && Math.abs(z + 44) < 190) continue;
+        if (nearRoadGrid(x, z, 38)) continue;
+        const w = 90 + rng() * 210;
+        const d = 42 + rng() * 120;
+        addGroundPatch(x, z, w, d, rng() * Math.PI, winterCities.includes(city) ? "snow" : aridCities.includes(city) ? "dust" : "grass", rng);
+      }
+
+      const shoulderCount = 46 + Math.min(40, progress.chapter * 2);
+      for (let i = 0; i < shoulderCount; i += 1) {
+        const roadCoord = (Math.floor(rng() * 9) - 4) * 320;
+        const along = (rng() * 2 - 1) * WORLD_SIZE * 0.84;
+        const vertical = rng() > 0.5;
+        const side = rng() > 0.5 ? 1 : -1;
+        const x = vertical ? roadCoord + side * (38 + rng() * 30) : along;
+        const z = vertical ? along : roadCoord + side * (34 + rng() * 30);
+        if (Math.abs(x) < 140 && Math.abs(z + 44) < 180) continue;
+        addGroundPatch(x, z, 34 + rng() * 60, 12 + rng() * 30, vertical ? Math.PI / 2 + (rng() - 0.5) * 0.3 : (rng() - 0.5) * 0.3, "mud", rng);
+      }
+
+      const rockCount = aridCities.includes(city) || winterCities.includes(city) ? 44 : 26;
+      for (let i = 0; i < rockCount; i += 1) {
+        const x = (rng() * 2 - 1) * WORLD_SIZE * 0.76;
+        const z = (rng() * 2 - 1) * WORLD_SIZE * 0.76;
+        if (Math.abs(x) < 160 && Math.abs(z + 44) < 190 || nearRoadGrid(x, z, 42)) continue;
+        addRockOutcrop(x, z, rng);
+      }
+
+      for (let i = 0; i < 12 + Math.min(12, progress.chapterLevel); i += 1) {
+        const x = (rng() * 2 - 1) * WORLD_SIZE * 0.72;
+        const z = (rng() * 2 - 1) * WORLD_SIZE * 0.72;
+        if (Math.abs(x) < 150 && Math.abs(z + 44) < 190) continue;
+        addSmokeColumn(x, z, rng, i % 4 === 0);
+      }
+    }
+
+    function addGroundPatch(x, z, w, d, rot, type, rng) {
+      const material = type === "grass"
+        ? new THREE.MeshStandardMaterial({ color: 0x2f4b30, roughness: 0.96, metalness: 0.01, map: makeGrassTexture(), transparent: true, opacity: 0.92 })
+        : type === "snow"
+          ? new THREE.MeshStandardMaterial({ color: 0xc8d3d1, roughness: 0.92, metalness: 0.02, map: makeNoiseTexture(0xc8d3d1, 5, 0.14), transparent: true, opacity: 0.80 })
+          : type === "dust"
+            ? new THREE.MeshStandardMaterial({ color: 0x74664d, roughness: 0.94, metalness: 0.01, map: makeMudTexture(), transparent: true, opacity: 0.82 })
+            : new THREE.MeshStandardMaterial({ color: 0x2a241d, roughness: 0.96, metalness: 0.02, map: makeMudTexture(), transparent: true, opacity: 0.72 });
+      const patch = new THREE.Mesh(new THREE.PlaneGeometry(w, d), material);
+      patch.rotation.x = -Math.PI / 2;
+      patch.rotation.z = rot;
+      patch.position.set(x, 0.065 + rng() * 0.018, z);
+      patch.receiveShadow = true;
+      propRoot.add(patch);
+
+      if (type === "grass" && rng() > 0.34) {
+        const blades = 4 + Math.floor(rng() * 7);
+        const bladeMat = new THREE.MeshStandardMaterial({ color: 0x3e6a38, roughness: 0.92, metalness: 0.01 });
+        for (let i = 0; i < blades; i += 1) {
+          const blade = new THREE.Mesh(new THREE.BoxGeometry(0.18, 2.2 + rng() * 3.8, 8 + rng() * 18), bladeMat);
+          blade.position.set(x + (rng() - 0.5) * w * 0.76, 1.4, z + (rng() - 0.5) * d * 0.70);
+          blade.rotation.y = rng() * Math.PI;
+          blade.castShadow = true;
+          propRoot.add(blade);
+        }
+      }
+    }
+
+    function addRockOutcrop(x, z, rng) {
+      const rockMat = new THREE.MeshStandardMaterial({ color: 0x5a5d58, roughness: 0.94, metalness: 0.03, map: makeNoiseTexture(0x5a5d58, 6, 0.22) });
+      const count = 2 + Math.floor(rng() * 5);
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      for (let i = 0; i < count; i += 1) {
+        const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(3 + rng() * 8, 1), rockMat);
+        rock.position.set((rng() - 0.5) * 22, 2 + rng() * 2.4, (rng() - 0.5) * 18);
+        rock.scale.set(1 + rng() * 1.2, 0.44 + rng() * 0.55, 0.8 + rng() * 1.1);
+        rock.rotation.set(rng() * 0.5, rng() * Math.PI, rng() * 0.45);
+        rock.castShadow = true;
+        rock.receiveShadow = true;
+        group.add(rock);
+      }
+      propRoot.add(group);
+    }
+
+    function addSmokeColumn(x, z, rng, withFire = false) {
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      const smokeMat = new THREE.MeshBasicMaterial({ color: 0x12100f, transparent: true, opacity: 0.18, depthWrite: false });
+      const ashMat = new THREE.MeshBasicMaterial({ color: 0x3b3731, transparent: true, opacity: 0.12, depthWrite: false });
+      for (let i = 0; i < 7; i += 1) {
+        const puff = new THREE.Mesh(new THREE.DodecahedronGeometry(5 + rng() * 12, 1), i % 2 ? smokeMat : ashMat);
+        puff.position.set((rng() - 0.5) * 18, 5 + i * (5 + rng() * 3), (rng() - 0.5) * 18);
+        puff.scale.set(1.0 + i * 0.12, 0.65 + i * 0.08, 1.0 + i * 0.12);
+        group.add(puff);
+      }
+      if (withFire) {
+        const fireMat = new THREE.MeshBasicMaterial({ color: 0xff7a32, transparent: true, opacity: 0.58 });
+        const ember = new THREE.Mesh(new THREE.ConeGeometry(4 + rng() * 3, 10 + rng() * 8, 8), fireMat);
+        ember.position.y = 5;
+        group.add(ember);
+        const light = new THREE.PointLight(0xff7a32, 1.4, 80, 2.1);
+        light.position.y = 8;
+        group.add(light);
+      }
+      propRoot.add(group);
     }
 
     function addCityIdentity(rng) {
@@ -5528,6 +5973,20 @@
       milestoneAwardPanel.classList.add("show");
     }
 
+    function renderDebriefStats(rows = []) {
+      if (!debriefStats) return;
+      if (!rows.length) {
+        debriefStats.innerHTML = "";
+        return;
+      }
+      debriefStats.innerHTML = rows.map(row => `
+        <div class="debrief-card">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.value)}</strong>
+        </div>
+      `).join("");
+    }
+
     function completeLevel() {
       paused = true;
       document.body.classList.remove("playing");
@@ -5556,6 +6015,12 @@
       ui.levelSummary.textContent = level >= MAX_LEVEL
         ? `You cleared all ${MAX_LEVEL} levels across War I, War II, and War III. Final credits: ${score}. Submit the run or restart with your unlocked garage.`
         : `${progress.superBoss ? `Chapter ${progress.tier} superboss defeated. ` : ""}Level ${level} cleared. Base reward +${baseReward}, streak +${streakReward}${contractReward ? `, contract +${contractReward}` : ""}${milestoneReward ? `, milestone +${milestoneReward}` : ""}. Win streak: ${winStreak}. Credits: ${score}. ${nextUnlocks.length ? `New unlocks: ${nextUnlocks.join(", ")}. ` : ""}${warTransition} Next: Level ${level + 1} in ${nextTheme.name}. Upgrade before moving on.`;
+      renderDebriefStats([
+        { label: "Front cleared", value: `Level ${level}` },
+        { label: "Credits", value: score.toLocaleString() },
+        { label: "Reward", value: `+${(baseReward + streakReward + contractReward + milestoneReward).toLocaleString()}` },
+        { label: "Next operation", value: level >= MAX_LEVEL ? "Campaign clear" : nextTheme.name }
+      ]);
       renderMilestoneAward(milestoneAward);
       nextLevelBtn.textContent = level >= MAX_LEVEL ? "Restart Campaign" : progress.warFinale ? `Enter ${nextProgress.warInfo.short}` : "Next Level";
       levelOverlay.dataset.action = level >= MAX_LEVEL ? "restart" : "next";
@@ -5574,6 +6039,12 @@
       saveProfile();
       ui.levelTitle.textContent = "Tank Disabled";
       renderMilestoneAward(null);
+      renderDebriefStats([
+        { label: "Status", value: "Disabled" },
+        { label: "Level", value: String(level) },
+        { label: "Credits", value: score.toLocaleString() },
+        { label: "Mode", value: gameMode === "hardcore" ? "Hardcore" : "Regular" }
+      ]);
       if (gameMode === "hardcore") {
         winStreak = 0;
         localStorage.setItem(STREAK_KEY, String(winStreak));
@@ -6356,7 +6827,7 @@
         combatRating: tankStats.rating,
         skin: skinName(selectedSkin),
         savedAt: new Date().toISOString(),
-        gameVersion: "v33-city-base-rewards"
+        gameVersion: "v34-cinematic-war-room"
       };
     }
 
@@ -6364,6 +6835,7 @@
       lastRunStats = null;
       scoreSubmitPanel.style.display = "none";
       renderMilestoneAward(null);
+      renderDebriefStats([]);
       submitScoreBtn.disabled = false;
       submitScoreBtn.textContent = "Submit Score";
       scoreSubmitStatus.textContent = "Save this run publicly, or skip and restart fast.";
@@ -6690,6 +7162,71 @@
       return tex;
     }
 
+    function makeGrassTexture() {
+      if (grassTexture) return grassTexture;
+      const c = document.createElement("canvas");
+      c.width = 256;
+      c.height = 256;
+      const ctx = c.getContext("2d");
+      const grad = ctx.createLinearGradient(0, 0, 256, 256);
+      grad.addColorStop(0, "#253d26");
+      grad.addColorStop(0.5, "#3f6338");
+      grad.addColorStop(1, "#1f3324");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 2600; i += 1) {
+        const g = 70 + Math.random() * 96;
+        ctx.strokeStyle = `rgba(${Math.floor(g * 0.62)},${Math.floor(g)},${Math.floor(g * 0.48)},${0.08 + Math.random() * 0.22})`;
+        ctx.lineWidth = 0.7 + Math.random() * 1.4;
+        const x = Math.random() * 256;
+        const y = Math.random() * 256;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + (Math.random() - 0.5) * 16, y - 6 - Math.random() * 22);
+        ctx.stroke();
+      }
+      for (let i = 0; i < 360; i += 1) {
+        ctx.fillStyle = `rgba(18,22,14,${0.05 + Math.random() * 0.16})`;
+        ctx.fillRect(Math.random() * 256, Math.random() * 256, 2 + Math.random() * 7, 1 + Math.random() * 4);
+      }
+      grassTexture = new THREE.CanvasTexture(c);
+      grassTexture.wrapS = THREE.RepeatWrapping;
+      grassTexture.wrapT = THREE.RepeatWrapping;
+      grassTexture.repeat.set(5.5, 3.2);
+      grassTexture.colorSpace = THREE.SRGBColorSpace;
+      return grassTexture;
+    }
+
+    function makeMudTexture() {
+      if (mudTexture) return mudTexture;
+      const c = document.createElement("canvas");
+      c.width = 256;
+      c.height = 256;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#30281f";
+      ctx.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 3200; i += 1) {
+        const v = 28 + Math.random() * 74;
+        ctx.fillStyle = `rgba(${v},${Math.floor(v * 0.86)},${Math.floor(v * 0.62)},${0.06 + Math.random() * 0.20})`;
+        ctx.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 8, 1 + Math.random() * 5);
+      }
+      ctx.strokeStyle = "rgba(7, 7, 6, 0.36)";
+      for (let i = 0; i < 34; i += 1) {
+        ctx.lineWidth = 1 + Math.random() * 3.2;
+        const y = Math.random() * 256;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.bezierCurveTo(70, y + (Math.random() - 0.5) * 38, 170, y + (Math.random() - 0.5) * 44, 256, y + (Math.random() - 0.5) * 28);
+        ctx.stroke();
+      }
+      mudTexture = new THREE.CanvasTexture(c);
+      mudTexture.wrapS = THREE.RepeatWrapping;
+      mudTexture.wrapT = THREE.RepeatWrapping;
+      mudTexture.repeat.set(4, 2.8);
+      mudTexture.colorSpace = THREE.SRGBColorSpace;
+      return mudTexture;
+    }
+
     function makeConcreteTexture() {
       if (concreteTexture) return concreteTexture;
       const c = document.createElement("canvas");
@@ -6800,10 +7337,29 @@
       const ctx = c.getContext("2d");
       ctx.fillStyle = "#252a2e";
       ctx.fillRect(0, 0, 256, 256);
+      const asphaltGradient = ctx.createLinearGradient(0, 0, 256, 256);
+      asphaltGradient.addColorStop(0, "rgba(255,255,255,0.08)");
+      asphaltGradient.addColorStop(0.52, "rgba(0,0,0,0.08)");
+      asphaltGradient.addColorStop(1, "rgba(255,255,255,0.04)");
+      ctx.fillStyle = asphaltGradient;
+      ctx.fillRect(0, 0, 256, 256);
       for (let i = 0; i < 4200; i += 1) {
         const v = 38 + Math.random() * 108;
         ctx.fillStyle = `rgba(${v},${v},${v},${0.055 + Math.random() * 0.18})`;
         ctx.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 5, 1 + Math.random() * 5);
+      }
+      for (const x of [70, 184]) {
+        ctx.strokeStyle = "rgba(4, 4, 4, 0.24)";
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.moveTo(x + (Math.random() - 0.5) * 5, 0);
+        for (let y = 0; y <= 256; y += 34) {
+          ctx.lineTo(x + (Math.random() - 0.5) * 8, y);
+        }
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(255,255,255,0.035)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
       }
       for (let i = 0; i < 34; i += 1) {
         ctx.strokeStyle = `rgba(8, 8, 8, ${0.12 + Math.random() * 0.22})`;
@@ -6820,6 +7376,12 @@
       for (let i = 0; i < 14; i += 1) {
         ctx.beginPath();
         ctx.ellipse(Math.random() * 256, Math.random() * 256, 8 + Math.random() * 18, 3 + Math.random() * 9, Math.random() * Math.PI, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = "rgba(2,2,2,0.18)";
+      for (let i = 0; i < 26; i += 1) {
+        ctx.beginPath();
+        ctx.ellipse(Math.random() * 256, Math.random() * 256, 3 + Math.random() * 8, 16 + Math.random() * 40, Math.random() * 0.4, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.strokeStyle = "rgba(244,236,210,0.28)";
