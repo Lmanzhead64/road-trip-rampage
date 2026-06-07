@@ -2,7 +2,7 @@
 
 Road Trip Rampage is now a vanilla HTML5 Canvas armored-defense RPG prototype for ENGR5513-21.
 
-The current build is a fictional armored dozer/tank game inspired by the engineering silhouette of an armored bulldozer, not a celebration of the real 2004 Granby attack. The game focuses on defending a village, surviving combat waves, upgrading a vehicle fleet, and progressing through a 100-level campaign.
+The current build is a fictional armored dozer/tank game inspired by the engineering silhouette of an armored bulldozer, not a celebration of the real 2004 Granby attack. The game focuses on defending a village, surviving combat waves, upgrading a vehicle fleet, and progressing through a 300-level, three-war campaign.
 
 ## How To Play
 
@@ -16,10 +16,12 @@ The current build is a fictional armored dozer/tank game inspired by the enginee
 
 ## Current RPG Systems
 
-- 100-level campaign split into five phases.
+- 300-level campaign split into War I, War II, and War III, with a new city/theme every 10 levels.
 - Combat garage for weapons, bombs, missiles, armor, repair, range, and fire-rate upgrades.
-- Chassis garage with five armored vehicles that unlock at key levels and can be ranked up.
+- Chassis garage with ten tank tiers that unlock every 10 levels through Level 90.
+- War Systems garage for active protection, battle AI, ammo logistics, salvage, counter-intel, command uplinks, nanite repair, and War Core upgrades that keep scaling through the full 300-level campaign.
 - Village garage with walls, watch turrets, supply depot, machine shop, and aid station upgrades.
+- Cosmetic garage with unlockable military-inspired and prestige skins that change the tank look without changing stats.
 - Village defense during combat, including base health and turret support.
 - Operation contracts each level for bonus rewards: protect the village, build streaks, and destroy armored enemies.
 - Milestone caches every five cleared levels for predictable long-term goals.
