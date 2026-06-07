@@ -1,4 +1,4 @@
-const CACHE_NAME = "road-trip-rampage-v35-commander-controls";
+const CACHE_NAME = "road-trip-rampage-v36-clean-radar-balance";
 const ASSETS = [
   "./",
   "./index.html",
