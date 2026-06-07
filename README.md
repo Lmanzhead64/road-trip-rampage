@@ -41,3 +41,7 @@ The current build is a fictional armored dozer/tank game inspired by the enginee
 ## Future App Store Track
 
 The next production step is not more canvas code. It is turning this prototype into a mobile app build with account-backed progress, cloud leaderboard storage, privacy-safe analytics, licensed final art/audio, and a monetization model that avoids pay-to-win pressure.
+
+
+## ENGR5513 Preview Deployment Proof
+This branch exists to demonstrate the GitHub-to-Vercel preview deployment workflow for the ENGR5513 final deployment assignment.
