@@ -183,6 +183,10 @@
       text-transform: uppercase;
     }
 
+    body.playing #damagePanel:not(.damaged) {
+      display: none;
+    }
+
     .damage-panel-title {
       color: rgba(244, 247, 251, 0.72);
       font-size: 9px;
@@ -255,6 +259,7 @@
       right: max(12px, env(safe-area-inset-right));
       bottom: max(14px, env(safe-area-inset-bottom));
       z-index: 4;
+      display: none;
       width: min(290px, calc(100vw - 24px));
       color: rgba(244, 247, 251, 0.74);
       font-size: 11px;
@@ -288,6 +293,11 @@
     }
 
     body.playing #controlCoach {
+      display: none;
+    }
+
+    body.playing.controls-coached #controlCoach,
+    body.playing.controls-coached .touch-zone-hint {
       display: none;
     }
 
@@ -357,23 +367,31 @@
 
     #fieldSettingsBtn {
       position: fixed;
-      right: max(16px, env(safe-area-inset-right));
-      top: max(122px, calc(env(safe-area-inset-top) + 88px));
+      right: max(14px, env(safe-area-inset-right));
+      top: calc(max(10px, env(safe-area-inset-top)) + 124px);
       z-index: 8;
       display: none;
-      min-height: 38px;
-      padding: 0 12px;
-      border: 1px solid rgba(69, 255, 244, 0.34);
-      border-radius: 6px;
+      width: 44px;
+      height: 44px;
+      min-height: 44px;
+      padding: 0;
+      border: 1px solid rgba(69, 255, 244, 0.46);
+      border-radius: 50%;
       background:
         linear-gradient(180deg, rgba(24, 28, 30, 0.92), rgba(5, 6, 8, 0.86)),
         linear-gradient(90deg, rgba(69, 255, 244, 0.16), transparent);
       color: #f4f7fb;
-      font-size: 10px;
+      font-size: 0;
       font-weight: 1000;
       letter-spacing: 0;
       text-transform: uppercase;
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+    }
+
+    #fieldSettingsBtn::before {
+      content: "⚙";
+      font-size: 22px;
+      line-height: 1;
     }
 
     body.playing #fieldSettingsBtn {
@@ -425,6 +443,10 @@
       background:
         linear-gradient(180deg, rgba(24, 28, 30, 0.92), rgba(5, 6, 8, 0.86)),
         linear-gradient(90deg, rgba(247, 200, 75, 0.18), transparent);
+    }
+
+    .action-btn.assist-only {
+      display: none;
     }
 
     .action-btn.active {
@@ -1716,11 +1738,11 @@
       }
 
       #fieldSettingsBtn {
-        top: max(102px, calc(env(safe-area-inset-top) + 70px));
+        top: max(100px, calc(env(safe-area-inset-top) + 86px));
         right: max(10px, env(safe-area-inset-right));
-        min-height: 34px;
-        padding: 0 10px;
-        font-size: 9px;
+        width: 38px;
+        height: 38px;
+        min-height: 38px;
       }
 
       .action-btn {
@@ -2237,12 +2259,12 @@
 
   <div id="joystick"><div id="stickKnob"></div></div>
   <div id="actionPad">
-    <button id="autoFireBtn" class="action-btn tiny" type="button">Auto Shoot Off</button>
-    <button id="aimBtn" class="action-btn small" type="button">Auto Aim</button>
+    <button id="autoFireBtn" class="action-btn tiny assist-only" type="button">Auto Shoot Off</button>
+    <button id="aimBtn" class="action-btn small assist-only" type="button">Auto Aim</button>
     <button id="missileBtn" class="action-btn missile" type="button">Heavy Missile</button>
     <button id="fireBtn" class="action-btn primary" type="button">Shell</button>
   </div>
-  <button id="fieldSettingsBtn" type="button">Settings</button>
+  <button id="fieldSettingsBtn" type="button" aria-label="Open settings">Settings</button>
 
   <section id="startOverlay">
     <div class="menu start-menu">
@@ -2760,6 +2782,7 @@
     let missileCooldown = 0;
     let autoCooldown = 0;
     let damageCooldown = 0;
+    let controlCoachTimer = 0;
     let baseDefenseCooldown = 0;
     let supplyRunnerCooldown = 0;
     let heading = 0;
@@ -4907,6 +4930,17 @@
       return { x: 120, z: 120 };
     }
 
+    function showControlCoachTemporarily() {
+      document.body.classList.remove("controls-coached");
+      window.clearTimeout(controlCoachTimer);
+      controlCoachTimer = window.setTimeout(() => document.body.classList.add("controls-coached"), 5200);
+    }
+
+    function hideControlCoach() {
+      window.clearTimeout(controlCoachTimer);
+      document.body.classList.add("controls-coached");
+    }
+
     function startGame({ load = false } = {}) {
       initAudio();
       commitCommanderName({ announce: false });
@@ -4942,6 +4976,7 @@
       garageOverlay.style.display = "none";
       resetScoreSubmit();
       document.body.classList.add("playing");
+      showControlCoachTemporarily();
       applyTheme(level);
       buildDistrict();
       if (load && level > 1) deployTankToForwardRally();
@@ -5091,6 +5126,7 @@
         setManualAimFromPointer(event, true);
         return;
       }
+      hideControlCoach();
       const isDriveSide = event.clientX < window.innerWidth * 0.5;
       if (isDriveSide) {
         if (throttleTouchId !== null) return;
@@ -5458,8 +5494,8 @@
       const commandLevel = getUpgradeLevel("commandUplink");
       const naniteLevel = getUpgradeLevel("naniteCrew");
       if (dist > 64 + supportLevel * 10 + repairLevel * 8 + commandLevel * 4) return;
-      if (hull < maxHull) hull = Math.min(maxHull, hull + dt * (9 + supportLevel * 2.1 + repairLevel * 3.4 + naniteLevel * 0.75));
-      repairModules(dt * (2.8 + supportLevel * 0.5 + repairLevel * 0.9 + naniteLevel * 0.28 + commandLevel * 0.14));
+      if (hull < maxHull) hull = Math.min(maxHull, hull + dt * (2.4 + supportLevel * 0.62 + repairLevel * 1.05 + naniteLevel * 0.28 + commandLevel * 0.12));
+      repairModules(dt * (1.1 + supportLevel * 0.22 + repairLevel * 0.38 + naniteLevel * 0.12 + commandLevel * 0.06));
       heavyCooldown = Math.max(0, heavyCooldown - dt * (0.7 + supportLevel * 0.08 + repairLevel * 0.08 + getUpgradeLevel("ammoFactory") * 0.035));
       missileCooldown = Math.max(0, missileCooldown - dt * (0.55 + supportLevel * 0.06 + repairLevel * 0.08 + sensorLevel * 0.03 + getUpgradeLevel("ammoFactory") * 0.045));
     }
@@ -6628,13 +6664,25 @@
       const h = radar.height;
       const cx = w / 2;
       const cy = h / 2;
-      const radius = w * 0.46;
+      const radius = Math.min(w, h) * 0.43;
+      const now = performance.now();
       radarCtx.clearRect(0, 0, w, h);
-      radarCtx.fillStyle = "rgba(2, 10, 12, 0.9)";
+
+      const bg = radarCtx.createRadialGradient(cx, cy, 0, cx, cy, radius + 12);
+      bg.addColorStop(0, "rgba(14, 34, 36, 0.96)");
+      bg.addColorStop(0.62, "rgba(2, 9, 12, 0.94)");
+      bg.addColorStop(1, "rgba(0, 0, 0, 0.98)");
+      radarCtx.fillStyle = bg;
       radarCtx.beginPath();
-      radarCtx.arc(cx, cy, radius + 5, 0, Math.PI * 2);
+      radarCtx.arc(cx, cy, radius + 8, 0, Math.PI * 2);
       radarCtx.fill();
-      const sweep = (performance.now() * 0.0014) % (Math.PI * 2);
+
+      radarCtx.save();
+      radarCtx.beginPath();
+      radarCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+      radarCtx.clip();
+
+      const sweep = (now * 0.00165) % (Math.PI * 2);
       const sweepGrad = radarCtx.createRadialGradient(cx, cy, 0, cx, cy, radius);
       sweepGrad.addColorStop(0, "rgba(69,255,244,0.15)");
       sweepGrad.addColorStop(1, "rgba(69,255,244,0.0)");
@@ -6644,14 +6692,17 @@
       radarCtx.arc(cx, cy, radius, sweep - 0.34, sweep + 0.04);
       radarCtx.closePath();
       radarCtx.fill();
-      radarCtx.strokeStyle = "rgba(69, 255, 244, 0.54)";
-      radarCtx.lineWidth = 1.8;
+
+      radarCtx.strokeStyle = "rgba(69, 255, 244, 0.42)";
+      radarCtx.lineWidth = 1.4;
       for (const r of [0.25, 0.5, 0.75, 1]) {
         radarCtx.beginPath();
         radarCtx.arc(cx, cy, radius * r, 0, Math.PI * 2);
         radarCtx.stroke();
       }
-      radarCtx.strokeStyle = "rgba(255,255,255,0.28)";
+
+      radarCtx.strokeStyle = "rgba(244,247,251,0.22)";
+      radarCtx.lineWidth = 1;
       radarCtx.beginPath();
       radarCtx.moveTo(cx - radius, cy);
       radarCtx.lineTo(cx + radius, cy);
@@ -6660,19 +6711,69 @@
       radarCtx.stroke();
 
       const radarRange = (560 + getUpgradeLevel("optics") * 58 + getUpgradeLevel("sensors") * 68 + getUpgradeLevel("drone") * 86 + getUpgradeLevel("counterIntel") * 34 + getUpgradeLevel("battleAI") * 18 + getUpgradeLevel("commandUplink") * 18 + getUpgradeLevel("warCore") * 24 + (getTankPlatformTier() - 1) * 18) * moduleEfficiency("optics", 0.58);
-      drawRadarPoint(0 - tankPos.x, -44 - tankPos.z, 0x45fff4, 5.8, radarRange, "base");
+      const blips = [];
+      const addBlip = (dx, dz, color, size, kind, label = "") => {
+        const rightDot = dx * Math.cos(heading) - dz * Math.sin(heading);
+        const forwardDot = dx * Math.sin(heading) + dz * Math.cos(heading);
+        const rangeMeters = Math.hypot(dx, dz);
+        const rawX = rightDot / radarRange * radius;
+        const rawY = -forwardDot / radarRange * radius;
+        const dist = Math.hypot(rawX, rawY);
+        const edge = dist > radius - 6;
+        const clampRadius = radius - (kind === "boss" || kind === "lock" ? 10 : 7);
+        const px = edge ? rawX / Math.max(1, dist) * clampRadius : rawX;
+        const py = edge ? rawY / Math.max(1, dist) * clampRadius : rawY;
+        blips.push({ px, py, color, size, kind, label, edge, rangeMeters });
+      };
+
+      addBlip(0 - tankPos.x, -44 - tankPos.z, 0x45fff4, 5.6, "base", "BASE");
       for (const enemy of enemies) {
-        drawRadarPoint(enemy.group.position.x - tankPos.x, enemy.group.position.z - tankPos.z, enemy.boss ? 0xff263d : 0xffb13b, enemy.boss ? 7.4 : 4.8, radarRange, enemy.boss ? "boss" : "enemy");
+        if (enemy.hp <= 0) continue;
+        addBlip(enemy.group.position.x - tankPos.x, enemy.group.position.z - tankPos.z, enemy.boss ? 0xff263d : 0xff8b38, enemy.boss ? 7.4 : 4.8, enemy.boss ? "boss" : "enemy", enemy.boss ? "BOSS" : "");
       }
       for (const pickup of pickups) {
-        drawRadarPoint(pickup.group.position.x - tankPos.x, pickup.group.position.z - tankPos.z, pickup.color, 3.8, radarRange, "pickup");
+        addBlip(pickup.group.position.x - tankPos.x, pickup.group.position.z - tankPos.z, pickup.color, 3.8, "pickup");
       }
       for (const runner of supplyRunners) {
-        drawRadarPoint(runner.group.position.x - tankPos.x, runner.group.position.z - tankPos.z, currentTheme.accent, 3.6, radarRange, "runner");
+        addBlip(runner.group.position.x - tankPos.x, runner.group.position.z - tankPos.z, currentTheme.accent, 3.6, "runner");
       }
       if (currentAimTarget) {
-        drawRadarPoint(currentAimTarget.group.position.x - tankPos.x, currentAimTarget.group.position.z - tankPos.z, 0xffffff, currentAimTarget.boss ? 8.4 : 6.2, radarRange, "lock");
+        addBlip(currentAimTarget.group.position.x - tankPos.x, currentAimTarget.group.position.z - tankPos.z, 0xffffff, currentAimTarget.boss ? 8.4 : 6.2, "lock", "LOCK");
       }
+
+      blips.sort((a, b) => {
+        const priority = { base: 0, pickup: 1, runner: 2, enemy: 3, boss: 4, lock: 5 };
+        return (priority[a.kind] || 0) - (priority[b.kind] || 0);
+      });
+
+      const threat = enemies
+        .filter(enemy => enemy.hp > 0)
+        .map(enemy => ({ enemy, dist: enemy.group.position.distanceTo(tank.position) }))
+        .sort((a, b) => (b.enemy.boss ? 1 : 0) - (a.enemy.boss ? 1 : 0) || a.dist - b.dist)[0];
+
+      if (threat) {
+        const dx = threat.enemy.group.position.x - tankPos.x;
+        const dz = threat.enemy.group.position.z - tankPos.z;
+        const rightDot = dx * Math.cos(heading) - dz * Math.sin(heading);
+        const forwardDot = dx * Math.sin(heading) + dz * Math.cos(heading);
+        const rawX = rightDot / radarRange * radius;
+        const rawY = -forwardDot / radarRange * radius;
+        const dist = Math.hypot(rawX, rawY);
+        const px = rawX / Math.max(1, dist) * Math.min(radius - 12, dist);
+        const py = rawY / Math.max(1, dist) * Math.min(radius - 12, dist);
+        radarCtx.strokeStyle = threat.enemy.boss ? "rgba(255, 38, 61, 0.88)" : "rgba(247, 200, 75, 0.76)";
+        radarCtx.lineWidth = threat.enemy.boss ? 2.4 : 1.6;
+        radarCtx.setLineDash([5, 4]);
+        radarCtx.beginPath();
+        radarCtx.moveTo(cx, cy);
+        radarCtx.lineTo(cx + px, cy + py);
+        radarCtx.stroke();
+        radarCtx.setLineDash([]);
+      }
+
+      for (const blip of blips) drawRadarBlip(blip);
+
+      radarCtx.restore();
 
       radarCtx.fillStyle = "#f4f7fb";
       radarCtx.beginPath();
@@ -6682,36 +6783,77 @@
       radarCtx.closePath();
       radarCtx.fill();
 
-      radarCtx.fillStyle = "rgba(244,247,251,0.82)";
-      radarCtx.font = "900 10px system-ui, sans-serif";
-      radarCtx.textAlign = "center";
-      radarCtx.fillText("N", cx, cy - radius + 12);
+      radarCtx.strokeStyle = "rgba(244,247,251,0.72)";
+      radarCtx.lineWidth = 1.3;
+      radarCtx.beginPath();
+      radarCtx.arc(cx, cy, 11, 0, Math.PI * 2);
+      radarCtx.stroke();
 
-      function drawRadarPoint(dx, dz, color, size, range, kind) {
-        const rightDot = dx * Math.cos(heading) - dz * Math.sin(heading);
-        const forwardDot = dx * Math.sin(heading) + dz * Math.cos(heading);
-        let px = rightDot / range * radius;
-        let py = -forwardDot / range * radius;
-        const dist = Math.hypot(px, py);
-        if (dist > radius) {
-          px = px / dist * radius;
-          py = py / dist * radius;
-        }
-        radarCtx.fillStyle = `#${new THREE.Color(color).getHexString()}`;
-        if (kind === "base") {
-          radarCtx.fillRect(cx + px - size, cy + py - size, size * 2, size * 2);
+      radarCtx.fillStyle = "rgba(244,247,251,0.88)";
+      radarCtx.font = "900 9px system-ui, sans-serif";
+      radarCtx.textAlign = "center";
+      radarCtx.fillText("FWD", cx, cy - radius + 12);
+      radarCtx.fillStyle = threat?.enemy?.boss ? "#ff465b" : threat ? "#f7c84b" : "#45fff4";
+      radarCtx.font = "900 8px system-ui, sans-serif";
+      radarCtx.fillText(threat ? `${threat.enemy.boss ? "BOSS" : "TGT"} ${Math.round(threat.dist)}m` : "CLEAR", cx, cy + radius - 6);
+
+      function drawRadarBlip(blip) {
+        const x = cx + blip.px;
+        const y = cy + blip.py;
+        radarCtx.save();
+        radarCtx.fillStyle = `#${new THREE.Color(blip.color).getHexString()}`;
+        radarCtx.strokeStyle = blip.kind === "boss" ? "#ff263d" : blip.kind === "lock" ? "#ffffff" : "rgba(0,0,0,0.46)";
+        radarCtx.lineWidth = blip.kind === "boss" || blip.kind === "lock" ? 2.2 : 1;
+        if (blip.edge) {
+          radarCtx.translate(x, y);
+          radarCtx.rotate(Math.atan2(blip.py, blip.px) + Math.PI / 2);
+          radarCtx.beginPath();
+          radarCtx.moveTo(0, -blip.size - 4);
+          radarCtx.lineTo(-blip.size, blip.size + 3);
+          radarCtx.lineTo(blip.size, blip.size + 3);
+          radarCtx.closePath();
+          radarCtx.fill();
+          radarCtx.stroke();
+          radarCtx.restore();
           return;
         }
-        if (kind === "lock" || kind === "boss") {
-          radarCtx.strokeStyle = kind === "lock" ? "#ffffff" : "#ff263d";
-          radarCtx.lineWidth = 2;
+        if (blip.kind === "base") {
+          radarCtx.fillRect(x - blip.size, y - blip.size, blip.size * 2, blip.size * 2);
+          radarCtx.strokeRect(x - blip.size, y - blip.size, blip.size * 2, blip.size * 2);
+        } else if (blip.kind === "boss") {
+          const pulse = 1 + Math.sin(now * 0.008) * 0.18;
           radarCtx.beginPath();
-          radarCtx.arc(cx + px, cy + py, size + 2, 0, Math.PI * 2);
+          radarCtx.arc(x, y, blip.size * 1.65 * pulse, 0, Math.PI * 2);
+          radarCtx.stroke();
+          radarCtx.beginPath();
+          radarCtx.moveTo(x, y - blip.size);
+          radarCtx.lineTo(x + blip.size, y);
+          radarCtx.lineTo(x, y + blip.size);
+          radarCtx.lineTo(x - blip.size, y);
+          radarCtx.closePath();
+          radarCtx.fill();
+        } else if (blip.kind === "pickup") {
+          radarCtx.beginPath();
+          radarCtx.rect(x - blip.size, y - blip.size, blip.size * 2, blip.size * 2);
+          radarCtx.fill();
+        } else {
+          if (blip.kind === "lock") {
+            radarCtx.beginPath();
+            radarCtx.arc(x, y, blip.size + 3, 0, Math.PI * 2);
+            radarCtx.stroke();
+          }
+          radarCtx.beginPath();
+          radarCtx.arc(x, y, blip.size, 0, Math.PI * 2);
+          radarCtx.fill();
           radarCtx.stroke();
         }
-        radarCtx.beginPath();
-        radarCtx.arc(cx + px, cy + py, size, 0, Math.PI * 2);
-        radarCtx.fill();
+        if (blip.label && (blip.kind === "boss" || blip.kind === "lock")) {
+          radarCtx.fillStyle = blip.kind === "boss" ? "#ff465b" : "#ffffff";
+          radarCtx.font = "900 7px system-ui, sans-serif";
+          radarCtx.textAlign = "center";
+          radarCtx.fillText(blip.label, x, y - blip.size - 5);
+        }
+        radarCtx.restore();
       }
     }
 
@@ -6991,7 +7133,7 @@
       const oldMaxHull = maxHull;
       const platformTier = getTankPlatformTier();
       maxHull = 100 + getUpgradeLevel("armor") * 25 + getUpgradeLevel("composite") * 18 + getUpgradeLevel("activeProtection") * 2.2 + getUpgradeLevel("warCore") * 4.5 + (platformTier - 1) * 34;
-      hullRegenRate = getUpgradeLevel("regen") * 0.95 + getUpgradeLevel("repairBay") * 0.25 + getUpgradeLevel("naniteCrew") * 0.18 + getUpgradeLevel("warCore") * 0.08 + (platformTier - 1) * 0.08;
+      hullRegenRate = getUpgradeLevel("regen") * 0.34 + getUpgradeLevel("repairBay") * 0.09 + getUpgradeLevel("naniteCrew") * 0.07 + getUpgradeLevel("warCore") * 0.035 + (platformTier - 1) * 0.025;
       if (options.fillNewArmor && maxHull > oldMaxHull) {
         hull += maxHull - oldMaxHull;
       }
@@ -7030,6 +7172,7 @@
       const worst = moduleDefinitions
         .map(module => ({ ...module, health: moduleHealth[module.id] ?? 100 }))
         .sort((a, b) => a.health - b.health)[0];
+      moduleRows.parentElement?.classList.toggle("damaged", !!worst && worst.health < 99);
       if (performance.now() - lastModuleAlertAt > 2300) {
         moduleAlert.textContent = worst && worst.health < 100
           ? `${worst.health < 45 ? worst.critical : worst.bad} - repair at base or recover field supplies`
@@ -7063,7 +7206,7 @@
       const armorMitigation = 1 - Math.min(0.38, (moduleHealth.armor || 100) / 100 * 0.08 + getUpgradeLevel("composite") * 0.012 + getUpgradeLevel("activeProtection") * 0.006 + getUpgradeLevel("counterIntel") * 0.003 + getUpgradeLevel("warCore") * 0.004);
       const finalDamage = Math.max(1, amount * armorMitigation);
       hull -= finalDamage;
-      damageCooldown = Math.max(damageCooldown, 0.68);
+      damageCooldown = Math.max(damageCooldown, 2.4);
       const moduleId = pickDamagedModule(source, point);
       const module = moduleDefinitions.find(item => item.id === moduleId) || moduleDefinitions[0];
       const moduleShield = 1 - Math.min(0.46, getUpgradeLevel("activeProtection") * 0.008 + getUpgradeLevel("counterIntel") * 0.006 + getUpgradeLevel("naniteCrew") * 0.004 + getUpgradeLevel("warCore") * 0.006);
@@ -7247,7 +7390,7 @@
         combatRating: tankStats.rating,
         skin: skinName(selectedSkin),
         savedAt: new Date().toISOString(),
-        gameVersion: "v35-commander-controls"
+        gameVersion: "v36-clean-radar-balance"
       };
     }
 
