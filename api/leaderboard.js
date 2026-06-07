@@ -146,7 +146,7 @@ function normalizeEntry(body) {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
     name: sanitizeName(body.name),
     score,
-    level: clampInt(body.level, 1, 100, 1),
+    level: clampInt(body.level, 1, 300, 1),
     mode: body.mode === "hardcore" ? "hardcore" : "regular",
     result: sanitizeText(body.result || "run", 32),
     winStreak: clampInt(body.winStreak, 0, 100, 0),
