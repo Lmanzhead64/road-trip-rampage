@@ -583,6 +583,58 @@
       text-align: center;
     }
 
+    .milestone-award {
+      display: none;
+      width: min(720px, 100%);
+      margin: 14px auto 0;
+      padding: 12px;
+      border: 1px solid rgba(247, 200, 75, 0.38);
+      border-radius: 5px;
+      background:
+        linear-gradient(135deg, rgba(247, 200, 75, 0.16), rgba(69, 255, 244, 0.08) 52%, rgba(0, 0, 0, 0.30)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 10px);
+      box-shadow: inset 0 0 22px rgba(247, 200, 75, 0.08), 0 16px 40px rgba(0,0,0,0.28);
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .milestone-award.show {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+    }
+
+    .milestone-medal {
+      display: grid;
+      place-items: center;
+      width: 74px;
+      height: 74px;
+      border: 2px solid rgba(247, 200, 75, 0.68);
+      border-radius: 50%;
+      color: #031011;
+      background: radial-gradient(circle at 34% 28%, #ffffff, #f7c84b 48%, #9e6d16);
+      box-shadow: 0 0 28px rgba(247, 200, 75, 0.24), inset 0 0 18px rgba(0,0,0,0.22);
+      font-size: 18px;
+      font-weight: 1000;
+    }
+
+    .milestone-award strong {
+      display: block;
+      color: #f7c84b;
+      font-size: 13px;
+      font-weight: 1000;
+    }
+
+    .milestone-award span {
+      display: block;
+      margin-top: 5px;
+      color: rgba(244,247,251,0.76);
+      font-size: 10px;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+
     .score-submit-title {
       color: #f7c84b;
       font-size: 12px;
@@ -1413,7 +1465,8 @@
       }
 
       .leaderboard-panel,
-      .score-submit {
+      .score-submit,
+      .milestone-award {
         margin-top: 8px;
         padding: 8px;
       }
@@ -1442,6 +1495,26 @@
       .leaderboard-status,
       .score-submit-status {
         font-size: 8px;
+      }
+
+      .milestone-award.show {
+        grid-template-columns: 54px minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      .milestone-medal {
+        width: 54px;
+        height: 54px;
+        font-size: 14px;
+      }
+
+      .milestone-award strong {
+        font-size: 10px;
+      }
+
+      .milestone-award span {
+        font-size: 8px;
+        line-height: 1.22;
       }
 
       .score-submit-row {
@@ -1633,6 +1706,7 @@
     <div class="menu">
       <h1 id="levelTitle">District Clear</h1>
       <p id="levelSummary">Your tank recovered at home base. Spend credits later in the full garage, then move to the next district.</p>
+      <div id="milestoneAwardPanel" class="milestone-award" aria-live="polite"></div>
       <div class="start-actions">
         <button id="nextLevelBtn" class="start-main" type="button">Next Level</button>
         <button id="garageLevelBtn" class="start-secondary" type="button">Garage / Upgrades</button>
@@ -1729,6 +1803,7 @@
     const playerNameInput = document.getElementById("playerNameInput");
     const submitScoreBtn = document.getElementById("submitScoreBtn");
     const scoreSubmitStatus = document.getElementById("scoreSubmitStatus");
+    const milestoneAwardPanel = document.getElementById("milestoneAwardPanel");
     const moduleRows = document.getElementById("moduleRows");
     const moduleAlert = document.getElementById("moduleAlert");
     const campaignMap = document.getElementById("campaignMap");
@@ -2081,6 +2156,7 @@
     let tankAccentMaterials = [];
     let selectedSkin = "skin-steel";
     let upgradeLevels = Object.fromEntries(upgradeCatalog.map(item => [item.id, item.id === "skin-steel" ? 1 : 0]));
+    let claimedMilestoneRewards = {};
     let moduleHealth = Object.fromEntries(moduleDefinitions.map(item => [item.id, 100]));
     let lastModuleAlertAt = 0;
     let activeGarageCategory = "combat";
@@ -2267,8 +2343,9 @@
       addRoad(520, -120, 30, WORLD_SIZE * 1.05, -Math.PI / 8);
 
       const rng = mulberry32(1337 + Math.floor((level - 1) / 10) * 91);
-      const chapterVisualBoost = Math.min(28, getCampaignProgress(level).chapter * 4);
-      for (let i = 0; i < 142 + chapterVisualBoost; i += 1) {
+      const progress = getCampaignProgress(level);
+      const chapterVisualBoost = Math.min(46, progress.chapter * 5);
+      for (let i = 0; i < 158 + chapterVisualBoost; i += 1) {
         const x = Math.round((rng() * 2 - 1) * (WORLD_SIZE * 0.76) / 32) * 32;
         const z = Math.round((rng() * 2 - 1) * (WORLD_SIZE * 0.76) / 32) * 32;
         if (Math.abs(x) < 120 && Math.abs(z + 44) < 132) continue;
@@ -2280,6 +2357,7 @@
       }
 
       addResidentialBlocks(rng);
+      addCityDetailBlocks(rng);
       addCityIdentity(rng);
 
       for (let i = 0; i < 78; i += 1) {
@@ -2354,6 +2432,130 @@
         addSkylineCluster(-640, -560, rng, 10, 58, 130);
         addCommandBunker(520, 430, rng);
         addCommandBunker(-520, 430, rng);
+      }
+      addCityLandmarkSetpiece(city, rng);
+    }
+
+    function addCityLandmarkSetpiece(city, rng) {
+      const progress = getCampaignProgress(level);
+      const districtNames = {
+        nyc: "MIDTOWN GRID",
+        "san-francisco": "HILL ROUTE",
+        chicago: "RIVER LOCK",
+        miami: "BEACH LINE",
+        vegas: "NEON STRIP",
+        washington: "CAPITAL BELT",
+        boston: "HARBOR BLOCK",
+        seattle: "RAIN CORE",
+        denver: "MOUNTAIN PASS",
+        london: "THAMES PUSH",
+        berlin: "STEEL RING",
+        paris: "BOULEVARD",
+        rome: "STONE GATE",
+        cairo: "SANDWAY",
+        istanbul: "BRIDGE FRONT",
+        dubai: "MARINA",
+        mumbai: "MONSOON GRID",
+        tokyo: "NEON WARD",
+        seoul: "RIVER LINE",
+        sydney: "HARBOR LOCK",
+        singapore: "MEGAGRID",
+        hongkong: "VERTICAL ZONE",
+        rio: "COASTAL BREACH",
+        capetown: "RIDGE LINE",
+        reykjavik: "ICE PORT",
+        moscow: "WINTER RING",
+        anchorage: "ARCTIC RELAY",
+        panama: "CANAL SIEGE",
+        global: "COMMAND ZONE"
+      };
+      const label = `${districtNames[city] || districtNames.global} L${progress.level}`;
+      const anchorX = progress.chapter % 2 ? -720 : 720;
+      const anchorZ = progress.chapter % 3 === 0 ? 520 : -520;
+      addNeonSign(anchorX, anchorZ, label, currentTheme.accent, rng);
+
+      const plazas = [
+        { x: -700, z: 120 },
+        { x: 690, z: 170 },
+        { x: -140, z: 690 },
+        { x: 140, z: -700 }
+      ];
+      const plaza = plazas[progress.chapter % plazas.length];
+      if (!collides(plaza.x, plaza.z, 42)) {
+        addCivicPlaza(plaza.x, plaza.z, rng, city);
+      }
+
+      if (["nyc", "chicago", "tokyo", "hongkong", "singapore", "dubai"].includes(city)) {
+        addSkylineCluster(0, 720, rng, 9 + Math.min(8, progress.tier), 62, 172 + progress.tier * 6);
+      } else if (["denver", "rio", "capetown", "anchorage", "reykjavik"].includes(city)) {
+        addRidgeline(-760, -720, rng, currentTheme.accent);
+      } else if (["miami", "sydney", "panama", "istanbul", "boston", "seattle"].includes(city)) {
+        addWaterfrontDocks(700, -680, rng);
+      } else {
+        addCivicBarricade(-720, -680, rng);
+      }
+    }
+
+    function addCivicPlaza(x, z, rng, city) {
+      const plazaMat = new THREE.MeshStandardMaterial({ color: 0x4a4840, roughness: 0.86, metalness: 0.03, map: makeConcreteTexture() });
+      const plaza = new THREE.Mesh(new THREE.PlaneGeometry(92, 68), plazaMat);
+      plaza.rotation.x = -Math.PI / 2;
+      plaza.position.set(x, 0.07, z);
+      plaza.receiveShadow = true;
+      propRoot.add(plaza);
+      const accent = currentTheme.accent;
+      const base = new THREE.Mesh(new THREE.BoxGeometry(22, 3.2, 22), plazaMat);
+      base.position.set(x, 1.7, z);
+      base.castShadow = true;
+      base.receiveShadow = true;
+      const marker = new THREE.Mesh(new THREE.CylinderGeometry(4.8, 6.4, 18 + rng() * 8, 12), new THREE.MeshStandardMaterial({ color: 0x837d6e, roughness: 0.72, metalness: 0.08 }));
+      marker.position.set(x, 12.8, z);
+      marker.castShadow = true;
+      const glow = new THREE.Mesh(new THREE.SphereGeometry(1.7, 16, 10), new THREE.MeshStandardMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.38, roughness: 0.32 }));
+      glow.position.set(x, 26, z);
+      propRoot.add(base, marker, glow);
+      for (let i = 0; i < 8; i += 1) {
+        const angle = i / 8 * Math.PI * 2;
+        if (city === "miami" || city === "rio") addPalm(x + Math.sin(angle) * 42, z + Math.cos(angle) * 30, rng);
+        else addTree(x + Math.sin(angle) * 42, z + Math.cos(angle) * 30, rng);
+      }
+    }
+
+    function addRidgeline(x, z, rng, color) {
+      const mat = new THREE.MeshStandardMaterial({ color: 0x5a5d58, roughness: 0.9, metalness: 0.02, map: makeNoiseTexture(0x5a5d58, 7, 0.20) });
+      for (let i = 0; i < 12; i += 1) {
+        const peak = new THREE.Mesh(new THREE.ConeGeometry(34 + rng() * 28, 34 + rng() * 38, 5), mat);
+        peak.position.set(x + i * 74 + (rng() - 0.5) * 24, 15, z + (rng() - 0.5) * 70);
+        peak.rotation.y = rng() * Math.PI;
+        peak.castShadow = true;
+        peak.receiveShadow = true;
+        propRoot.add(peak);
+      }
+      addNeonSign(x + 390, z + 90, "RIDGE LINE", color, rng);
+    }
+
+    function addWaterfrontDocks(x, z, rng) {
+      const dockMat = new THREE.MeshStandardMaterial({ color: 0x5a4632, roughness: 0.88, metalness: 0.02 });
+      for (let i = 0; i < 7; i += 1) {
+        const pier = new THREE.Mesh(new THREE.BoxGeometry(16, 1.2, 68 + rng() * 42), dockMat);
+        pier.position.set(x - i * 34, 0.8, z + (rng() - 0.5) * 70);
+        pier.rotation.y = (rng() - 0.5) * 0.18;
+        pier.castShadow = true;
+        pier.receiveShadow = true;
+        propRoot.add(pier);
+      }
+      addNeonSign(x - 124, z - 90, "DOCKS", currentTheme.accent, rng);
+    }
+
+    function addCivicBarricade(x, z, rng) {
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x494e4c, roughness: 0.82, metalness: 0.12, map: makeConcreteTexture() });
+      for (let i = 0; i < 9; i += 1) {
+        const barrier = new THREE.Mesh(new THREE.BoxGeometry(34, 4.5, 5.5), wallMat);
+        barrier.position.set(x + i * 38, 2.4, z + Math.sin(i) * 22);
+        barrier.rotation.y = (rng() - 0.5) * 0.28;
+        barrier.castShadow = true;
+        barrier.receiveShadow = true;
+        propRoot.add(barrier);
       }
     }
 
@@ -2562,7 +2764,7 @@
     function addResidentialBlocks(rng) {
       const roads = [];
       for (let n = -4; n <= 4; n += 1) roads.push(n * 320);
-      const houseCount = 46 + getCampaignProgress(level).chapter * 4;
+      const houseCount = 64 + getCampaignProgress(level).chapter * 5;
       for (let i = 0; i < houseCount; i += 1) {
         const road = roads[Math.floor(rng() * roads.length)];
         const along = Math.round(((rng() * 2 - 1) * WORLD_SIZE * 0.72) / 18) * 18;
@@ -2575,6 +2777,131 @@
         if (collides(x, z, 16)) continue;
         addHouse(x, z, vertical ? Math.PI / 2 : 0, rng);
         if (rng() > 0.35) addParkedVehicle(x + (vertical ? side * 22 : (rng() - 0.5) * 30), z + (vertical ? (rng() - 0.5) * 30 : side * 22), vertical ? Math.PI / 2 : 0, rng);
+      }
+    }
+
+    function addCityDetailBlocks(rng) {
+      const city = currentTheme.city || "global";
+      const progress = getCampaignProgress(level);
+      const denseCities = ["nyc", "chicago", "london", "paris", "tokyo", "seoul", "singapore", "hongkong", "mumbai", "dubai"];
+      const coastalCities = ["miami", "boston", "seattle", "istanbul", "sydney", "singapore", "hongkong", "rio", "panama"];
+      const roads = [];
+      for (let n = -4; n <= 4; n += 1) roads.push(n * 320);
+      const blockCount = (denseCities.includes(city) ? 34 : 24) + Math.min(22, progress.chapterLevel * 2 + progress.war * 4);
+      for (let i = 0; i < blockCount; i += 1) {
+        const road = roads[Math.floor(rng() * roads.length)];
+        const along = Math.round(((rng() * 2 - 1) * WORLD_SIZE * 0.76) / 20) * 20;
+        const side = rng() > 0.5 ? 1 : -1;
+        const vertical = rng() > 0.5;
+        const setback = 112 + rng() * (denseCities.includes(city) ? 44 : 78);
+        const x = vertical ? road + side * setback : along;
+        const z = vertical ? along : road + side * setback;
+        const rot = vertical ? Math.PI / 2 : 0;
+        if (Math.abs(x) < 170 && Math.abs(z + 44) < 205) continue;
+        if (collides(x, z, 24)) continue;
+        if (i % 5 === 0 || denseCities.includes(city) && i % 4 === 0) {
+          addCommercialBlock(x, z, rot, rng);
+        } else if (coastalCities.includes(city) && i % 6 === 0) {
+          addParkingLot(x, z, rot, rng);
+        } else {
+          addTownhouseCluster(x, z, rot, rng, denseCities.includes(city) ? 5 : 4);
+        }
+      }
+    }
+
+    function addTownhouseCluster(x, z, rot, rng, preferredCount) {
+      const count = preferredCount + Math.floor(rng() * 3);
+      const spacing = 15 + rng() * 4;
+      const rowX = Math.cos(rot);
+      const rowZ = Math.sin(rot);
+      const start = -((count - 1) * spacing) / 2;
+      for (let i = 0; i < count; i += 1) {
+        const hx = x + rowX * (start + i * spacing);
+        const hz = z + rowZ * (start + i * spacing);
+        if (collides(hx, hz, 13) || Math.abs(hx) < 128 && Math.abs(hz + 44) < 165) continue;
+        addHouse(hx, hz, rot, rng);
+      }
+      if (rng() > 0.35) {
+        addParkedVehicle(x - rowZ * 25, z + rowX * 25, rot, rng);
+      }
+    }
+
+    function addCommercialBlock(x, z, rot, rng) {
+      const cityLabel = (currentTheme.name.split(" ")[0] || "CITY").toUpperCase();
+      const labels = ["DEPOT", "MARKET", "BANK", "METRO", "HOTEL", "CLINIC", "GARAGE", cityLabel];
+      const w = 42 + rng() * 34;
+      const d = 26 + rng() * 20;
+      const h = 13 + rng() * 12;
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      group.rotation.y = rot + (rng() - 0.5) * 0.05;
+      const facadeMat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(0.08 + rng() * 0.08, 0.08, 0.32 + rng() * 0.16), roughness: 0.76, metalness: 0.08, map: makeConcreteTexture() });
+      const trimMat = new THREE.MeshStandardMaterial({ color: 0x202527, roughness: 0.62, metalness: 0.32 });
+      const glassMat = new THREE.MeshStandardMaterial({ color: 0xbfe6ee, emissive: currentTheme.accent, emissiveIntensity: 0.14, roughness: 0.26, metalness: 0.08, transparent: true, opacity: 0.42 });
+      const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), facadeMat);
+      body.position.y = h / 2;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      group.add(body);
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(w * 1.04, 1.2, d * 1.03), trimMat);
+      roof.position.y = h + 0.7;
+      roof.castShadow = true;
+      group.add(roof);
+      const signColor = rng() > 0.5 ? currentTheme.accent : 0xf7c84b;
+      const sign = new THREE.Mesh(new THREE.BoxGeometry(Math.min(w * 0.74, 34), 4.4, 0.5), new THREE.MeshStandardMaterial({ color: 0x101418, emissive: signColor, emissiveIntensity: 0.22, roughness: 0.46, metalness: 0.26 }));
+      sign.position.set(0, h - 2.6, d / 2 + 0.32);
+      const label = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTexture(labels[Math.floor(rng() * labels.length)], signColor), transparent: true, depthWrite: false }));
+      label.position.set(0, h - 2.4, d / 2 + 0.74);
+      label.scale.set(18, 5, 1);
+      group.add(sign, label);
+      const bays = Math.max(3, Math.floor(w / 13));
+      for (let i = 0; i < bays; i += 1) {
+        const wx = -w * 0.38 + i * (w * 0.76 / Math.max(1, bays - 1));
+        const win = new THREE.Mesh(new THREE.PlaneGeometry(4.8, 5.2), glassMat);
+        win.position.set(wx, 5.1, d / 2 + 0.07);
+        group.add(win);
+      }
+      for (let i = 0; i < Math.max(2, Math.floor(w / 18)); i += 1) {
+        const awning = new THREE.Mesh(new THREE.BoxGeometry(8.5, 0.8, 3.2), trimMat);
+        awning.position.set(-w * 0.28 + i * 18, 8.2, d / 2 + 1.4);
+        awning.castShadow = true;
+        group.add(awning);
+      }
+      propRoot.add(group);
+      buildings.push({
+        minX: x - w / 2 - 5,
+        maxX: x + w / 2 + 5,
+        minZ: z - d / 2 - 5,
+        maxZ: z + d / 2 + 5,
+        x,
+        z,
+        w,
+        d,
+        height: h,
+        hp: 165 + w + d + h * 3,
+        maxHp: 165 + w + d + h * 3,
+        group,
+        mesh: body,
+        destructible: true,
+        crushable: true,
+        kind: "storefront",
+        destroyed: false
+      });
+    }
+
+    function addParkingLot(x, z, rot, rng) {
+      const lot = new THREE.Mesh(
+        new THREE.PlaneGeometry(70, 46),
+        new THREE.MeshStandardMaterial({ color: 0x24282a, roughness: 0.9, metalness: 0.04, map: makeRoadTexture() })
+      );
+      lot.rotation.x = -Math.PI / 2;
+      lot.rotation.z = rot;
+      lot.position.set(x, 0.08, z);
+      lot.receiveShadow = true;
+      propRoot.add(lot);
+      for (let i = 0; i < 6; i += 1) {
+        const row = i % 2 ? -1 : 1;
+        addParkedVehicle(x + (i - 2.5) * 12 * Math.cos(rot) - row * 12 * Math.sin(rot), z + (i - 2.5) * 12 * Math.sin(rot) + row * 12 * Math.cos(rot), rot, rng);
       }
     }
 
@@ -2972,15 +3299,46 @@
       const supportLevel = getUpgradeLevel("support");
       const repairLevel = getUpgradeLevel("repairBay");
       const sensorLevel = getUpgradeLevel("sensors");
+      const droneLevel = getUpgradeLevel("drone");
+      const fortressLevel = getUpgradeLevel("fortress");
+      const uplinkLevel = getUpgradeLevel("commandUplink");
+      const warCoreLevel = getUpgradeLevel("warCore");
+      const baseStage = Math.min(10, Math.max(1, Math.ceil((wallLevel + turretLevel + supportLevel + repairLevel + sensorLevel + droneLevel + fortressLevel + uplinkLevel + warCoreLevel) / 5) + 1));
       const baseWidth = 128 + wallLevel * 9;
       const baseDepth = 112 + wallLevel * 8;
       const baseMat = new THREE.MeshStandardMaterial({ color: 0x394148, roughness: 0.82, metalness: 0.18, map: makeConcreteTexture() });
       const wallMat = new THREE.MeshStandardMaterial({ color: 0x20262c, roughness: 0.78, metalness: 0.25 });
+      const glassMat = new THREE.MeshStandardMaterial({ color: 0x9dd9e4, emissive: currentTheme.accent, emissiveIntensity: 0.18 + baseStage * 0.014, roughness: 0.24, metalness: 0.08, transparent: true, opacity: 0.42 });
+      const commandMat = new THREE.MeshStandardMaterial({ color: 0x30383d, roughness: 0.74, metalness: 0.26, map: makeConcreteTexture() });
+      const darkMat = new THREE.MeshStandardMaterial({ color: 0x101315, roughness: 0.68, metalness: 0.42 });
       const pad = new THREE.Mesh(new THREE.BoxGeometry(baseWidth, 1.2 + wallLevel * 0.05, baseDepth), baseMat);
       pad.position.set(0, 0.7, -44);
       pad.receiveShadow = true;
       pad.castShadow = true;
       propRoot.add(pad);
+
+      const registerBaseObstacle = (x, z, w, d, h) => {
+        buildings.push({
+          minX: x - w / 2,
+          maxX: x + w / 2,
+          minZ: z - d / 2,
+          maxZ: z + d / 2,
+          height: h,
+          destructible: false,
+          destroyed: false,
+          kind: "home-base"
+        });
+      };
+
+      const addBaseBox = (x, z, w, h, d, material, y = h / 2) => {
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+        mesh.position.set(x, y, z);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        propRoot.add(mesh);
+        registerBaseObstacle(x, z, w, d, h);
+        return mesh;
+      };
 
       const ringMat = new THREE.MeshStandardMaterial({ color: currentTheme.accent, emissive: currentTheme.accent, emissiveIntensity: 0.65, roughness: 0.4 });
       const ring = new THREE.Mesh(new THREE.TorusGeometry(42 + supportLevel * 2.8, 0.8 + supportLevel * 0.08, 10, 72), ringMat);
@@ -3005,6 +3363,106 @@
       hMark.add(h1, h2, h3);
       hMark.position.set(0, 0, -44);
       propRoot.add(hMark);
+
+      const commandHeight = 14 + baseStage * 3.3 + warCoreLevel * 0.9;
+      const command = new THREE.Group();
+      command.position.set(0, 0, -100 - wallLevel * 1.7);
+      const commandBody = new THREE.Mesh(new THREE.BoxGeometry(44 + baseStage * 3.1, commandHeight, 34 + baseStage * 1.7), commandMat);
+      commandBody.position.y = commandHeight / 2;
+      commandBody.castShadow = true;
+      commandBody.receiveShadow = true;
+      command.add(commandBody);
+      const commandRoof = new THREE.Mesh(new THREE.BoxGeometry(50 + baseStage * 3.2, 2.2, 40 + baseStage * 1.8), darkMat);
+      commandRoof.position.y = commandHeight + 1.1;
+      commandRoof.castShadow = true;
+      command.add(commandRoof);
+      const towerHeight = 12 + sensorLevel * 2.4 + uplinkLevel * 0.7 + warCoreLevel * 0.5;
+      const tower = new THREE.Mesh(new THREE.BoxGeometry(14 + baseStage, towerHeight, 14 + baseStage), commandMat);
+      tower.position.set(0, commandHeight + towerHeight / 2, -4);
+      tower.castShadow = true;
+      tower.receiveShadow = true;
+      command.add(tower);
+      const stageLabel = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTexture(`BASE T${baseStage}`, currentTheme.accent), transparent: true, depthWrite: false }));
+      stageLabel.position.set(0, commandHeight * 0.68, 18 + baseStage);
+      stageLabel.scale.set(21, 6.5, 1);
+      command.add(stageLabel);
+      const windowRows = Math.max(2, Math.floor(commandHeight / 9));
+      for (let r = 0; r < windowRows; r += 1) {
+        const wy = 6 + r * 7.4;
+        for (let c = -2; c <= 2; c += 1) {
+          const win = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2.2), glassMat);
+          win.position.set(c * 7, wy, 17.05 + baseStage * 0.85);
+          command.add(win);
+        }
+      }
+      const commandLight = new THREE.PointLight(currentTheme.accent, 0.75 + baseStage * 0.12, 95 + baseStage * 5, 1.9);
+      commandLight.position.set(0, commandHeight + towerHeight + 3, 0);
+      command.add(commandLight);
+      propRoot.add(command);
+      registerBaseObstacle(0, -100 - wallLevel * 1.7, 54 + baseStage * 3.2, 46 + baseStage * 1.8, commandHeight + towerHeight);
+
+      const gateZ = -44 + baseDepth / 2 + 6;
+      for (const side of [-1, 1]) {
+        addBaseBox(side * (18 + wallLevel * 1.2), gateZ, 10 + wallLevel * 0.9, 13 + wallLevel * 0.9, 12, wallMat);
+        const gateLamp = new THREE.SpotLight(currentTheme.accent, 1.1 + baseStage * 0.08, 90, Math.PI / 8, 0.45, 1.2);
+        gateLamp.position.set(side * (18 + wallLevel * 1.2), 15 + wallLevel * 0.8, gateZ);
+        gateLamp.target.position.set(side * 8, 0, gateZ + 44);
+        propRoot.add(gateLamp, gateLamp.target);
+      }
+
+      const barracks = Math.min(4, 1 + Math.floor(baseStage / 3));
+      for (let i = 0; i < barracks; i += 1) {
+        const side = i % 2 ? 1 : -1;
+        const row = Math.floor(i / 2);
+        const bx = side * (72 + wallLevel * 1.8);
+        const bz = -18 - row * 34;
+        const block = addBaseBox(bx, bz, 24 + supportLevel * 0.8, 9 + baseStage * 0.7, 18, commandMat);
+        const strip = new THREE.Mesh(new THREE.BoxGeometry(18, 0.34, 0.38), ringMat);
+        strip.position.set(bx, 9 + baseStage * 0.7, bz + 9.3);
+        strip.castShadow = true;
+        propRoot.add(strip);
+        block.userData.basePart = true;
+      }
+
+      if (repairLevel > 0) {
+        const bay = new THREE.Group();
+        bay.position.set(-74 - wallLevel * 2.3, 0, -70);
+        const deck = new THREE.Mesh(new THREE.BoxGeometry(34 + repairLevel * 1.2, 1.4, 28), darkMat);
+        deck.position.y = 0.9;
+        const craneA = new THREE.Mesh(new THREE.BoxGeometry(2.2, 18 + repairLevel, 2.2), wallMat);
+        craneA.position.set(-13, 10, -8);
+        const craneB = craneA.clone();
+        craneB.position.x = 13;
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(31, 1.6, 2.4), ringMat);
+        rail.position.set(0, 18 + repairLevel, -8);
+        bay.add(deck, craneA, craneB, rail);
+        bay.traverse(child => {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        });
+        propRoot.add(bay);
+        registerBaseObstacle(-74 - wallLevel * 2.3, -70, 38 + repairLevel * 1.2, 32, 22 + repairLevel);
+      }
+
+      if (droneLevel > 0 || uplinkLevel > 0) {
+        const dronePad = new THREE.Group();
+        dronePad.position.set(78 + wallLevel * 2.4, 0, -22);
+        const padDisc = new THREE.Mesh(new THREE.CylinderGeometry(18 + droneLevel, 18 + droneLevel, 1.4, 36), darkMat);
+        padDisc.position.y = 0.8;
+        const drone = new THREE.Mesh(new THREE.BoxGeometry(8, 1.1, 8), ringMat);
+        drone.position.y = 4.2 + Math.sin(performance.now() * 0.002) * 0.2;
+        for (const dx of [-6, 6]) {
+          for (const dz of [-6, 6]) {
+            const rotor = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 2.1, 0.16, 22), ringMat);
+            rotor.position.set(dx, 4.4, dz);
+            dronePad.add(rotor);
+          }
+        }
+        dronePad.add(padDisc, drone);
+        dronePad.traverse(child => child.castShadow = true);
+        propRoot.add(dronePad);
+        registerBaseObstacle(78 + wallLevel * 2.4, -22, 40 + droneLevel * 2, 40 + droneLevel * 2, 6);
+      }
 
       const wallPieces = [
         { x: -baseWidth / 2 - 2, z: -44, w: 5 + wallLevel * 0.8, d: baseDepth },
@@ -3064,7 +3522,7 @@
       if (sensorLevel > 0) {
         const mastMat = new THREE.MeshStandardMaterial({ color: 0x1d2223, roughness: 0.5, metalness: 0.72 });
         const mast = new THREE.Group();
-        mast.position.set(0, 0, -108 - wallLevel * 2);
+        mast.position.set(0, 0, -146 - wallLevel * 3);
         const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.66, 22 + sensorLevel * 3, 14), mastMat);
         pole.position.y = 11 + sensorLevel * 1.5;
         const dish = new THREE.Mesh(new THREE.TorusGeometry(5 + sensorLevel, 0.28, 10, 42), ringMat);
@@ -3725,8 +4183,15 @@
       spawnWave();
     }
 
+    function isTextEntryTarget(target) {
+      if (!target || target === document.body) return false;
+      const tag = target.tagName;
+      return target.isContentEditable || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+    }
+
     function setupInput() {
       window.addEventListener("keydown", (event) => {
+        if (isTextEntryTarget(event.target)) return;
         keys.add(event.code);
         if (event.code === "Space") {
           manualFireRequested = true;
@@ -3748,7 +4213,10 @@
           startGame({ load: false });
         }
       });
-      window.addEventListener("keyup", (event) => keys.delete(event.code));
+      window.addEventListener("keyup", (event) => {
+        if (isTextEntryTarget(event.target)) return;
+        keys.delete(event.code);
+      });
 
       canvas.addEventListener("pointerdown", beginTouch, { passive: false });
       window.addEventListener("pointermove", moveTouch, { passive: false });
@@ -3782,6 +4250,10 @@
       });
       leaderboardRefreshBtn.addEventListener("click", () => loadLeaderboard(true));
       submitScoreBtn.addEventListener("click", () => submitLeaderboardScore());
+      for (const eventName of ["keydown", "keyup", "keypress", "beforeinput", "input"]) {
+        playerNameInput.addEventListener(eventName, event => event.stopPropagation());
+      }
+      playerNameInput.addEventListener("focus", () => keys.clear());
 
       startBtn.addEventListener("click", () => startGame({ load: false }));
       continueBtn.addEventListener("click", () => {
@@ -4234,48 +4706,91 @@
 
     function spawnResupply(enemy) {
       const roll = Math.random();
-      const type = enemy.boss ? "elite" : roll < 0.38 ? "repair" : roll < 0.66 ? "credits" : roll < 0.84 ? "shell" : "missile";
+      const salvageRank = getUpgradeLevel("salvageCrew") + getUpgradeLevel("ammoFactory") * 0.5;
+      const rareBias = Math.min(0.12, salvageRank * 0.008 + getCampaignProgress(level).endgame * 0.04);
+      const type = enemy.boss
+        ? enemy.super ? "warCache" : "elite"
+        : roll < 0.28 ? "repair"
+          : roll < 0.50 ? "credits"
+            : roll < 0.66 ? "shell"
+              : roll < 0.80 ? "missile"
+                : roll < 0.91 + rareBias ? "armor"
+                  : "intel";
       const colors = {
         repair: 0x45fff4,
         credits: 0xf7c84b,
         shell: 0xffd08a,
         missile: 0xff465b,
-        elite: 0xffffff
+        armor: 0x8cff70,
+        intel: 0x8fb5ff,
+        elite: 0xffffff,
+        warCache: 0xfff0a6
       };
       const group = createResupplyMesh(colors[type] || 0xf7c84b, type);
       group.position.set(enemy.group.position.x, 0.22, enemy.group.position.z);
       projectileRoot.add(group);
+      const runnerChance = enemy.boss
+        ? 1
+        : (type === "repair" || type === "armor")
+          ? 0.72
+          : Math.min(0.58, 0.16 + getUpgradeLevel("support") * 0.035 + getUpgradeLevel("salvageCrew") * 0.018 + getUpgradeLevel("commandUplink") * 0.02);
       pickups.push({
         group,
         type,
         color: colors[type] || 0xf7c84b,
-        life: enemy.boss ? 24 : 16,
-        amount: enemy.boss ? 2 : 1
+        life: enemy.boss ? 30 : 19,
+        amount: enemy.boss ? 2 : 1,
+        runnerEligible: Math.random() < runnerChance,
+        runnerClaimed: false,
+        spawnedAt: performance.now()
       });
     }
 
     function createResupplyMesh(color, type) {
       const group = new THREE.Group();
-      const crateMat = new THREE.MeshStandardMaterial({ color: 0x38413b, roughness: 0.72, metalness: 0.28, map: makeArmorTexture(0x38413b) });
-      const trimMat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.38, roughness: 0.42, metalness: 0.35 });
-      const crate = new THREE.Mesh(new THREE.BoxGeometry(7, 4, 6), crateMat);
+      const rare = type === "elite" || type === "warCache" || type === "intel";
+      const labelText = {
+        repair: "REPAIR",
+        credits: "CREDITS",
+        shell: "SABOT",
+        missile: "MISSILE",
+        armor: "ARMOR",
+        intel: "RARE",
+        elite: "BOSS CACHE",
+        warCache: "WAR CACHE"
+      }[type] || "SUPPLY";
+      const crateMat = new THREE.MeshStandardMaterial({ color: rare ? 0x4c4b43 : 0x38413b, roughness: 0.62, metalness: 0.34, map: makeArmorTexture(rare ? 0x4c4b43 : 0x38413b) });
+      const trimMat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: rare ? 0.84 : 0.48, roughness: 0.35, metalness: 0.44 });
+      const glowMat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: rare ? 0.28 : 0.18, blending: THREE.AdditiveBlending, depthWrite: false });
+      const crate = new THREE.Mesh(new THREE.BoxGeometry(7.4, 4.3, 6.4), crateMat);
       crate.position.y = 2.25;
       crate.castShadow = true;
       crate.receiveShadow = true;
-      const bandA = new THREE.Mesh(new THREE.BoxGeometry(7.4, 0.42, 6.4), trimMat);
-      bandA.position.y = 4.6;
-      const bandB = new THREE.Mesh(new THREE.BoxGeometry(0.46, 4.4, 6.5), trimMat);
+      const top = new THREE.Mesh(new THREE.BoxGeometry(8.2, 0.55, 7.2), trimMat);
+      top.position.y = 4.72;
+      const bandA = new THREE.Mesh(new THREE.BoxGeometry(8.0, 0.5, 7.0), trimMat);
+      bandA.position.y = 2.65;
+      const bandB = new THREE.Mesh(new THREE.BoxGeometry(0.58, 4.6, 7.2), trimMat);
       bandB.position.set(0, 2.4, 0);
       const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(5.8, 0.18, 8, 38),
-        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.54, blending: THREE.AdditiveBlending, depthWrite: false })
+        new THREE.TorusGeometry(6.4, 0.22, 8, 46),
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: rare ? 0.72 : 0.56, blending: THREE.AdditiveBlending, depthWrite: false })
       );
       ring.rotation.x = Math.PI / 2;
       ring.position.y = 0.28;
-      const label = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTexture(type.toUpperCase(), color), transparent: true, depthWrite: false }));
-      label.position.set(0, 9, 0);
-      label.scale.set(12, 4, 1);
-      group.add(crate, bandA, bandB, ring, label);
+      const outerRing = new THREE.Mesh(
+        new THREE.TorusGeometry(9.2, 0.12, 8, 52),
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: rare ? 0.38 : 0.24, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      outerRing.rotation.x = Math.PI / 2;
+      outerRing.position.y = 0.18;
+      const beam = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 4.6, rare ? 34 : 24, 18, 1, true), glowMat);
+      beam.position.y = rare ? 17 : 12;
+      const label = new THREE.Sprite(new THREE.SpriteMaterial({ map: textTexture(labelText, color), transparent: true, depthWrite: false }));
+      label.position.set(0, rare ? 14 : 10, 0);
+      label.scale.set(rare ? 18 : 13, 4.5, 1);
+      group.add(crate, top, bandA, bandB, ring, outerRing, beam, label);
+      group.userData.pulseParts = { ring, outerRing, beam, label, rare };
       return group;
     }
 
@@ -4346,14 +4861,24 @@
     }
 
     function maybeDispatchSupplyRunner() {
-      if (supplyRunnerCooldown > 0 || supplyRunners.length > 0 || pickups.length === 0) return;
+      const maxRunners = 1
+        + (getUpgradeLevel("support") >= 4 ? 1 : 0)
+        + (getUpgradeLevel("commandUplink") >= 5 ? 1 : 0)
+        + (getUpgradeLevel("naniteCrew") >= 10 ? 1 : 0);
+      if (supplyRunnerCooldown > 0 || supplyRunners.length >= maxRunners || pickups.length === 0) return;
+      const runnerRange = 600 + getUpgradeLevel("support") * 16 + getUpgradeLevel("commandUplink") * 14 + getUpgradeLevel("drone") * 7;
+      const preferredTypes = new Set(["repair", "armor", "elite", "warCache", "intel"]);
       const repairTargets = pickups
-        .filter(pickup => pickup.type === "repair" || pickup.type === "elite")
+        .filter(pickup => !pickup.runnerClaimed && pickup.runnerEligible && preferredTypes.has(pickup.type))
         .map(pickup => ({ pickup, dist: Math.hypot(pickup.group.position.x - tankPos.x, pickup.group.position.z - tankPos.z) }))
-        .filter(item => item.dist < 560)
-        .sort((a, b) => a.dist - b.dist);
+        .filter(item => item.dist < runnerRange)
+        .sort((a, b) => {
+          const priority = { warCache: 0, elite: 1, repair: 2, armor: 3, intel: 4 };
+          return (priority[a.pickup.type] ?? 9) - (priority[b.pickup.type] ?? 9) || a.dist - b.dist;
+        });
       const target = repairTargets[0]?.pickup;
       if (!target) return;
+      target.runnerClaimed = true;
       const group = createSupplyRunnerMesh();
       group.position.set(tankPos.x - Math.sin(heading) * 6, 0.18, tankPos.z - Math.cos(heading) * 6);
       projectileRoot.add(group);
@@ -4363,9 +4888,9 @@
         cargo: null,
         phase: "out",
         phaseOffset: Math.random() * Math.PI * 2,
-        speed: 116 + getUpgradeLevel("support") * 8 + getUpgradeLevel("repairBay") * 6 + getTankPlatformTier() * 2
+        speed: 164 + getUpgradeLevel("support") * 13 + getUpgradeLevel("repairBay") * 9 + getUpgradeLevel("salvageCrew") * 3 + getUpgradeLevel("commandUplink") * 7 + getTankPlatformTier() * 4
       });
-      supplyRunnerCooldown = 3.4;
+      supplyRunnerCooldown = Math.max(0.8, 2.6 - getUpgradeLevel("support") * 0.08 - getUpgradeLevel("commandUplink") * 0.05);
       showToast("Supply runner dispatched");
     }
 
@@ -4375,6 +4900,14 @@
         pickup.life -= dt;
         pickup.group.rotation.y += dt * 1.8;
         pickup.group.position.y = 0.22 + Math.sin(performance.now() * 0.004 + i) * 0.14;
+        const pulse = pickup.group.userData?.pulseParts;
+        if (pulse) {
+          const wave = 0.5 + Math.sin(performance.now() * (pulse.rare ? 0.007 : 0.005) + i) * 0.5;
+          pulse.ring.scale.setScalar(0.88 + wave * 0.28);
+          pulse.outerRing.scale.setScalar(0.92 + wave * 0.42);
+          pulse.beam.material.opacity = (pulse.rare ? 0.18 : 0.10) + wave * (pulse.rare ? 0.24 : 0.12);
+          pulse.label.position.y = (pulse.rare ? 14 : 10) + wave * 1.4;
+        }
         const dist = Math.hypot(pickup.group.position.x - tankPos.x, pickup.group.position.z - tankPos.z);
         if (dist < 14) {
           collectPickup(pickup);
@@ -4412,6 +4945,26 @@
       } else if (pickup.type === "missile") {
         missileCooldown = Math.max(0, missileCooldown - (1.4 + getUpgradeLevel("missile") * 0.2) * ammoBonus);
         showToast("Missile rack resupplied");
+      } else if (pickup.type === "armor") {
+        const repair = Math.round((12 + level * 0.55) * repairBonus);
+        hull = Math.min(maxHull, hull + repair);
+        repairModules(28 + level * 0.55, "armor", true);
+        repairModules(12 + level * 0.25, "tracks", true);
+        showToast(`Armor kit +${repair} hull and plate repair`);
+      } else if (pickup.type === "intel") {
+        const credits = Math.round((90 + level * 6 + getUpgradeLevel("counterIntel") * 12) * salvageBonus);
+        score += credits;
+        autoCooldown = 0;
+        heavyCooldown = Math.max(0, heavyCooldown - 1.2 * ammoBonus);
+        showToast(`Rare intel cache +${credits} credits`);
+      } else if (pickup.type === "warCache") {
+        const credits = Math.round((420 + level * 18) * salvageBonus);
+        score += credits;
+        hull = Math.min(maxHull, hull + Math.round(58 * repairBonus));
+        repairModules(72 + level, null, true);
+        heavyCooldown = 0;
+        missileCooldown = 0;
+        showToast(`War cache secured +${credits} credits`);
       } else {
         const credits = Math.round((220 + level * 12) * salvageBonus);
         score += credits;
@@ -4895,6 +5448,86 @@
       showNotice(`${enemy.name}: ${ability}`);
     }
 
+    function getMilestoneCandidateIds(progress) {
+      const baseTrack = ["walls", "turrets", "support", "repairBay", "sensors", "drone", "fortress"];
+      const systemsTrack = ["activeProtection", "battleAI", "ammoFactory", "salvageCrew", "counterIntel", "commandUplink", "naniteCrew", "warCore"];
+      const armorTrack = ["armor", "spall", "regen", "engine", "tracks", "composite"];
+      const combatTrack = ["shell", "missile", "stabilizer", "optics", "autoloader", "fireControl", "cannon"];
+      const tracks = progress.war === 0
+        ? [baseTrack, combatTrack, armorTrack, systemsTrack]
+        : progress.war === 1
+          ? [systemsTrack, baseTrack, combatTrack, armorTrack]
+          : [systemsTrack, combatTrack, armorTrack, baseTrack];
+      const rotated = [];
+      for (const track of tracks) {
+        const offset = progress.globalTier % track.length;
+        rotated.push(...track.slice(offset), ...track.slice(0, offset));
+      }
+      return rotated;
+    }
+
+    function grantFreeMilestoneUpgrade(progress) {
+      for (const id of getMilestoneCandidateIds(progress)) {
+        const item = upgradeCatalog.find(entry => entry.id === id);
+        if (!item || !isUpgradeUnlocked(item)) continue;
+        const levelNow = getUpgradeLevel(id);
+        const cap = getUpgradeLevelCap(item);
+        if (levelNow >= item.max || levelNow >= cap) continue;
+        upgradeLevels[id] = levelNow + 1;
+        return item;
+      }
+      return null;
+    }
+
+    function claimMilestoneReward(progress) {
+      const key = `level-${progress.level}`;
+      const firstClear = !claimedMilestoneRewards[key];
+      const credits = firstClear
+        ? Math.round(900 + progress.globalTier * 260 + progress.level * 42 + (progress.warFinale ? 2400 : 0))
+        : Math.round(260 + progress.level * 14);
+      let freeUpgrade = null;
+      if (firstClear) {
+        claimedMilestoneRewards[key] = true;
+        freeUpgrade = grantFreeMilestoneUpgrade(progress);
+        applyUpgradeEffects({ fillNewArmor: freeUpgrade?.category === "armor" || freeUpgrade?.category === "tier" });
+        updateTankUpgradeVisuals();
+      }
+      const unlocked = upgradeCatalog
+        .filter(item => item.reqLevel === progress.level)
+        .map(item => item.name)
+        .slice(0, 4);
+      return {
+        firstClear,
+        credits,
+        freeUpgrade,
+        unlocked,
+        medal: progress.warFinale ? `W${progress.war + 1}` : `T${progress.tier}`,
+        title: progress.warFinale ? `${progress.warInfo.short} victory award` : `Chapter ${progress.tier} superboss award`,
+        nextCap: Math.min(30, Math.floor(progress.level / LEVELS_PER_CHAPTER) + 1)
+      };
+    }
+
+    function renderMilestoneAward(award) {
+      if (!milestoneAwardPanel) return;
+      if (!award) {
+        milestoneAwardPanel.classList.remove("show");
+        milestoneAwardPanel.innerHTML = "";
+        return;
+      }
+      const upgradeLine = award.freeUpgrade
+        ? `Free installed upgrade: ${award.freeUpgrade.name}.`
+        : award.firstClear ? `Major garage rank cap opened to ${award.nextCap}.` : "Replay cache paid out; first-clear upgrade already claimed.";
+      const unlockLine = award.unlocked.length ? `New garage unlocks: ${award.unlocked.join(", ")}.` : `All eligible garage lines can keep scaling as you push toward Level ${MAX_LEVEL}.`;
+      milestoneAwardPanel.innerHTML = `
+        <div class="milestone-medal">${escapeHtml(award.medal)}</div>
+        <div>
+          <strong>${escapeHtml(award.title)}</strong>
+          <span>${award.firstClear ? "First clear reward" : "Replay reward"}: +${award.credits.toLocaleString()} credits. ${escapeHtml(upgradeLine)} ${escapeHtml(unlockLine)}</span>
+        </div>
+      `;
+      milestoneAwardPanel.classList.add("show");
+    }
+
     function completeLevel() {
       paused = true;
       document.body.classList.remove("playing");
@@ -4905,12 +5538,14 @@
       const baseReward = Math.round(level * 155 + progress.chapter * 310 + (progress.superBoss ? 1650 : 0));
       const streakReward = Math.round(Math.min(10, winStreak) * (58 + level * 7.5 + progress.chapter * 38));
       const contractReward = bonusObjectiveMet && bonusObjective ? bonusObjective.reward : 0;
-      score += baseReward + streakReward + contractReward;
+      const milestoneAward = progress.superBoss ? claimMilestoneReward(progress) : null;
+      const milestoneReward = milestoneAward?.credits || 0;
+      score += baseReward + streakReward + contractReward + milestoneReward;
       best = Math.max(best, score);
       localStorage.setItem(BEST_KEY, String(best));
       saveProfile();
       saveProgress();
-      ui.levelTitle.textContent = level >= MAX_LEVEL ? "Three-War Campaign Cleared" : progress.warFinale ? `${progress.warInfo.short} Cleared` : "District Clear";
+      ui.levelTitle.textContent = level >= MAX_LEVEL ? "Three-War Campaign Cleared" : progress.warFinale ? `${progress.warInfo.short} Cleared` : progress.superBoss ? "Superboss Cleared" : "District Clear";
       const nextProgress = getCampaignProgress(Math.min(MAX_LEVEL, level + 1));
       const nextUnlocks = upgradeCatalog
         .filter(item => item.reqLevel === level)
@@ -4920,7 +5555,8 @@
       const warTransition = progress.warFinale && level < MAX_LEVEL ? ` ${progress.warInfo.title} is complete. Next war: ${nextProgress.warInfo.title}.` : "";
       ui.levelSummary.textContent = level >= MAX_LEVEL
         ? `You cleared all ${MAX_LEVEL} levels across War I, War II, and War III. Final credits: ${score}. Submit the run or restart with your unlocked garage.`
-        : `${progress.superBoss ? `Chapter ${progress.tier} superboss defeated. ` : ""}Level ${level} cleared. Base reward +${baseReward}, streak +${streakReward}${contractReward ? `, contract +${contractReward}` : ""}. Win streak: ${winStreak}. Credits: ${score}. ${nextUnlocks.length ? `New unlocks: ${nextUnlocks.join(", ")}. ` : ""}${warTransition} Next: Level ${level + 1} in ${nextTheme.name}. Upgrade before moving on.`;
+        : `${progress.superBoss ? `Chapter ${progress.tier} superboss defeated. ` : ""}Level ${level} cleared. Base reward +${baseReward}, streak +${streakReward}${contractReward ? `, contract +${contractReward}` : ""}${milestoneReward ? `, milestone +${milestoneReward}` : ""}. Win streak: ${winStreak}. Credits: ${score}. ${nextUnlocks.length ? `New unlocks: ${nextUnlocks.join(", ")}. ` : ""}${warTransition} Next: Level ${level + 1} in ${nextTheme.name}. Upgrade before moving on.`;
+      renderMilestoneAward(milestoneAward);
       nextLevelBtn.textContent = level >= MAX_LEVEL ? "Restart Campaign" : progress.warFinale ? `Enter ${nextProgress.warInfo.short}` : "Next Level";
       levelOverlay.dataset.action = level >= MAX_LEVEL ? "restart" : "next";
       prepareScoreSubmit(level >= MAX_LEVEL ? "three-war-campaign-cleared" : progress.warFinale ? "war-cleared" : "level-clear");
@@ -4937,6 +5573,7 @@
       localStorage.setItem(BEST_KEY, String(best));
       saveProfile();
       ui.levelTitle.textContent = "Tank Disabled";
+      renderMilestoneAward(null);
       if (gameMode === "hardcore") {
         winStreak = 0;
         localStorage.setItem(STREAK_KEY, String(winStreak));
@@ -5645,13 +6282,17 @@
             upgradeLevels[item.id] = Math.max(item.id === "skin-steel" ? 1 : 0, Math.min(item.max, value));
           }
         }
+        claimedMilestoneRewards = profile.claimedMilestoneRewards && typeof profile.claimedMilestoneRewards === "object"
+          ? profile.claimedMilestoneRewards
+          : {};
       } catch {}
     }
 
     function saveProfile() {
       localStorage.setItem(PROFILE_KEY, JSON.stringify({
         selectedSkin,
-        upgradeLevels
+        upgradeLevels,
+        claimedMilestoneRewards
       }));
     }
 
@@ -5715,13 +6356,14 @@
         combatRating: tankStats.rating,
         skin: skinName(selectedSkin),
         savedAt: new Date().toISOString(),
-        gameVersion: "v32-three-war-upgrades"
+        gameVersion: "v33-city-base-rewards"
       };
     }
 
     function resetScoreSubmit() {
       lastRunStats = null;
       scoreSubmitPanel.style.display = "none";
+      renderMilestoneAward(null);
       submitScoreBtn.disabled = false;
       submitScoreBtn.textContent = "Submit Score";
       scoreSubmitStatus.textContent = "Save this run publicly, or skip and restart fast.";
