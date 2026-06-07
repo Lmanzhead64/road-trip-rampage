@@ -265,6 +265,32 @@
       text-align: right;
     }
 
+    #controlCoach {
+      position: fixed;
+      left: 50%;
+      bottom: max(148px, calc(env(safe-area-inset-bottom) + 118px));
+      z-index: 4;
+      display: none;
+      width: min(430px, calc(100vw - 32px));
+      transform: translateX(-50%);
+      padding: 9px 12px;
+      border: 1px solid rgba(69, 255, 244, 0.22);
+      border-radius: 6px;
+      background: linear-gradient(180deg, rgba(9, 14, 18, 0.82), rgba(1, 3, 6, 0.62));
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+      color: rgba(244, 247, 251, 0.78);
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.35;
+      text-align: center;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    body.playing #controlCoach {
+      display: none;
+    }
+
     .touch-zone-hint {
       position: fixed;
       z-index: 3;
@@ -329,6 +355,31 @@
       align-items: end;
     }
 
+    #fieldSettingsBtn {
+      position: fixed;
+      right: max(16px, env(safe-area-inset-right));
+      top: max(122px, calc(env(safe-area-inset-top) + 88px));
+      z-index: 8;
+      display: none;
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid rgba(69, 255, 244, 0.34);
+      border-radius: 6px;
+      background:
+        linear-gradient(180deg, rgba(24, 28, 30, 0.92), rgba(5, 6, 8, 0.86)),
+        linear-gradient(90deg, rgba(69, 255, 244, 0.16), transparent);
+      color: #f4f7fb;
+      font-size: 10px;
+      font-weight: 1000;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+    }
+
+    body.playing #fieldSettingsBtn {
+      display: block;
+    }
+
     .action-btn {
       width: 78px;
       height: 78px;
@@ -383,7 +434,8 @@
     }
 
     #startOverlay,
-    #levelOverlay {
+    #levelOverlay,
+    #settingsOverlay {
       position: fixed;
       inset: 0;
       z-index: 10;
@@ -398,7 +450,8 @@
     }
 
     #startOverlay::before,
-    #levelOverlay::before {
+    #levelOverlay::before,
+    #settingsOverlay::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -415,7 +468,8 @@
     }
 
     #startOverlay::after,
-    #levelOverlay::after {
+    #levelOverlay::after,
+    #settingsOverlay::after {
       content: "";
       position: absolute;
       inset: 0;
@@ -431,6 +485,12 @@
     #levelOverlay {
       display: none;
       background: rgba(0, 0, 0, 0.34);
+    }
+
+    #settingsOverlay {
+      z-index: 13;
+      display: none;
+      background: rgba(0, 0, 0, 0.52);
     }
 
     #garageOverlay {
@@ -690,7 +750,8 @@
     }
 
     .leaderboard-panel,
-    .score-submit {
+    .score-submit,
+    .commander-panel {
       margin: 18px auto 0;
       width: min(840px, 100%);
       border: 1px solid rgba(69, 255, 244, 0.22);
@@ -700,6 +761,81 @@
         repeating-linear-gradient(90deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 12px);
       padding: 12px;
       text-align: left;
+    }
+
+    .commander-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 0.7fr);
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+      border-color: rgba(247, 200, 75, 0.26);
+      background:
+        linear-gradient(180deg, rgba(247, 200, 75, 0.10), rgba(0, 0, 0, 0.24)),
+        repeating-linear-gradient(90deg, rgba(69,255,244,0.024) 0 1px, transparent 1px 12px);
+    }
+
+    .commander-panel strong,
+    .settings-menu strong {
+      display: block;
+      color: #f7c84b;
+      font-size: 12px;
+      font-weight: 1000;
+      text-transform: uppercase;
+    }
+
+    .commander-panel span,
+    .settings-menu span {
+      display: block;
+      margin-top: 5px;
+      color: rgba(244, 247, 251, 0.68);
+      font-size: 10px;
+      font-weight: 820;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .commander-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .commander-row input,
+    .score-submit input {
+      min-height: 38px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.42);
+      color: #f4f7fb;
+      padding: 0 12px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      outline: none;
+    }
+
+    .commander-row input:focus,
+    .score-submit input:focus {
+      border-color: rgba(69, 255, 244, 0.74);
+      box-shadow: 0 0 0 2px rgba(69, 255, 244, 0.12);
+    }
+
+    .commander-row button {
+      min-height: 38px;
+      padding: 0 12px;
+      font-size: 10px;
+    }
+
+    #commanderNameStatus {
+      grid-column: 1 / -1;
+      margin-top: 2px;
+      color: rgba(244, 247, 251, 0.60);
+      font-size: 9px;
+      font-weight: 850;
+      text-align: right;
+      text-transform: uppercase;
     }
 
     .leaderboard-head {
@@ -889,29 +1025,48 @@
       margin-top: 10px;
     }
 
-    .score-submit input {
-      min-height: 38px;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 5px;
-      background: rgba(0, 0, 0, 0.42);
-      color: #f4f7fb;
-      padding: 0 12px;
-      font: inherit;
-      font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      outline: none;
-    }
-
-    .score-submit input:focus {
-      border-color: rgba(69, 255, 244, 0.74);
-      box-shadow: 0 0 0 2px rgba(69, 255, 244, 0.12);
-    }
-
     .score-submit button {
       min-height: 38px;
       padding: 0 14px;
       font-size: 10px;
+    }
+
+    .settings-menu {
+      width: min(560px, calc(100vw - 34px));
+      max-height: min(650px, calc(100svh - 34px));
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+      text-align: left;
+    }
+
+    .settings-toggle {
+      min-height: 88px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 5px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.24)),
+        linear-gradient(90deg, rgba(69, 255, 244, 0.08), transparent);
+      color: #f4f7fb;
+      text-align: left;
+    }
+
+    .settings-toggle strong {
+      color: #f4f7fb;
+      font-size: 14px;
+    }
+
+    .settings-toggle.active {
+      border-color: rgba(69, 255, 244, 0.78);
+      background:
+        linear-gradient(180deg, rgba(69, 255, 244, 0.22), rgba(0, 0, 0, 0.22)),
+        linear-gradient(90deg, rgba(247, 200, 75, 0.08), transparent);
+      box-shadow: inset 0 0 18px rgba(69, 255, 244, 0.10), 0 12px 32px rgba(0, 0, 0, 0.28);
     }
 
     .start-actions {
@@ -1478,6 +1633,10 @@
         display: flex;
       }
 
+      body.playing #controlCoach {
+        display: block;
+      }
+
       #actionPad {
         display: flex;
       }
@@ -1493,6 +1652,20 @@
 
       .start-intel-strip {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .commander-panel,
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .commander-row,
+      .score-submit-row {
+        grid-template-columns: 1fr;
+      }
+
+      #commanderNameStatus {
+        text-align: left;
       }
 
       .start-war-room {
@@ -1522,7 +1695,12 @@
 
     @media (pointer: coarse), (orientation: landscape) and (max-height: 520px) {
       #actionPad {
+        left: 50%;
+        right: auto;
+        bottom: max(14px, env(safe-area-inset-bottom));
         display: flex;
+        gap: 8px;
+        transform: translateX(-50%);
       }
 
       #controlsHint {
@@ -1532,14 +1710,64 @@
       body.playing .touch-zone-hint {
         display: flex;
       }
+
+      body.playing #controlCoach {
+        display: block;
+      }
+
+      #fieldSettingsBtn {
+        top: max(102px, calc(env(safe-area-inset-top) + 70px));
+        right: max(10px, env(safe-area-inset-right));
+        min-height: 34px;
+        padding: 0 10px;
+        font-size: 9px;
+      }
+
+      .action-btn {
+        width: 64px;
+        height: 64px;
+        font-size: 9px;
+      }
+
+      .action-btn.primary {
+        width: 78px;
+        height: 78px;
+      }
+
+      .action-btn.missile {
+        width: 72px;
+        height: 72px;
+        font-size: 8px;
+      }
+
+      .action-btn.small {
+        width: 58px;
+        height: 58px;
+        font-size: 8px;
+      }
+
+      .action-btn.tiny {
+        width: 88px;
+        height: 52px;
+        border-radius: 9px;
+        font-size: 8px;
+      }
     }
 
     @media (orientation: landscape) and (max-height: 520px) {
       .touch-zone-hint {
-        height: min(28vh, 122px);
+        width: min(28vw, 230px);
+        height: min(28vh, 112px);
         align-items: flex-start;
         padding-top: 22px;
         box-sizing: border-box;
+      }
+
+      #controlCoach {
+        bottom: max(96px, calc(env(safe-area-inset-bottom) + 82px));
+        width: min(380px, 44vw);
+        padding: 7px 10px;
+        font-size: 8px;
       }
 
       #hud {
@@ -1570,8 +1798,10 @@
       }
 
       #actionPad {
-        right: max(12px, env(safe-area-inset-right));
+        left: 50%;
+        right: auto;
         bottom: max(18px, env(safe-area-inset-bottom));
+        transform: translateX(-50%);
       }
 
       .action-btn {
@@ -1771,6 +2001,7 @@
       }
 
       .leaderboard-panel,
+      .commander-panel,
       .score-submit,
       .milestone-award {
         margin-top: 8px;
@@ -1799,8 +2030,24 @@
 
       .leaderboard-name span,
       .leaderboard-status,
+      #commanderNameStatus,
+      .commander-panel span,
       .score-submit-status {
         font-size: 8px;
+      }
+
+      .commander-panel {
+        grid-template-columns: minmax(0, 0.9fr) minmax(190px, 0.75fr);
+        gap: 7px;
+      }
+
+      .commander-panel strong,
+      .settings-menu strong {
+        font-size: 10px;
+      }
+
+      .commander-row {
+        gap: 6px;
       }
 
       .milestone-award.show {
@@ -1828,10 +2075,22 @@
         gap: 6px;
       }
 
+      .commander-row input,
+      .commander-row button,
       .score-submit input,
       .score-submit button {
         min-height: 32px;
         font-size: 9px;
+      }
+
+      .settings-grid {
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .settings-toggle {
+        min-height: 66px;
+        padding: 8px;
       }
 
       .garage-close-actions {
@@ -1915,6 +2174,24 @@
         margin-top: 5px;
       }
     }
+
+    @media (pointer: coarse) and (orientation: portrait), (orientation: portrait) and (max-width: 760px) {
+      .touch-zone-hint {
+        width: min(41vw, 158px);
+        height: min(28vh, 160px);
+      }
+
+      #actionPad {
+        bottom: max(188px, calc(env(safe-area-inset-bottom) + 166px));
+        width: min(326px, calc(100vw - 24px));
+        justify-content: center;
+      }
+
+      #controlCoach {
+        bottom: max(282px, calc(env(safe-area-inset-bottom) + 258px));
+        width: min(350px, calc(100vw - 28px));
+      }
+    }
   </style>
 </head>
 <body>
@@ -1953,9 +2230,10 @@
 
   <div id="notice">Boss convoy incoming</div>
   <div id="bossIntel"><strong>Boss Intel</strong><span>Clear the convoy to draw out the commander.</span></div>
-  <div id="controlsHint">Drive: W/S + A/D. On phone, left side drives forward/back and right side turns. F toggles Auto Shoot. Space/Shell fires visible tank rounds. M/Heavy Missile launches a high-impact missile. Supply runner retrieves field crates.</div>
-  <div id="driveZoneHint" class="touch-zone-hint">Left side: drive</div>
-  <div id="turnZoneHint" class="touch-zone-hint">Right side: turn</div>
+  <div id="controlsHint">Drive: W/S + A/D. On phone, left side drives forward/back and right side turns. F toggles Auto Shoot. Space/Shell fires visible tank rounds. M/Heavy Missile launches a high-impact missile. Settings pauses assists.</div>
+  <div id="controlCoach">Left half: slide up/down to drive. Right half: slide left/right to turn. Shell and Missile buttons fire weapons.</div>
+  <div id="driveZoneHint" class="touch-zone-hint">Left half: slide up/down</div>
+  <div id="turnZoneHint" class="touch-zone-hint">Right half: slide left/right</div>
 
   <div id="joystick"><div id="stickKnob"></div></div>
   <div id="actionPad">
@@ -1964,6 +2242,7 @@
     <button id="missileBtn" class="action-btn missile" type="button">Heavy Missile</button>
     <button id="fireBtn" class="action-btn primary" type="button">Shell</button>
   </div>
+  <button id="fieldSettingsBtn" type="button">Settings</button>
 
   <section id="startOverlay">
     <div class="menu start-menu">
@@ -1989,6 +2268,17 @@
             <span class="blade"></span>
           </div>
           <div class="war-room-label">Armor telemetry / threat radar / base uplink</div>
+        </div>
+      </div>
+      <div class="commander-panel">
+        <div>
+          <strong>Commander profile</strong>
+          <span>Set your public leaderboard name before you roll out. The game keeps using this name on future runs and saves.</span>
+        </div>
+        <div class="commander-row">
+          <input id="commanderNameInput" type="text" maxlength="20" autocomplete="nickname" placeholder="Commander name">
+          <button id="saveCommanderNameBtn" class="start-secondary" type="button">Save Name</button>
+          <div id="commanderNameStatus">Playing as Commander</div>
         </div>
       </div>
       <div class="mode-select">
@@ -2052,6 +2342,28 @@
     </div>
   </section>
 
+  <section id="settingsOverlay">
+    <div class="menu settings-menu">
+      <div class="start-kicker">Paused field settings</div>
+      <h1>Combat Controls</h1>
+      <p>Fine tune the driving assists while the mission is paused. New games start with Auto Shoot and Auto Aim on.</p>
+      <div class="settings-grid">
+        <button id="settingsAutoFireBtn" class="settings-toggle" type="button">
+          <strong>Auto Shoot On</strong>
+          <span>When on, your tank fires at the closest hostile inside lock range.</span>
+        </button>
+        <button id="settingsAutoAimBtn" class="settings-toggle" type="button">
+          <strong>Auto Aim On</strong>
+          <span>When on, the turret tracks the nearest hostile. Turn off for manual aim.</span>
+        </button>
+      </div>
+      <div class="start-actions">
+        <button id="resumeGameBtn" class="start-main" type="button">Resume Mission</button>
+        <button id="settingsSaveExitBtn" class="start-secondary" type="button">Save And Exit</button>
+      </div>
+    </div>
+  </section>
+
   <section id="garageOverlay">
     <div class="menu">
       <h1>Garage</h1>
@@ -2097,6 +2409,7 @@
     const canvas = document.getElementById("game");
     const startOverlay = document.getElementById("startOverlay");
     const levelOverlay = document.getElementById("levelOverlay");
+    const settingsOverlay = document.getElementById("settingsOverlay");
     const garageOverlay = document.getElementById("garageOverlay");
     const startBtn = document.getElementById("startBtn");
     const continueBtn = document.getElementById("continueBtn");
@@ -2112,6 +2425,11 @@
     const missileBtn = document.getElementById("missileBtn");
     const aimBtn = document.getElementById("aimBtn");
     const autoFireBtn = document.getElementById("autoFireBtn");
+    const fieldSettingsBtn = document.getElementById("fieldSettingsBtn");
+    const settingsAutoFireBtn = document.getElementById("settingsAutoFireBtn");
+    const settingsAutoAimBtn = document.getElementById("settingsAutoAimBtn");
+    const resumeGameBtn = document.getElementById("resumeGameBtn");
+    const settingsSaveExitBtn = document.getElementById("settingsSaveExitBtn");
     const joystick = document.getElementById("joystick");
     const stickKnob = document.getElementById("stickKnob");
     const notice = document.getElementById("notice");
@@ -2129,6 +2447,9 @@
     const leaderboardStatus = document.getElementById("leaderboardStatus");
     const leaderboardRefreshBtn = document.getElementById("leaderboardRefreshBtn");
     const scoreSubmitPanel = document.getElementById("scoreSubmitPanel");
+    const commanderNameInput = document.getElementById("commanderNameInput");
+    const saveCommanderNameBtn = document.getElementById("saveCommanderNameBtn");
+    const commanderNameStatus = document.getElementById("commanderNameStatus");
     const playerNameInput = document.getElementById("playerNameInput");
     const submitScoreBtn = document.getElementById("submitScoreBtn");
     const scoreSubmitStatus = document.getElementById("scoreSubmitStatus");
@@ -2466,7 +2787,7 @@
     let manualFireRequested = false;
     let missileRequested = false;
     let autoAimEnabled = true;
-    let autoFireEnabled = false;
+    let autoFireEnabled = true;
     let manualAimActive = false;
     let manualAimPoint = new THREE.Vector3(0, 0, 80);
     let currentAimTarget = null;
@@ -2493,6 +2814,7 @@
     let lastModuleAlertAt = 0;
     let activeGarageCategory = "combat";
     let wasPausedBeforeGarage = true;
+    let wasPausedBeforeSettings = false;
     let lastRunStats = null;
     let lastFrameAt = 0;
 
@@ -4587,19 +4909,21 @@
 
     function startGame({ load = false } = {}) {
       initAudio();
+      commitCommanderName({ announce: false });
       const saved = readSave();
       if (load && saved) {
         level = saved.level || 1;
         score = saved.score || 0;
         gameMode = saved.mode || gameMode;
-        autoFireEnabled = !!saved.autoFireEnabled;
+        autoFireEnabled = saved.controlsVersion === "v35" && typeof saved.autoFireEnabled === "boolean" ? saved.autoFireEnabled : true;
+        if (saved.playerName && !localStorage.getItem(PLAYER_NAME_KEY)) localStorage.setItem(PLAYER_NAME_KEY, sanitizeDisplayName(saved.playerName));
         hull = saved.hull || maxHull;
         winStreak = Number(saved.winStreak || localStorage.getItem(STREAK_KEY) || 0);
         moduleHealth = normalizeModuleHealth(saved.moduleHealth);
       } else {
         level = 1;
         score = 0;
-        autoFireEnabled = false;
+        autoFireEnabled = true;
         hull = maxHull;
         winStreak = 0;
         moduleHealth = normalizeModuleHealth();
@@ -4614,6 +4938,7 @@
       gameOver = false;
       startOverlay.style.display = "none";
       levelOverlay.style.display = "none";
+      settingsOverlay.style.display = "none";
       garageOverlay.style.display = "none";
       resetScoreSubmit();
       document.body.classList.add("playing");
@@ -4623,6 +4948,7 @@
       else resetTankToHomeBase();
       updateAutoFireUi();
       updateModeUi();
+      syncCommanderNameFields();
       applyTankSkin();
       renderCampaignMap(level);
       spawnWave();
@@ -4636,13 +4962,13 @@
 
     function setupInput() {
       window.addEventListener("keydown", (event) => {
-        if (isTextEntryTarget(event.target)) return;
+        if (isTextEntryTarget(event.target) || isTextEntryTarget(document.activeElement)) return;
         keys.add(event.code);
         if (event.code === "Space") {
           manualFireRequested = true;
           event.preventDefault();
         }
-        if (event.code === "KeyM" || event.code === "KeyE") {
+        if (event.code === "KeyM") {
           missileRequested = true;
           event.preventDefault();
         }
@@ -4657,9 +4983,14 @@
         if (event.code === "KeyR" && started) {
           startGame({ load: false });
         }
+        if ((event.code === "Escape" || event.code === "KeyP") && started) {
+          if (settingsOverlay.style.display === "grid") closeFieldSettings();
+          else openFieldSettings();
+          event.preventDefault();
+        }
       });
       window.addEventListener("keyup", (event) => {
-        if (isTextEntryTarget(event.target)) return;
+        if (isTextEntryTarget(event.target) || isTextEntryTarget(document.activeElement)) return;
         keys.delete(event.code);
       });
 
@@ -4693,12 +5024,21 @@
         event.preventDefault();
         toggleAutoFire();
       });
+      fieldSettingsBtn.addEventListener("click", () => openFieldSettings());
+      settingsAutoFireBtn.addEventListener("click", () => setAutoFireEnabled(!autoFireEnabled, true));
+      settingsAutoAimBtn.addEventListener("click", () => setAutoAimEnabled(!autoAimEnabled, true));
+      resumeGameBtn.addEventListener("click", () => closeFieldSettings());
+      settingsSaveExitBtn.addEventListener("click", () => saveAndExitToStart());
       leaderboardRefreshBtn.addEventListener("click", () => loadLeaderboard(true));
       submitScoreBtn.addEventListener("click", () => submitLeaderboardScore());
-      for (const eventName of ["keydown", "keyup", "keypress", "beforeinput", "input"]) {
-        playerNameInput.addEventListener(eventName, event => event.stopPropagation());
+      saveCommanderNameBtn.addEventListener("click", () => commitCommanderName({ announce: true }));
+      for (const input of [playerNameInput, commanderNameInput]) {
+        for (const eventName of ["keydown", "keyup", "keypress", "beforeinput", "input"]) {
+          input.addEventListener(eventName, event => event.stopPropagation());
+        }
+        input.addEventListener("focus", () => keys.clear());
+        input.addEventListener("blur", () => commitCommanderName({ announce: false }));
       }
-      playerNameInput.addEventListener("focus", () => keys.clear());
 
       startBtn.addEventListener("click", () => startGame({ load: false }));
       continueBtn.addEventListener("click", () => {
@@ -4736,19 +5076,12 @@
         spawnWave();
       });
       saveExitBtn.addEventListener("click", () => {
-        saveProgress();
-        started = false;
-        paused = true;
-        levelOverlay.style.display = "none";
-        startOverlay.style.display = "grid";
-        document.body.classList.remove("playing");
-        updateModeUi();
-        renderCampaignMap();
-        loadLeaderboard();
-        showToast("Saved. Load Save brings you back.");
+        saveAndExitToStart();
       });
       updateModeUi();
       updateAutoFireUi();
+      updateAimUi();
+      syncCommanderNameFields();
     }
 
     function beginTouch(event) {
@@ -4809,28 +5142,41 @@
     }
 
     function toggleAimMode() {
-      manualAimActive = !manualAimActive;
-      autoAimEnabled = !manualAimActive;
-      if (manualAimActive) {
-        forward.set(Math.sin(heading), 0, Math.cos(heading));
-        manualAimPoint.copy(tankPos).addScaledVector(forward, 95);
-        showToast("Manual aim: set shell direction.");
-      } else {
-        showToast("Auto aim: turret tracks hostiles.");
-      }
-      updateAimUi();
+      setAutoAimEnabled(!autoAimEnabled, true);
     }
 
     function toggleAutoFire() {
-      autoFireEnabled = !autoFireEnabled;
+      setAutoFireEnabled(!autoFireEnabled, true);
+    }
+
+    function setAutoFireEnabled(value, announce = false) {
+      autoFireEnabled = !!value;
       updateAutoFireUi();
-      showToast(autoFireEnabled ? "Auto Shoot on: close hostiles first." : "Auto Shoot off: Space or Shell controls fire.");
+      updateSettingsUi();
+      if (announce) showToast(autoFireEnabled ? "Auto Shoot on: close hostiles first." : "Auto Shoot off: Space or Shell controls fire.");
+    }
+
+    function setAutoAimEnabled(value, announce = false) {
+      autoAimEnabled = !!value;
+      manualAimActive = !autoAimEnabled;
+      if (manualAimActive) {
+        forward.set(Math.sin(heading), 0, Math.cos(heading));
+        manualAimPoint.copy(tankPos).addScaledVector(forward, 95);
+      }
+      updateAimUi();
+      updateSettingsUi();
+      if (announce) showToast(autoAimEnabled ? "Auto Aim on: turret tracks hostiles." : "Manual aim: tap or point where shells should go.");
     }
 
     function updateAutoFireUi() {
       if (!autoFireBtn) return;
       autoFireBtn.textContent = autoFireEnabled ? "Auto Shoot On" : "Auto Shoot Off";
       autoFireBtn.classList.toggle("active", autoFireEnabled);
+      if (settingsAutoFireBtn) {
+        settingsAutoFireBtn.classList.toggle("active", autoFireEnabled);
+        const label = settingsAutoFireBtn.querySelector("strong");
+        if (label) label.textContent = autoFireEnabled ? "Auto Shoot On" : "Auto Shoot Off";
+      }
     }
 
     function setGameMode(mode) {
@@ -4847,8 +5193,8 @@
 
     function updateAimUi() {
       if (!aimBtn || !aimMarker) return;
-      aimBtn.textContent = manualAimActive ? "Manual" : "Auto Aim";
-      aimBtn.classList.toggle("active", manualAimActive);
+      aimBtn.textContent = autoAimEnabled ? "Auto Aim On" : "Manual Aim";
+      aimBtn.classList.toggle("active", autoAimEnabled);
       aimMarker.visible = manualAimActive || !!currentAimTarget;
       if (manualAimActive) {
         aimMarker.position.copy(manualAimPoint);
@@ -4857,6 +5203,55 @@
         aimMarker.position.set(currentAimTarget.group.position.x, 0.14, currentAimTarget.group.position.z);
         aimMarker.scale.setScalar(currentAimTarget.boss ? 1.9 : 1.15);
       }
+      updateSettingsUi();
+    }
+
+    function updateSettingsUi() {
+      if (settingsAutoFireBtn) {
+        settingsAutoFireBtn.classList.toggle("active", autoFireEnabled);
+        const label = settingsAutoFireBtn.querySelector("strong");
+        if (label) label.textContent = autoFireEnabled ? "Auto Shoot On" : "Auto Shoot Off";
+      }
+      if (settingsAutoAimBtn) {
+        settingsAutoAimBtn.classList.toggle("active", autoAimEnabled);
+        const label = settingsAutoAimBtn.querySelector("strong");
+        if (label) label.textContent = autoAimEnabled ? "Auto Aim On" : "Manual Aim";
+      }
+    }
+
+    function openFieldSettings() {
+      if (!started || gameOver || levelOverlay.style.display === "grid") return;
+      wasPausedBeforeSettings = paused;
+      paused = true;
+      keys.clear();
+      touchInput.throttle = 0;
+      touchInput.turn = 0;
+      joystick.style.display = "none";
+      settingsOverlay.style.display = "grid";
+      updateSettingsUi();
+    }
+
+    function closeFieldSettings() {
+      settingsOverlay.style.display = "none";
+      if (started && !gameOver && startOverlay.style.display === "none" && levelOverlay.style.display === "none" && garageOverlay.style.display === "none") {
+        paused = wasPausedBeforeSettings;
+      }
+    }
+
+    function saveAndExitToStart() {
+      commitCommanderName({ announce: false });
+      saveProgress();
+      started = false;
+      paused = true;
+      settingsOverlay.style.display = "none";
+      levelOverlay.style.display = "none";
+      startOverlay.style.display = "grid";
+      document.body.classList.remove("playing");
+      updateModeUi();
+      syncCommanderNameFields();
+      renderCampaignMap();
+      loadLeaderboard();
+      showToast("Saved. Load Save brings you back.");
     }
 
     function setManualAimFromPointer(event, activate) {
@@ -6746,6 +7141,7 @@
       try {
         const profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || "null");
         if (!profile) return;
+        if (profile.playerName) localStorage.setItem(PLAYER_NAME_KEY, sanitizeDisplayName(profile.playerName));
         selectedSkin = skinPalettes[profile.selectedSkin] ? profile.selectedSkin : selectedSkin;
         if (profile.upgradeLevels && typeof profile.upgradeLevels === "object") {
           for (const item of upgradeCatalog) {
@@ -6761,6 +7157,7 @@
 
     function saveProfile() {
       localStorage.setItem(PROFILE_KEY, JSON.stringify({
+        playerName: getCommanderName(),
         selectedSkin,
         upgradeLevels,
         claimedMilestoneRewards
@@ -6769,6 +7166,8 @@
 
     function saveProgress() {
       const save = {
+        playerName: getCommanderName(),
+        controlsVersion: "v35",
         level,
         score,
         hull: Math.max(1, hull),
@@ -6804,6 +7203,27 @@
       return cleaned || "Commander";
     }
 
+    function getCommanderName() {
+      return sanitizeDisplayName(localStorage.getItem(PLAYER_NAME_KEY) || commanderNameInput?.value || playerNameInput?.value || "Commander");
+    }
+
+    function syncCommanderNameFields(name = getCommanderName()) {
+      const displayName = sanitizeDisplayName(name);
+      if (commanderNameInput && commanderNameInput.value !== displayName) commanderNameInput.value = displayName;
+      if (playerNameInput && playerNameInput.value !== displayName) playerNameInput.value = displayName;
+      if (commanderNameStatus) commanderNameStatus.textContent = `Playing as ${displayName}`;
+    }
+
+    function commitCommanderName({ announce = false } = {}) {
+      const typedName = commanderNameInput?.value || playerNameInput?.value || localStorage.getItem(PLAYER_NAME_KEY) || "Commander";
+      const name = sanitizeDisplayName(typedName);
+      localStorage.setItem(PLAYER_NAME_KEY, name);
+      syncCommanderNameFields(name);
+      saveProfile();
+      if (announce) showToast(`Commander saved: ${name}`);
+      return name;
+    }
+
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, (char) => ({
         "&": "&amp;",
@@ -6817,7 +7237,7 @@
     function buildRunStats(result) {
       const tankStats = getTankStats();
       return {
-        name: sanitizeDisplayName(localStorage.getItem(PLAYER_NAME_KEY) || "Commander"),
+        name: getCommanderName(),
         score: Math.max(0, Math.round(score)),
         level: Math.max(1, Math.min(MAX_LEVEL, Math.round(level))),
         mode: gameMode === "hardcore" ? "hardcore" : "regular",
@@ -6827,7 +7247,7 @@
         combatRating: tankStats.rating,
         skin: skinName(selectedSkin),
         savedAt: new Date().toISOString(),
-        gameVersion: "v34-cinematic-war-room"
+        gameVersion: "v35-commander-controls"
       };
     }
 
@@ -6843,7 +7263,7 @@
 
     function prepareScoreSubmit(result) {
       lastRunStats = buildRunStats(result);
-      playerNameInput.value = localStorage.getItem(PLAYER_NAME_KEY) || "";
+      syncCommanderNameFields(lastRunStats.name);
       submitScoreBtn.disabled = false;
       submitScoreBtn.textContent = "Submit Score";
       scoreSubmitPanel.style.display = "block";
@@ -6923,8 +7343,10 @@
 
     async function submitLeaderboardScore() {
       if (!lastRunStats) lastRunStats = buildRunStats("manual-save");
-      const name = sanitizeDisplayName(playerNameInput.value);
+      const name = sanitizeDisplayName(playerNameInput.value || commanderNameInput.value);
       localStorage.setItem(PLAYER_NAME_KEY, name);
+      syncCommanderNameFields(name);
+      saveProfile();
       const entry = {
         ...lastRunStats,
         name,
